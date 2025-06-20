@@ -18,6 +18,8 @@ import {
   ShoppingBag,
   Sparkles,
 } from "lucide-react";
+import Loading from "@/components/loading";
+import ContentFooter from "@/components/store/ContentFooter";
 
 // Server status interface
 interface ServerStatus {
@@ -100,18 +102,7 @@ export default function Store() {
   }, []);
 
   if (loading) {
-    return (
-      <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <div className="text-center">
-            <Spinner />
-            <p className="text-gray-600">Sunucular yükleniyor...</p>
-          </div>
-        </div>
-      </>
-    );
+    return <Loading show={true} message="Sunucular yükleniyor..." />;
   }
 
   const totalServers = servers?.length || 0;
@@ -225,22 +216,12 @@ export default function Store() {
 
         {/* Footer Info */}
         {totalServers > 0 && (
-          <div className="mt-8 text-center">
-            <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Sparkles className="h-5 w-5 text-purple-600" />
-                  <h3 className="text-lg font-semibold text-purple-800">
-                    Premium Eşya Koleksiyonu
-                  </h3>
-                </div>
-                <p className="text-purple-700">
-                  Her sunucuda özel tasarlanmış eşyalar ve avantajlı fiyatlarla
-                  oyun deneyiminizi geliştirin
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          <ContentFooter
+            header="Premium Eşya Koleksiyonu"
+            message="Her sunucuda özel tasarlanmış eşyalar ve avantajlı fiyatlarla
+                  oyun deneyiminizi geliştirin"
+            color="purple"
+          />
         )}
       </div>
     </>
