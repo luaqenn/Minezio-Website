@@ -125,7 +125,7 @@ export default function Header() {
               website?.image || "/images/default-logo.png"
             }`}
             alt={website?.name || `Logo`}
-            width={250}
+            width={200}
             height={35}
             className="max-h-logo mb-20 z-30 hover:scale-105 transition-all duration-300"
             priority

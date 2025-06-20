@@ -191,14 +191,14 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
           
             {asWidget ? (
                 <Button variant="outline" className="w-full" asChild>
-                    <Link href="/register">
+                    <Link href="/auth/sign-in">
                         <UserPlus className="mr-2 h-4 w-4" />
                         Yeni Hesap Oluştur
                     </Link>
                 </Button>
             ) : (
                 <Button variant="secondary" className="w-full" asChild>
-                    <Link href="/register">
+                    <Link href="/auth/sign-in">
                         Hemen Kayıt Olun
                     </Link>
                 </Button>

@@ -17,9 +17,7 @@ const nextConfig: NextConfig = {
         pathname: "/uploads/**",
       },
       {
-        protocol: "https", // Or http, depending on your backend setup
         hostname: "api.crafter.net.tr",
-        port: "443",
         pathname: "/uploads/**",
       },
     ],
