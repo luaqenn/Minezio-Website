@@ -1,6 +1,6 @@
 # 🎨 Crafter Default Theme
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Crafter](https://img.shields.io/badge/Crafter-CMS-orange?style=for-the-badge)](https://crafter.net.tr/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
@@ -11,7 +11,7 @@ Modern, özelleştirilebilir ve performanslı bir **[Crafter](https://crafter.ne
 
 ## ✨ Özellikler
 
-- 🚀 **Next.js 14** ile modern React geliştirme deneyimi
+- 🚀 **Next.js 15** ile modern React geliştirme deneyimi
 - ⚡ **SSR/SSG** desteği ile yüksek performans
 - 🔧 **Ortam değişkenleri** ile kolay yapılandırma
 - 📦 **NPM** ve **Bun** paket yöneticisi desteği
