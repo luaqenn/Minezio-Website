@@ -7,11 +7,19 @@ import { Server } from "@/lib/types/server";
 import { TopBar } from "@/components/top-bar";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { usePathname } from "next/navigation";
 
 // Bu bileşen, provider'lar ile sayfalarınız arasında bir köprü görevi görecek.
 export function MainLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  if(pathname.includes('auth')) {
+    return (children);
+  }
+
   // Artık burada context'leri güvenle kullanabilirsiniz.
   const { website } = useContext(WebsiteContext);
+  
   const { getServers } = useServerService();
   const [server, setServer] = useState<Server | null>(null);
 
@@ -24,7 +32,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       }
     });
     // getServers fonksiyonu genellikle değişmez ama yine de bağımlılık dizisine eklemek iyi bir pratiktir.
-  }, [getServers]);
+  }, []);
 
   return (
     <>

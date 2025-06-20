@@ -23,7 +23,7 @@ export default function Home() {
     getServers().then((servers) => {
       setServer(servers[0]);
     });
-  });
+  }, []);
 
   return (
     <main>
