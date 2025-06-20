@@ -5,11 +5,13 @@ import { AuthContext } from "@/lib/context/auth.context";
 import { useContext } from "react";
 import Image from "next/image";
 import headerBg from "@/assets/images/auth-bg-register.png";
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { WebsiteContext } from "@/lib/context/website.context";
 
 export default function SignUp() {
   const { signUp } = useContext(AuthContext);
+  const { website } = useContext(WebsiteContext);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -22,15 +24,17 @@ export default function SignUp() {
 
     await signUp({ username, email, password, confirm_password })
       .then(() => {
-        withReactContent(Swal).fire({
-          title: "Kayıt Başarılı",
-          text: "Kayıt işleminiz başarıyla tamamlandı. Yönlendiriliyorsunuz..",
-          icon: "success",
-          timer: 2000,
-          confirmButtonText: "Tamam",
-        }).then(() => {
-          router.push("/");
-        }) 
+        withReactContent(Swal)
+          .fire({
+            title: "Kayıt Başarılı",
+            text: "Kayıt işleminiz başarıyla tamamlandı. Yönlendiriliyorsunuz..",
+            icon: "success",
+            timer: 2000,
+            confirmButtonText: "Tamam",
+          })
+          .then(() => {
+            router.push("/");
+          });
       })
       .catch((error) => {
         withReactContent(Swal).fire({
@@ -39,7 +43,7 @@ export default function SignUp() {
           icon: "error",
           confirmButtonText: "Tamam",
         });
-      })
+      });
   };
 
   return (
@@ -47,7 +51,9 @@ export default function SignUp() {
       <div className="flex flex-col justify-center items-center w-1/3 bg-white p-8 rounded-lg shadow-lg">
         <div className="flex items-center justify-center mb-6">
           <Image
-            src="/images/header-logo.png"
+            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
+              website?.image || "/images/default-logo.png"
+            }`}
             alt="Logo"
             width={150}
             height={50}
@@ -129,4 +135,3 @@ export default function SignUp() {
     </div>
   );
 }
-

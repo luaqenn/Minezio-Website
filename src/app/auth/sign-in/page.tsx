@@ -7,9 +7,11 @@ import Image from "next/image";
 import headerBg from "@/assets/images/auth-bg-login.jpg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { WebsiteContext } from "@/lib/context/website.context";
 
 export default function SignIn() {
   const { signIn } = useContext(AuthContext);
+  const { website } = useContext(WebsiteContext);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +49,9 @@ export default function SignIn() {
       <div className="flex flex-col justify-center items-center w-1/3 bg-white p-8 rounded-lg shadow-lg">
         <div className="flex items-center justify-center mb-6">
           <Image
-            src="/images/header-logo.png"
+            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
+              website?.image || "/images/default-logo.png"
+            }`}
             alt="Logo"
             width={150}
             height={50}
