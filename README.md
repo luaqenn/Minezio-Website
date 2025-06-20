@@ -5,7 +5,7 @@
 [![Crafter](https://img.shields.io/badge/Crafter-CMS-orange?style=for-the-badge)](https://crafter.net.tr/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-Modern, özelleştirilebilir ve performanslı bir **[Crafter](https://crafter.net.tr/)** frontend teması. Next.js 14'ün gücüyle SSR/SSG desteği sunan, geliştirici dostu bir çözüm.
+Modern, özelleştirilebilir ve performanslı bir **[Crafter](https://crafter.net.tr/)** frontend teması. Next.js 15'ün gücüyle SSR/SSG desteği sunan, geliştirici dostu bir çözüm.
 
 ---
 
