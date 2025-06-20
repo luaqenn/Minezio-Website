@@ -14,26 +14,85 @@ import { Separator } from "@/components/ui/separator";
 import ServerCard from "@/components/store/ServerCard";
 import { Store as StoreIcon, Server as ServerIcon, ShoppingBag, Sparkles } from "lucide-react";
 
+// Server status interface
+interface ServerStatus {
+  online: boolean;
+  players?: {
+    online: number;
+    max: number;
+  };
+  version?: string;
+  type?: string;
+}
+
+// Extended server interface with status
+interface ServerWithStatus extends Server {
+  isOnline?: boolean;
+  playerCount?: number;
+}
+
 export default function Store() {
   const { website } = useContext(WebsiteContext);
-  const [servers, setServers] = React.useState<Server[] | null>(null);
+  const [servers, setServers] = React.useState<ServerWithStatus[] | null>(null);
   const [loading, setLoading] = React.useState(true);
 
   const { getServers } = useServerService();
 
+  // Fetch server status
+  const fetchServerStatus = async (server: Server): Promise<ServerStatus> => {
+    try {
+      const { ip, port } = server;
+      const res = await fetch(
+        `/api/status/minecraft?ip=${ip}&port=${port}`,
+        { cache: "no-store" }
+      );
+      const data = await res.json();
+      
+      return {
+        online: data.online,
+        players: data.players,
+        version: data.version,
+        type: data.type,
+      };
+    } catch (error) {
+      console.error(`Sunucu durumu alınamadı (${server.name}):`, error);
+      return { online: false };
+    }
+  };
+
+  // Fetch all servers with their status
+  const fetchServersWithStatus = async () => {
+    try {
+      const serverData = await getServers();
+      if (serverData && serverData.length > 0) {
+        // Fetch status for all servers concurrently
+        const serversWithStatusPromises = serverData.map(async (server: Server) => {
+          const status = await fetchServerStatus(server);
+          return {
+            ...server,
+            isOnline: status.online,
+            playerCount: status.players?.online || 0,
+          } as ServerWithStatus;
+        });
+
+        const serversWithStatus = await Promise.all(serversWithStatusPromises);
+        setServers(serversWithStatus);
+      } else {
+        setServers([]);
+      }
+    } catch (error) {
+      console.error("Error fetching servers:", error);
+      setServers([]);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
-    getServers()
-      .then((data) => {
-        setServers(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching servers:", error);
-      })
+    fetchServersWithStatus()
       .finally(() => {
         setLoading(false);
       });
-  }, []); // Empty dependency array
+  }, []);
 
   if (loading) {
     return (
@@ -51,6 +110,7 @@ export default function Store() {
   }
 
   const totalServers = servers?.length || 0;
+  const onlineServers = servers?.filter(server => server.isOnline).length || 0;
 
   return (
     <>
@@ -79,16 +139,21 @@ export default function Store() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      Aktif Sunucular
+                      Sunucu Durumu
                     </h3>
                     <p className="text-gray-600">
-                      {totalServers} farklı sunucuda binlerce eşya sizi bekliyor
+                      {onlineServers}/{totalServers} sunucu aktif - Binlerce eşya sizi bekliyor
                     </p>
                   </div>
                 </div>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-lg px-4 py-2">
-                  {totalServers} Sunucu
-                </Badge>
+                <div className="flex gap-2">
+                  <Badge variant="secondary" className="bg-green-100 text-green-800 text-sm px-3 py-1">
+                    {onlineServers} Online
+                  </Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-sm px-3 py-1">
+                    {totalServers} Toplam
+                  </Badge>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -105,7 +170,7 @@ export default function Store() {
               {totalServers > 0 && (
                 <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                   <Sparkles className="h-3 w-3 mr-1" />
-                  {totalServers} aktif
+                  {onlineServers} aktif
                 </Badge>
               )}
             </div>
@@ -127,13 +192,15 @@ export default function Store() {
             ) : (
               // Servers Grid
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {servers.map((server: Server) => (
+                {servers.map((server: ServerWithStatus) => (
                   <ServerCard
                     key={server.id}
                     server={{
                       id: server.id,
                       name: server.name,
                       image: server.image || "/images/default-category.png",
+                      isOnline: server.isOnline,
+                      playerCount: server.playerCount,
                     }}
                   />
                 ))}
