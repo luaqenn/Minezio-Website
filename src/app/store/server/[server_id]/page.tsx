@@ -2,8 +2,6 @@
 
 import { Category } from "@/lib/types/category";
 import { useCategoryService } from "@/lib/services/category.service";
-import { TopBar } from "@/components/top-bar";
-import Header from "@/components/header";
 import { useContext, useEffect, useState, use } from "react";
 import { WebsiteContext } from "@/lib/context/website.context";
 import { Spinner } from "@/components/ui/spinner";
@@ -69,8 +67,6 @@ export default function ServerPage({
   if (loading) {
     return (
       <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
             <Spinner />
@@ -84,8 +80,6 @@ export default function ServerPage({
   if (error || !server) {
     return (
       <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <Card className="border-red-200 bg-red-50">
             <CardContent className="p-8 text-center">
@@ -111,9 +105,6 @@ export default function ServerPage({
 
   return (
     <>
-      <TopBar broadcastItems={website?.broadcast_items} />
-      <Header />
-      
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Breadcrumb */}
         <div className="mb-6">
