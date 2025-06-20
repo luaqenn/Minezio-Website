@@ -1,36 +1,245 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎨 Crafter Default Theme
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Crafter](https://img.shields.io/badge/Crafter-CMS-orange?style=for-the-badge)](https://crafter.net.tr/)
+[![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-First, run the development server:
+Modern, özelleştirilebilir ve performanslı bir **[Crafter](https://crafter.net.tr/)** frontend teması. Next.js 14'ün gücüyle SSR/SSG desteği sunan, geliştirici dostu bir çözüm.
+
+---
+
+## ✨ Özellikler
+
+- 🚀 **Next.js 14** ile modern React geliştirme deneyimi
+- ⚡ **SSR/SSG** desteği ile yüksek performans
+- 🔧 **Ortam değişkenleri** ile kolay yapılandırma
+- 📦 **NPM** ve **Bun** paket yöneticisi desteği
+- 🎯 **TypeScript** ile tip güvenli geliştirme
+- 🧹 **Temiz kod yapısı** ve kolay özelleştirme
+- 📱 **Responsive** tasarım desteği
+- 🔌 **Crafter** ile sorunsuz entegrasyon
+
+---
+
+## 🚀 Hızlı Başlangıç
+
+### 📋 Ön Koşullar
+
+- Node.js 18+ veya Bun
+- Crafter üzerinden lisans ve site bilgisi oluşturmak
+
+### 1️⃣ Depoyu Klonlama
 
 ```bash
+git clone https://github.com/EfeSorogluu/Crafter-Default-Theme.git
+cd Crafter-Default-Theme
+```
+
+### 2️⃣ Bağımlılıkları Kurma
+
+**NPM ile:**
+```bash
+npm install
+```
+
+**Bun ile:**
+```bash
+bun install
+```
+
+### 3️⃣ Ortam Değişkenlerini Ayarlama
+
+Proje kök dizininde `.env` dosyası oluşturun:
+
+```bash
+cp .env.example .env
+```
+
+`.env` dosyasını düzenleyin:
+
+```env
+# Crafter Yapılandırması
+NEXT_PUBLIC_WEBSITE_ID=
+NEXT_PUBLIC_LICENCE_KEY=
+NEXT_PUBLIC_BACKEND_URL=https://api.crafter.net.tr
+
+# Geliştirme Modu (isteğe bağlı)
+NODE_ENV=development
+```
+
+### 4️⃣ Geliştirme Sunucusunu Başlatma
+
+**NPM ile:**
+```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+```
+
+**Bun ile:**
+```bash
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🎉 Uygulamanız artık [http://localhost:3000](http://localhost:3000) adresinde çalışıyor!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Build ve Deployment
 
-## Learn More
+### Production Build
 
-To learn more about Next.js, take a look at the following resources:
+**NPM ile:**
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Bun ile:**
+```bash
+bun run build
+bun start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Deployment Seçenekleri
 
-## Deploy on Vercel
+- **Vercel**: Next.js'in yaratıcıları tarafından önerilen platform
+- **Netlify**: Statik site deployment'ı için
+- **Docker**: Konteyner tabanlı deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📂 Proje Yapısı
+
+```
+Crafter-Default-Theme/
+├── 📁 app/                     # Next.js App Router dizini
+│   ├── globals.css             # Global stiller
+│   ├── layout.tsx              # Ana layout komponenti
+│   └── page.tsx                # Ana sayfa komponenti
+├── 📁 public/                 # Statik dosyalar (resimler, favicon vs.)
+├── 📁 lib/                    # Yardımcı fonksiyonlar ve servisler
+│   └── ...                    # Crafter API entegrasyon dosyaları
+├── 📁 components/            # Yeniden kullanılabilir React bileşenleri
+├── 📁 styles/                # CSS modülleri ve stil dosyaları
+├── 📄 .env.example           # Ortam değişkeni şablonu
+├── 📄 next.config.js         # Next.js yapılandırması
+├── 📄 package.json           # Proje bağımlılıkları
+├── 📄 tsconfig.json          # TypeScript yapılandırması
+└── 📄 README.md              # Bu dosya
+```
+
+---
+
+## 🔧 Yapılandırma
+
+### Ortam Değişkenleri
+
+| Değişken | Açıklama | Varsayılan |
+|----------|----------|------------|
+| `NEXT_PUBLIC_WEBSITE_ID` | Crafter site ID numarası | - |
+| `NEXT_PUBLIC_LICENSE_KEY` | Crafter site lisans anahtarı | - |
+| `NEXT_PUBLIC_BACKEND_URL` | Crafter base URL'i | `https://api.crafter.net.tr` |
+
+### Next.js Yapılandırması
+
+`next.config.js` dosyasında özelleştirmelerinizi yapabilirsiniz:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    appDir: true,
+  },
+  // Crafter ile çalışmak için gerekli ayarlar
+  images: {
+    domains: ['localhost', 'api.crafter.net.tr'],
+  },
+}
+
+module.exports = nextConfig
+```
+
+---
+
+## 🎨 Özelleştirme
+
+### Stil Değişiklikleri
+
+- **Global stiller**: `app/globals.css`
+- **Component stilleri**: `styles/` dizini
+- **Tailwind CSS**: Kurulu ve kullanıma hazır
+
+### Yeni Bileşenler Ekleme
+
+```typescript
+// components/MyComponent.tsx
+import React from 'react';
+
+interface MyComponentProps {
+  title: string;
+}
+
+export default function MyComponent({ title }: MyComponentProps) {
+  return (
+    <div className="my-component">
+      <h2>{title}</h2>
+    </div>
+  );
+}
+```
+
+---
+
+## 🤝 Katkıda Bulunma
+
+Katkılarınızı memnuniyetle karşılıyoruz! Lütfen şu adımları takip edin:
+
+1. 🍴 Projeyi fork edin
+2. 🌿 Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. 💾 Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
+4. 📤 Branch'inizi push edin (`git push origin feature/amazing-feature`)
+5. 🔀 Pull Request oluşturun
+
+---
+
+## 🐛 Sorun Bildirimi
+
+Bir sorunla karşılaştınız mı? [Issue açmaktan](https://github.com/EfeSorogluu/Crafter-Default-Theme/issues) çekinmeyin!
+
+Sorun bildirirken lütfen şunları belirtin:
+- İşletim sistemi ve sürümü
+- Node.js/Bun sürümü
+- Hata mesajı (varsa)
+- Yeniden üretme adımları
+
+---
+
+## 📚 Faydalı Kaynaklar
+
+- 📖 [Next.js Dokümantasyonu](https://nextjs.org/docs)
+- 🎨 [Tailwind CSS](https://tailwindcss.com/)
+- 📝 [TypeScript Rehberi](https://www.typescriptlang.org/docs/)
+
+---
+
+## 📄 Lisans
+
+Bu proje **MIT** lisansı ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasını inceleyebilirsiniz.
+
+---
+
+## ✉️ İletişim
+
+**Mert Efe Soroğlu** - [@EfeSorogluu](https://github.com/EfeSorogluu)
+
+📧 Sorularınız için: [Issue açın](https://github.com/EfeSorogluu/Crafter-Default-Theme/issues) veya doğrudan benimle iletişime geçin.
+
+---
+
+<div align="center">
+
+⭐ **Projeyi beğendiyseniz yıldız vermeyi unutmayın!** ⭐
+
+Made with ❤️ by [Efe Soroğlu](https://github.com/EfeSorogluu)
+
+</div>
