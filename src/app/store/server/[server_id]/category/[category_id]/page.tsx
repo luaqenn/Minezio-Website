@@ -66,8 +66,6 @@ export default function CategoryPage({
   if (loading) {
     return (
       <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
             <Spinner />
@@ -81,8 +79,6 @@ export default function CategoryPage({
   if (error || !category) {
     return (
       <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <Card className="border-red-200 bg-red-50">
             <CardContent className="p-8 text-center">
@@ -108,9 +104,6 @@ export default function CategoryPage({
 
   return (
     <>
-      <TopBar broadcastItems={website?.broadcast_items} />
-      <Header />
-      
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Breadcrumb */}
         <div className="mb-6">

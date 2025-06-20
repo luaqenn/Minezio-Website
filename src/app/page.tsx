@@ -1,7 +1,7 @@
 "use client";
 
 import { AuthContext } from "@/lib/context/auth.context";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { AuthForm } from "@/components/auth-form";
@@ -9,23 +9,33 @@ import { TopBar } from "@/components/top-bar";
 import Link from "next/link";
 import Header from "@/components/header";
 import { WebsiteContext } from "@/lib/context/website.context";
+import Footer from "@/components/footer";
+import { useServerService } from "@/lib/services/server.service";
+import { Server } from "@/lib/types/server";
 
 export default function Home() {
   const { isAuthenticated } = useContext(AuthContext);
   const { website } = useContext(WebsiteContext);
+  const { getServers } = useServerService();
+  const [server, setServer] = useState<Server | null>(null);
+
+  useEffect(() => {
+    getServers().then((servers) => {
+      setServer(servers[0]);
+    });
+  });
 
   return (
     <main>
-      <TopBar broadcastItems={website.broadcast_items} />
-      <Header />
-
       {/* Main Content */}
       <section className="container mx-auto py-20 pb-8">
         <div className="grid gap-6 lg:grid-cols-12 items-start">
-          
           {/* Sol Taraf - Ana İçerik (Slider, Haberler, vs.) */}
-          <div className={`${!isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"} space-y-6`}>
-            
+          <div
+            className={`${
+              !isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"
+            } space-y-6`}
+          >
             {/* Hero Slider */}
             <div className="rounded-2xl">
               <div className="carousel zippy-carousel relative overflow-hidden rounded-2xl">
@@ -101,12 +111,14 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Sağ Taraf - Sidebar (Auth, Discord, vs.) */}
-          <div className={`${!isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"} space-y-6`}>
-            
+          <div
+            className={`${
+              !isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"
+            } space-y-6`}
+          >
             {/* Auth Form */}
             {!isAuthenticated && (
               <div className="relative z-50">
@@ -140,14 +152,14 @@ export default function Home() {
                     Hızlı Erişim
                   </h3>
                   <div className="space-y-2">
-                    <Link 
-                      href="/profile" 
+                    <Link
+                      href="/profile"
                       className="block w-full text-left px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                     >
                       Profil
                     </Link>
-                    <Link 
-                      href="/settings" 
+                    <Link
+                      href="/settings"
                       className="block w-full text-left px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                     >
                       Ayarlar
@@ -161,18 +173,21 @@ export default function Home() {
                   </h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Oyunlar:</span>
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Oyunlar:
+                      </span>
                       <span className="font-medium">24</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Skor:</span>
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Skor:
+                      </span>
                       <span className="font-medium">1,250</span>
                     </div>
                   </div>
                 </div>
               </>
             )}
-
           </div>
         </div>
       </section>

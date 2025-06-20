@@ -15,8 +15,6 @@ import { useServerService } from "@/lib/services/server.service";
 
 // Context ve Bileşenler
 import { WebsiteContext } from "@/lib/context/website.context";
-import Header from "@/components/header";
-import { TopBar } from "@/components/top-bar";
 
 // ShadCN UI Kütüphaneleri
 import { Button } from "@/components/ui/button";
@@ -130,8 +128,6 @@ export default function ProductPage({
   if (loading) {
     return (
       <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
             <Spinner />
@@ -145,8 +141,6 @@ export default function ProductPage({
   if (error || !product) {
     return (
       <>
-        <TopBar broadcastItems={website?.broadcast_items} />
-        <Header />
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <Card className="border-red-200 bg-red-50">
             <CardContent className="p-8 text-center">
@@ -166,9 +160,7 @@ export default function ProductPage({
   // Arayüz (JSX)
   return (
     <>
-      <TopBar broadcastItems={website?.broadcast_items} />
-      <Header />
-      
+
       <div className="container mx-auto max-w-7xl px-4 py-8">
         <Button variant="ghost" onClick={() => router.back()} className="mb-6 text-gray-600 hover:text-gray-800">
           <ArrowLeft className="h-4 w-4 mr-2" /> Geri Dön
