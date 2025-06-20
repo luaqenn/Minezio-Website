@@ -12,7 +12,7 @@ import { WebsiteContext } from "@/lib/context/website.context";
 
 export default function Home() {
   const { isAuthenticated } = useContext(AuthContext);
-  const { website } = useContext(WebsiteContext)
+  const { website } = useContext(WebsiteContext);
 
   return (
     <main>
@@ -21,23 +21,35 @@ export default function Home() {
 
       {/* Main Content */}
       <section className="container mx-auto py-20 pb-8">
-        <div className={isAuthenticated ? "" : "grid gap-6 lg:grid-cols-12 items-start"}>
+        <div
+          className={
+            isAuthenticated ? "" : "grid gap-6 lg:grid-cols-12 items-start"
+          }
+        >
           {/* Left Side - Slider */}
-          <div className={`rounded-2xl ${!isAuthenticated ? 'lg:col-span-8' : 'lg:col-span-12'}`}>
+          <div
+            className={`rounded-2xl ${
+              !isAuthenticated ? "lg:col-span-8" : "lg:col-span-12"
+            }`}
+          >
             <div className="carousel zippy-carousel relative overflow-hidden rounded-2xl">
               <div className="inner">
                 <div
                   className="los-slide active relative h-[400px]"
                   style={{
                     backgroundImage: "url('/images/header-bg.png')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                   }}
                 >
                   <div className="text-center md:text-left h-full flex flex-col justify-center p-6 relative z-30">
-                    <div className="text-white text-2xl font-semibold">Play Now!</div>
+                    <div className="text-white text-2xl font-semibold">
+                      Play Now!
+                    </div>
                     <p className="text-white/75">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea, sapiente quam. Rerum voluptatibus placeat blanditiis sapiente dignissimos veritatis porro earum.
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Ea, sapiente quam. Rerum voluptatibus placeat blanditiis
+                      sapiente dignissimos veritatis porro earum.
                     </p>
                     <Link
                       href="/play"
@@ -59,11 +71,18 @@ export default function Home() {
           </div>
 
           {/* Right Side - Login Form */}
-          {!isAuthenticated && (
-            <div className="lg:col-span-4">
-              <AuthForm asWidget={true} />
-            </div>
-          )}
+          <div className="flex flex-col justify-center items-center lg:col-span-4">
+            {!isAuthenticated && <AuthForm asWidget={true} />}
+            {website.discord && (
+              <iframe
+                src={`https://discord.com/widget?id=${website.discord.guild_id}&theme=dark`}
+                width="350"
+                height="500"
+                allowTransparency={true}
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              ></iframe>
+            )}
+          </div>
         </div>
       </section>
     </main>
