@@ -1,26 +1,53 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer components {
+  .nav-item {
+    @apply flex items-center gap-2 py-3 px-4 text-gray-600 font-medium rounded-xl transition-colors dark:text-green-300/75;
   }
-}
+  
+  .nav-item:hover {
+    @apply bg-green-50 text-green-500 dark:bg-green-700/25 dark:text-green-300;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  .nav-item i {
+    @apply text-lg;
+  }
+
+  .header-icon {
+    @apply w-14 h-14 bg-blue-100/10 rounded-lg flex items-center justify-center;
+  }
+
+  .zoom-hover {
+    @apply transition-transform duration-300;
+  }
+
+  .zoom-hover:hover {
+    @apply transform scale-110;
+  }
+
+  .nav-soft {
+    @apply shadow-sm;
+  }
+
+  .card {
+    @apply rounded-xl;
+  }
+
+  .form-input {
+    @apply w-full bg-transparent border-none text-gray-800 dark:text-green-300 placeholder-gray-400 dark:placeholder-green-300/50 focus:ring-0 text-sm;
+  }
+
+  .input-icon {
+    @apply flex items-center justify-center w-6;
+  }
+
+  .carousel {
+    @apply relative overflow-hidden rounded-2xl;
+  }
+
+  .los-slide {
+    @apply bg-cover bg-center;
+  }
+} 
