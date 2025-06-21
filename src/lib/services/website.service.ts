@@ -10,7 +10,8 @@ export interface CreateWebsiteRequest {
 }
 
 export interface GetWebsiteRequest {
-  id: string;
+  id?: string;
+  url?: string;
 }
 
 export interface VerifyLicenseKeyRequest {
@@ -36,7 +37,7 @@ export const serverWebsiteService = () => {
   };
 
   const getWebsite = async (data: GetWebsiteRequest): Promise<Website> => {
-    const response = await serverApi.post<Website>('/website/info/byid', data);
+    const response = await serverApi.post<Website>('/website/get', data);
     return response.data;
   };
 
