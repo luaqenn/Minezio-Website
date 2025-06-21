@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Bağlantı Yok</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 500px;
+        }
+        
+        .offline-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .status.online {
+            border-left-color: #4caf50;
+        }
+        
+        .status.offline {
+            border-left-color: #f44336;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .offline-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-icon pulse">
+            📶
+        </div>
+        
+        <h1>Bağlantı Yok</h1>
+        
+        <p>
+            İnternet bağlantınız kesilmiş görünüyor. 
+            Lütfen bağlantınızı kontrol edin ve tekrar deneyin.
+        </p>
+        
+        <button class="retry-btn" onclick="retry()">
+            🔄 Tekrar Dene
+        </button>
+        
+        <div class="status" id="status">
+            <strong>Durum:</strong> <span id="statusText">Bağlantı kontrol ediliyor...</span>
+        </div>
+    </div>
+
+    <script>
+        let isOnline = navigator.onLine;
+        
+        function updateStatus() {
+            const statusElement = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            const icon = document.querySelector('.offline-icon');
+            
+            if (navigator.onLine) {
+                statusElement.className = 'status online';
+                statusText.textContent = 'Çevrimiçi - Sayfa yenileniyor...';
+                icon.textContent = '✅';
+                
+                // Online olduğunda sayfayı yenile
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                statusElement.className = 'status offline';
+                statusText.textContent = 'Çevrimdışı - Bağlantı bekleniyor...';
+                icon.textContent = '📶';
+            }
+        }
+        
+        function retry() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                // Manuel yenileme denemesi
+                fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch(() => {
+                        alert('Hala bağlantı sorunu var. Lütfen internet bağlantınızı kontrol edin.');
+                    });
+            }
+        }
+        
+        // Online/offline durumunu dinle
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+        
+        // Sayfa yüklendiğinde durumu kontrol et
+        document.addEventListener('DOMContentLoaded', updateStatus);
+        
+        // Periyodik bağlantı kontrolü
+        setInterval(() => {
+            if (!navigator.onLine) {
+                fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                    .then(() => {
+                        // Bağlantı geri geldi
+                        if (!navigator.onLine) {
+                            // Navigator.onLine güncellemesi geç gelebilir
+                            window.location.reload();
+                        }
+                    })
+                    .catch(() => {
+                        // Hala offline
+                    });
+            }
+        }, 10000); // Her 10 saniyede bir kontrol
+    </script>
+</body>
+</html>
