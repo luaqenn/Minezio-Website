@@ -6,7 +6,7 @@ export function TopBar({ broadcastItems }: { broadcastItems: string[] }) {
   }
 
   return (
-    <div className="bg-ligth text-dark p-4">
+    <div className="bg-white text-dark p-4">
       <Marquee
         style={{ backgroundColor: "white" }}
         autoFill={false}
