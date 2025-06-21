@@ -8,6 +8,7 @@ import headerBg from "@/assets/images/auth-bg-register.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { WebsiteContext } from "@/lib/context/website.context";
+import { LockIcon, UserIcon, MailIcon } from "lucide-react";
 
 export default function SignUp() {
   const { signUp } = useContext(AuthContext);
@@ -47,90 +48,167 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      <div className="flex flex-col justify-center items-center w-1/3 bg-white p-8 rounded-lg shadow-lg">
-        <div className="flex items-center justify-center mb-6">
+    <div className="min-h-screen w-full bg-gray-50 flex flex-col md:flex-row">
+      {/* Left Column: Image and Welcome Text (Visible on Medium screens and up) */}
+      <div className="relative hidden md:flex w-full md:w-1/2 flex-col items-center justify-center text-white text-center p-8 bg-gradient-to-br from-indigo-500 to-blue-600">
+        <div className="absolute inset-0">
           <Image
-            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
-              website?.image || "/images/default-logo.png"
-            }`}
-            alt="Logo"
-            width={150}
-            height={50}
+            src={headerBg}
+            alt="Arka Plan"
+            layout="fill"
+            objectFit="cover"
+            className="opacity-20"
+            priority
           />
         </div>
-        <h1 className="text-2xl font-bold text-center mb-2">Kayıt Ol</h1>
-        <p className="text-center text-sm mb-6">
-          Sunucumuza katılmak için kayıt olun.
-        </p>
-        <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
-          <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-2">
-            <span className="text-blue-500">👤</span>
-            <input
-              type="text"
-              className="form-input flex-1"
-              name="username"
-              placeholder="Kullanıcı Adı"
-            />
-          </div>
-          <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-2">
-            <span className="text-blue-500">📧</span>
-            <input
-              type="email"
-              className="form-input flex-1"
-              name="email"
-              placeholder="E-Posta"
-            />
-          </div>
-          <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-2">
-            <span className="text-blue-500">🔒</span>
-            <input
-              type="password"
-              className="form-input flex-1"
-              name="password"
-              placeholder="Şifre"
-            />
-          </div>
-          <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-2">
-            <span className="text-blue-500">🔒</span>
-            <input
-              type="password"
-              className="form-input flex-1"
-              name="confirm_password"
-              placeholder="Şifre (Tekrar)"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <input type="checkbox" id="rules" className="form-checkbox" />
-            <label htmlFor="rules" className="text-sm">
-              I read the Rules and I accept.
-            </label>
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary bg-blue-500 text-white rounded-lg p-2 hover:bg-blue-600"
-          >
-            Kayıt Ol
-          </button>
-        </form>
-        <p className="text-center mt-4 text-sm">
-          Hesabınız mı var?{" "}
-          <a href="/auth/sign-in" className="text-blue-500">
-            Giriş Yap
-          </a>
-        </p>
-        <p className="text-center mt-4 text-xs text-gray-500">
-          Powered by Crafter
-        </p>
+        <div className="relative z-10 flex flex-col items-center">
+           <div className="w-48 h-16 relative mb-8">
+             <Image
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
+                  website?.image || "/images/default-logo.png"
+                }`}
+                alt="Logo"
+                layout="fill"
+                objectFit="contain"
+             />
+           </div>
+          <h1 className="text-4xl font-bold tracking-tight">Aramıza Katılın!</h1>
+          <p className="mt-4 text-lg max-w-sm">
+            {website.name} ailesine katılın ve tüm özelliklerin keyfini çıkarın!
+          </p>
+        </div>
       </div>
-      <div className="w-full relative">
-        <Image
-          src={headerBg}
-          alt="Background"
-          layout="fill"
-          objectFit="cover"
-          className="rounded-lg"
-        />
+
+      {/* Right Column: Sign-Up Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12" style={{ backgroundImage: "url('/images/background.png')"}}>
+        <div className="w-full max-w-md">
+          <div className="md:hidden flex justify-center mb-8">
+             <div className="w-40 h-12 relative">
+                <Image
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
+                      website?.image || "/images/default-logo.png"
+                    }`}
+                    alt="Logo"
+                    layout="fill"
+                    objectFit="contain"
+                />
+            </div>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center">
+            Kayıt Ol
+          </h2>
+          <p className="text-gray-600 text-center mt-2 mb-8">
+            Sunucumuza katılmak için kayıt olun.
+          </p>
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username" className="sr-only">
+                Kullanıcı Adı
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <UserIcon />
+                </div>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Kullanıcı Adı"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="sr-only">
+                E-Posta
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MailIcon />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="E-Posta"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Şifre
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <LockIcon />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Şifre"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="confirm_password" className="sr-only">
+                Şifre (Tekrar)
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <LockIcon />
+                </div>
+                <input
+                  id="confirm_password"
+                  name="confirm_password"
+                  type="password"
+                  required
+                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Şifre (Tekrar)"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center text-sm">
+              <input
+                id="rules"
+                name="rules"
+                type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label htmlFor="rules" className="ml-2 block text-gray-900">
+                Kuralları okudum ve kabul ediyorum
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            >
+              Kayıt Ol
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-gray-600">
+            Hesabınız var mı?{' '}
+            <a href="/auth/sign-in" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Giriş Yap
+            </a>
+          </p>
+
+           <p className="text-center mt-6 text-xs text-gray-500">
+             Powered by Crafter
+           </p>
+        </div>
       </div>
     </div>
   );

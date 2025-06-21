@@ -1,42 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, ShoppingCart, MessageSquare, HelpCircle, LifeBuoy, Home, User, LogOut, LogIn, Wallet } from "lucide-react";
+import {
+  Menu,
+  ShoppingCart,
+  MessageSquare,
+  HelpCircle,
+  LifeBuoy,
+  Home,
+  User,
+  LogOut,
+  LogIn,
+  Wallet,
+  CoinsIcon,
+  BoxIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AuthContext } from "@/lib/context/auth.context";
 import { useContext } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { WebsiteContext } from "@/lib/context/website.context";
 
 export function Navbar() {
   const { isAuthenticated, user, signOut } = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
+  const { website } = useContext(WebsiteContext);
 
   const getLinkClassName = (path: string) => {
     const isActive = pathname === path;
-    return `group relative inline-flex items-center justify-center rounded-2xl px-6 py-3 text-sm font-semibold transition-all duration-300 ease-out ${
+    return `relative inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-200 ${
       isActive
-        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 scale-105"
-        : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-white/80 hover:shadow-md hover:scale-105 backdrop-blur-sm"
+        ? "bg-blue-500 text-white shadow-md"
+        : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
     }`;
   };
 
   const getMobileLinkClassName = (path: string) => {
     const isActive = pathname === path;
-    return `group flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-2xl transition-all duration-300 ${
-      isActive 
-        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg" 
+    return `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+      isActive
+        ? "bg-blue-500 text-white"
         : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
     }`;
   };
@@ -46,84 +61,217 @@ export function Navbar() {
     { href: "/store", icon: ShoppingCart, label: "Mağaza" },
     { href: "/forum", icon: MessageSquare, label: "Forum" },
     { href: "/help", icon: HelpCircle, label: "Yardım" },
-    { href: "/support/tickets", icon: LifeBuoy, label: "Destek" },
+    { href: "/support", icon: LifeBuoy, label: "Destek" },
+  ];
+
+  const userMenuItems = [
+    { href: "/profile", icon: User, label: "Profilim" },
+    { href: "/wallet", icon: Wallet, label: "Cüzdanım" },
+    { href: "/chest", icon: BoxIcon, label: "Sandığım" },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          
-          {/* Logo/Brand Section */}
-          <div className="flex items-center space-x-2">
-            
+          {/* Mobile Menu Button - Sol tarafta */}
+          <div className="flex items-center lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Menü</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                className="w-[280px] bg-white dark:bg-gray-900 pl-2 pr-5 pt-5"
+              >
+                <div className="flex flex-col h-full pt-6">
+                  {/* Mobile Navigation */}
+                  <nav className="flex flex-col gap-2 flex-1">
+                    {navigationItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={getMobileLinkClassName(item.href)}
+                        >
+                          <Icon className="h-5 w-5" />
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </nav>
+
+                  {/* Mobile User Section */}
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                    {isAuthenticated ? (
+                      <div className="space-y-4">
+                        {/* User Info */}
+                        <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                          <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+                            <img
+                              src={`https://minotar.net/avatar/${
+                                user?.username || "steve"
+                              }/100.png`}
+                              alt={user?.username || "Player"}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src =
+                                  "https://minotar.net/avatar/steve/100.png";
+                              }}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                              {user?.username}
+                            </p>
+                            <p className="flex items-center gap-1 text-sm text-green-500 dark:text-green-400">
+                              <CoinsIcon className="h-4 w-4" />
+                              {user?.balance} {website.currency}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* User Menu Items */}
+                        <div className="space-y-1">
+                          {userMenuItems.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                className={getMobileLinkClassName(item.href)}
+                              >
+                                <Icon className="h-5 w-5" />
+                                {item.label}
+                              </Link>
+                            );
+                          })}
+                        </div>
+
+                        {/* Logout Button */}
+                        <Button
+                          onClick={signOut}
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:text-red-400"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          Çıkış Yap
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 px-5">
+                        <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg mx-auto mb-3 overflow-hidden">
+                          <img
+                            src="https://minotar.net/avatar/steve/100.png"
+                            alt="Steve"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+                          Misafir
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                          Tıkla Giriş Yap!
+                        </p>
+                        <Button
+                          onClick={() => router.push("/auth/sign-in")}
+                          className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+                          size="sm"
+                        >
+                          Giriş Yap
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
           {/* Center Navigation - Desktop */}
-          <div className="hidden lg:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center justify-center flex-1 space-x-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
-                <Link key={item.href} href={item.href} className={getLinkClassName(item.href)}>
-                  <Icon className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={getLinkClassName(item.href)}
+                >
+                  <Icon className="mr-2 h-4 w-4" />
                   {item.label}
-                  {pathname === item.href && (
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 opacity-20 blur-xl" />
-                  )}
                 </Link>
               );
             })}
           </div>
 
-          {/* Right Section - User & Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            
-            {/* User Section - Desktop */}
-            <div className="hidden md:flex items-center">
+          {/* Right Section - User & Avatar */}
+          <div className="flex items-center">
+            {/* Desktop User Section */}
+            <div className="hidden lg:flex items-center">
               {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-auto p-2 rounded-2xl hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-300 hover:shadow-md">
-                      <div className="flex items-center space-x-3">
+                    <Button
+                      variant="ghost"
+                      className="relative flex-shrink-0 ml-8 pr-16 z-10"
+                    >
+                      <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
                         <div className="text-right">
-                          <div className="flex items-center space-x-2">
-                            <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                              <Wallet className="w-3 h-3 mr-1" />
-                              {user?.balance} ₺
-                            </Badge>
-                          </div>
-                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {user?.username}
                           </p>
+                          <p className="flex gap-3 text-sm text-green-500 dark:text-green-400">
+                            <CoinsIcon /> {user?.balance} {website.currency}
+                          </p>
                         </div>
-                        <Avatar className="w-10 h-10 ring-2 ring-blue-500/20 transition-all duration-300 hover:ring-blue-500/40">
-                          <AvatarImage 
-                            src={`https://minotar.net/avatar/${user?.username}/100.png`} 
-                            alt={user?.username} 
-                          />
-                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                            {user?.username?.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
                       </div>
+                      <div
+                        className="absolute w-16 h-22 bg-cover bg-top bottom-0 right-0 transform scale-x-reverse"
+                        style={{
+                          backgroundImage: `url('${`https://minotar.net/body/${
+                            user?.username || "steve"
+                          }/100.png`}')`,
+                        }}
+                      ></div>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50">
-                    <DropdownMenuLabel className="font-semibold text-gray-900 dark:text-gray-100">
-                      Hesabım
-                    </DropdownMenuLabel>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>Hesabım</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-                      <User className="mr-2 h-4 w-4" />
-                      Profil
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-                      <Wallet className="mr-2 h-4 w-4" />
-                      Cüzdan ({user?.balance} ₺)
-                    </DropdownMenuItem>
+
+                    <Link href={"/profile"}>
+                      <DropdownMenuItem>
+                        <User className="mr-2 h-4 w-4" />
+                        Profil
+                      </DropdownMenuItem>
+                    </Link>
+
+                    <Link href={"/wallet"}>
+                      <DropdownMenuItem>
+                        <Wallet className="mr-2 h-4 w-4" />
+                        Cüzdan
+                      </DropdownMenuItem>
+                    </Link>
+
+                    <Link href={"/chest"}>
+                      <DropdownMenuItem>
+                        <BoxIcon className="mr-2 h-4 w-4" />
+                        Sandığım
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      className="cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    <DropdownMenuItem
+                      className="text-red-600"
                       onClick={signOut}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
@@ -132,99 +280,57 @@ export function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button 
-                  onClick={() => router.push("/auth/sign-in")}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-2xl shadow-lg shadow-blue-500/25 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                <Link
+                  href="/auth/sign-in"
+                  className="relative flex-shrink-0 ml-8 pr-16 z-10"
                 >
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Giriş Yap
-                </Button>
+                  <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
+                    <span className="text-gray-800 font-semibold dark:text-green-300">
+                      Misafir
+                    </span>
+                    <span className="text-sm text-gray-400 font-medium dark:text-green-300/75">
+                      Tıkla Giriş Yap!
+                    </span>
+                  </div>
+                  <div
+                    className="absolute w-16 h-22 bg-cover bg-top bottom-0 right-0 transform scale-x-reverse"
+                    style={{
+                      backgroundImage:
+                        "url('https://minotar.net/body/steve/100.png')",
+                    }}
+                  ></div>
+                </Link>
               )}
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Avatar */}
             <div className="lg:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    className="rounded-2xl hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-300 hover:scale-105"
-                  >
-                    <Menu className="h-5 w-5" />
-                    <span className="sr-only">Menü</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent 
-                  side="right" 
-                  className="w-[300px] sm:w-[350px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-l border-gray-200/50 dark:border-gray-700/50"
-                >
-                  <div className="flex flex-col h-full">
-                    
-                    {/* Mobile Header */}
-                    <div className="flex items-center space-x-3 pb-6 border-b border-gray-200/50 dark:border-gray-700/50">
-                      
-                    </div>
-
-                    {/* Mobile Navigation */}
-                    <nav className="flex flex-col gap-2 py-6 flex-1">
-                      {navigationItems.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          <Link key={item.href} href={item.href} className={getMobileLinkClassName(item.href)}>
-                            <Icon className="h-5 w-5 transition-transform group-hover:scale-110" />
-                            {item.label}
-                          </Link>
-                        );
-                      })}
-                    </nav>
-
-                    {/* Mobile User Section */}
-                    <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
-                      {isAuthenticated ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
-                            <Avatar className="w-12 h-12">
-                              <AvatarImage 
-                                src={`https://minotar.net/avatar/${user?.username}/100.png`} 
-                                alt={user?.username} 
-                              />
-                              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                                {user?.username?.charAt(0).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-900 dark:text-gray-100">
-                                {user?.username}
-                              </p>
-                              <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                                <Wallet className="w-3 h-3 mr-1" />
-                                {user?.balance} ₺
-                              </Badge>
-                            </div>
-                          </div>
-                          <Button 
-                            onClick={signOut}
-                            variant="outline"
-                            className="w-full rounded-2xl border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
-                          >
-                            <LogOut className="mr-2 h-4 w-4" />
-                            Çıkış Yap
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button 
-                          onClick={() => router.push("/auth/sign-in")}
-                          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-lg"
-                        >
-                          <LogIn className="mr-2 h-4 w-4" />
-                          Giriş Yap
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
+              {isAuthenticated ? (
+                <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+                  <img
+                    src={`https://minotar.net/avatar/${
+                      user?.username || "steve"
+                    }/100.png`}
+                    alt={user?.username || "Player"}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "https://minotar.net/avatar/steve/100.png";
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+                  <img
+                    src="https://minotar.net/avatar/steve/100.png"
+                    alt="Steve"
+                    className="w-full h-full object-cover"
+                    onClick={() => {
+                      router.push("/auth/sign-in");
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
