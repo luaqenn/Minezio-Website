@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { WebsiteProvider } from "@/lib/context/website.context";
 import { AuthProvider } from "@/lib/context/auth.context";
 import { PWAProvider } from "@/lib/context/pwa-provider.context";
 import PWAInstaller from "@/components/pwa-installer";
 import "@/styles/globals.css";
+import { MainLayout } from "@/components/main-layout";
 
-// App config type tanımı
 type AppConfig = {
   appName: string;
   shortName: string;
@@ -17,26 +17,22 @@ type AppConfig = {
   favicon: string;
 };
 
-// API'den app config çek
 async function getAppConfig(): Promise<AppConfig> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
     const response = await fetch(`${baseUrl}/api/app-config`, {
       next: {
-        revalidate: 3600, // 1 saatte bir revalidate
-        tags: ["app-config"], // Cache tag
+        revalidate: 3600,
+        tags: ["app-config"],
       },
     });
 
     if (!response.ok) {
       throw new Error(`Config API hatası: ${response.status}`);
     }
-
     return await response.json();
   } catch (error) {
     console.error("App config alınamadı:", error);
-
     // Varsayılan değerler
     return {
       appName: "Web Sitesi",
@@ -51,7 +47,6 @@ async function getAppConfig(): Promise<AppConfig> {
   }
 }
 
-// Dinamik metadata oluşturma
 export async function generateMetadata(): Promise<Metadata> {
   const appConfig = await getAppConfig();
 
@@ -62,13 +57,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: appConfig.description,
     manifest: "/api/manifest",
-    themeColor: appConfig.themeColor,
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 1,
-      userScalable: false,
-    },
     icons: {
       icon: [
         {
@@ -101,10 +89,23 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export async function generateViewport(): Promise<Viewport> {
+  const appConfig = await getAppConfig();
+
+  return {
+    themeColor: appConfig.themeColor,
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  };
+}
+
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+// RootLayout component'i aynı kalıyor
 export default async function RootLayout({ children }: RootLayoutProps) {
   const appConfig = await getAppConfig();
 
@@ -117,7 +118,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <PWAProvider initialConfig={appConfig}>
           <WebsiteProvider>
             <AuthProvider>
-              {children}
+              <MainLayout>{children}</MainLayout>
               <PWAInstaller />
             </AuthProvider>
           </WebsiteProvider>
