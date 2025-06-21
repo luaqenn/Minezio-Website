@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import type { AppConfig } from '@/app/api/app-config/route';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import type { AppConfig } from "../types/app";
 
 // PWA Context türleri
 interface PWAContextType {
@@ -28,35 +34,41 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
 
   useEffect(() => {
     // Service Worker kayıt
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
         .then((registration: ServiceWorkerRegistration) => {
-          console.log('SW registered:', registration);
-          
+          console.log("SW registered:", registration);
+
           // Service Worker güncellemesi kontrol et
-          registration.addEventListener('updatefound', () => {
+          registration.addEventListener("updatefound", () => {
             const newWorker = registration.installing;
             if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.addEventListener("statechange", () => {
+                if (
+                  newWorker.state === "installed" &&
+                  navigator.serviceWorker.controller
+                ) {
                   // Yeni versiyon mevcut
-                  console.log('Yeni versiyon mevcut!');
+                  console.log("Yeni versiyon mevcut!");
                 }
               });
             }
           });
         })
         .catch((error: Error) => {
-          console.error('SW registration failed:', error);
+          console.error("SW registration failed:", error);
         });
     }
 
     // PWA yüklü mü kontrol et
     const checkIfInstalled = (): boolean => {
-      if (typeof window === 'undefined') return false;
-      
-      return window.matchMedia('(display-mode: standalone)').matches || 
-             (window.navigator as any).standalone === true;
+      if (typeof window === "undefined") return false;
+
+      return (
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone === true
+      );
     };
 
     setIsInstalled(checkIfInstalled());
@@ -65,18 +77,18 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     const handleOnline = (): void => setIsOnline(true);
     const handleOffline = (): void => setIsOnline(false);
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
-      
+    if (typeof window !== "undefined") {
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+
       // İlk yüklemede online durumunu kontrol et
       setIsOnline(navigator.onLine);
     }
 
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
       }
     };
   }, []);
@@ -85,30 +97,34 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
   const refreshConfig = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch('/api/app-config');
+      const response = await fetch("/api/app-config");
       if (response.ok) {
         const newConfig: AppConfig = await response.json();
         setConfig(newConfig);
-        
+
         // Dinamik favicon güncelleme
-        const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+        const favicon = document.querySelector(
+          'link[rel="icon"]'
+        ) as HTMLLinkElement;
         if (favicon && newConfig.favicon) {
           favicon.href = newConfig.favicon;
         }
-        
+
         // Dinamik theme color güncelleme
-        const themeColorMeta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement;
+        const themeColorMeta = document.querySelector(
+          'meta[name="theme-color"]'
+        ) as HTMLMetaElement;
         if (themeColorMeta && newConfig.themeColor) {
           themeColorMeta.content = newConfig.themeColor;
         }
-        
+
         // Title güncelleme
         if (newConfig.appName) {
           document.title = newConfig.appName;
         }
       }
     } catch (error) {
-      console.error('Config güncellenirken hata:', error);
+      console.error("Config güncellenirken hata:", error);
     } finally {
       setLoading(false);
     }
@@ -122,18 +138,14 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     refreshConfig,
   };
 
-  return (
-    <PWAContext.Provider value={value}>
-      {children}
-    </PWAContext.Provider>
-  );
+  return <PWAContext.Provider value={value}>{children}</PWAContext.Provider>;
 }
 
 // Custom hook
 export function usePWA(): PWAContextType {
   const context = useContext(PWAContext);
   if (!context) {
-    throw new Error('usePWA must be used within PWAProvider');
+    throw new Error("usePWA must be used within PWAProvider");
   }
   return context;
 }

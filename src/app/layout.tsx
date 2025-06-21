@@ -5,6 +5,7 @@ import { PWAProvider } from "@/lib/context/pwa-provider.context";
 import PWAInstaller from "@/components/pwa-installer";
 import "@/styles/globals.css";
 import { MainLayout } from "@/components/main-layout";
+import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
 
 type AppConfig = {
   appName: string;
@@ -34,16 +35,7 @@ async function getAppConfig(): Promise<AppConfig> {
   } catch (error) {
     console.error("App config alınamadı:", error);
     // Varsayılan değerler
-    return {
-      appName: "Web Sitesi",
-      shortName: "Site",
-      description: "Dinamik web sitesi uygulaması",
-      themeColor: "#000000",
-      backgroundColor: "#ffffff",
-      icon192: "/icon-192x192.png",
-      icon512: "/icon-512x512.png",
-      favicon: "/favicon.ico",
-    };
+    return DEFAULT_APPCONFIG;
   }
 }
 

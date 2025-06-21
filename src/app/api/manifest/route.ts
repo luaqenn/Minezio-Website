@@ -1,34 +1,7 @@
-import { serverWebsiteService } from "@/lib/services/website.service";
 import { NextRequest, NextResponse } from "next/server";
-
-interface ManifestIcon {
-  src: string;
-  sizes: string;
-  type: string;
-  purpose: string;
-}
-
-interface PWAManifest {
-  name: string;
-  short_name: string;
-  description: string;
-  start_url: string;
-  display: string;
-  background_color: string;
-  theme_color: string;
-  orientation: string;
-  icons: ManifestIcon[];
-}
-
-interface AppConfig {
-  appName?: string;
-  shortName?: string;
-  description?: string;
-  backgroundColor?: string;
-  themeColor?: string;
-  icon192?: string;
-  icon512?: string;
-}
+import { PWAManifest, ManifestIcon } from "@/lib/types/app";
+import { DEFAULT_MANIFEST } from "@/lib/constants/pwa";
+import { serverWebsiteService } from "@/lib/services/website.service";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
@@ -38,11 +11,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       id: process.env.NEXT_PUBLIC_WEBSITE_ID,
     });
 
-    // Dinamik manifest oluştur
     const manifest: PWAManifest = {
-      name: website.name || "Varsayılan Uygulama",
-      short_name: website.name || "App",
-      description: website.description || "Varsayılan açıklama",
+      name: website.name,
+      short_name: website.name.split(" ")[0],
+      description: website.description,
       start_url: "/",
       display: "standalone",
       background_color: "#ffffff",
@@ -50,13 +22,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       orientation: "portrait-primary",
       icons: [
         {
-          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}` || "/icon-192x192.png",
+          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
           sizes: "192x192",
           type: "image/png",
           purpose: "maskable any",
         },
         {
-          src:  `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}` || "/icon-512x512.png",
+          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
           sizes: "512x512",
           type: "image/png",
           purpose: "maskable any",
@@ -74,30 +46,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     console.error("Manifest oluşturulurken hata:", error);
 
     // Hata durumunda varsayılan manifest döndür
-    const defaultManifest: PWAManifest = {
-      name: "Varsayılan Uygulama",
-      short_name: "App",
-      description: "Varsayılan açıklama",
-      start_url: "/",
-      display: "standalone",
-      background_color: "#ffffff",
-      theme_color: "#000000",
-      orientation: "portrait-primary",
-      icons: [
-        {
-          src: "/icon-192x192.png",
-          sizes: "192x192",
-          type: "image/png",
-          purpose: "maskable any",
-        },
-        {
-          src: "/icon-512x512.png",
-          sizes: "512x512",
-          type: "image/png",
-          purpose: "maskable any",
-        },
-      ],
-    };
+    const defaultManifest: PWAManifest = DEFAULT_MANIFEST;
 
     return NextResponse.json(defaultManifest, {
       headers: {

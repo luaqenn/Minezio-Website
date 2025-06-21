@@ -9,9 +9,11 @@ export async function GET() {
     const license = await verifyLicenseKey({ key: LICENSE_KEY || '' });
 
     if (license.success) {
+      const website = await getWebsite({ id: license.website.id || '' });
+
       return NextResponse.json({
         success: true,
-        website: license.website,
+        website: website,
         isExpired: false,
       });
     } else {

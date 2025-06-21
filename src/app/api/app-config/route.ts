@@ -1,32 +1,7 @@
-// app/api/app-config/route.ts
-import { serverWebsiteService } from "@/lib/services/website.service";
 import { NextRequest, NextResponse } from "next/server";
-
-// API'den gelen raw data türü
-interface ExternalAPIResponse {
-  application_name: string;
-  short_name: string;
-  app_description: string;
-  theme_color: string;
-  background_color: string;
-  icons?: {
-    small?: string;
-    large?: string;
-  };
-  favicon_url?: string;
-}
-
-// Frontend için optimize edilmiş config türü
-export interface AppConfig {
-  appName: string;
-  shortName: string;
-  description: string;
-  themeColor: string;
-  backgroundColor: string;
-  icon192: string;
-  icon512: string;
-  favicon: string;
-}
+import type { AppConfig } from "@/lib/types/app";
+import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
+import { serverWebsiteService } from "@/lib/services/website.service";
 
 export async function GET(
   request: NextRequest
@@ -38,7 +13,6 @@ export async function GET(
       id: process.env.NEXT_PUBLIC_WEBSITE_ID,
     });
 
-    // Frontend için uygun formata dönüştür
     const appConfig: AppConfig = {
       appName: website.name,
       shortName: website.name,
@@ -47,7 +21,7 @@ export async function GET(
       backgroundColor: "white",
       icon192: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
       icon512: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
-      favicon: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
+      favicon: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.favicon}`,
     };
 
     return NextResponse.json(appConfig, {
@@ -59,16 +33,7 @@ export async function GET(
     console.error("App config API hatası:", error);
 
     // Hata durumunda varsayılan değerler döndür
-    const defaultConfig: AppConfig = {
-      appName: "Varsayılan Uygulama",
-      shortName: "App",
-      description: "Varsayılan açıklama",
-      themeColor: "black",
-      backgroundColor: "white",
-      icon192: "/icon-192x192.png",
-      icon512: "/icon-512x512.png",
-      favicon: "/favicon.ico",
-    };
+    const defaultConfig: AppConfig = DEFAULT_APPCONFIG;
 
     return NextResponse.json(defaultConfig, {
       headers: {
