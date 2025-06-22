@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.payment-iframe iframe {
+  height: 100%;
+}
+
 @layer components {
   .nav-item {
     @apply flex items-center gap-2 py-3 px-4 text-gray-600 font-medium rounded-xl transition-colors dark:text-green-300/75;
