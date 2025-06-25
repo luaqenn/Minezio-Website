@@ -17,8 +17,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -134,7 +132,7 @@ export function Navbar() {
                             </p>
                             <p className="flex items-center gap-1 text-sm text-green-500 dark:text-green-400">
                               <CoinsIcon className="h-4 w-4" />
-                              {user?.balance} {website.currency}
+                              {user?.balance} {website?.currency}
                             </p>
                           </div>
                         </div>
@@ -231,7 +229,7 @@ export function Navbar() {
                             {user?.username}
                           </p>
                           <p className="flex gap-3 text-sm text-green-500 dark:text-green-400">
-                            <CoinsIcon /> {user?.balance} {website.currency}
+                            <CoinsIcon /> {user?.balance} {website?.currency}
                           </p>
                         </div>
                       </div>

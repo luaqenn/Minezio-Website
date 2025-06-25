@@ -6,9 +6,11 @@ export const DEFAULT_APPCONFIG: AppConfig = {
   description: "Crafter is extended Minecraft CMS Service",
   themeColor: "#000000",
   backgroundColor: "#ffffff",
-  icon192: "https://crafter.net.tr/icon-192x192.png",
-  icon512: "https://crafter.net.tr/icon-512x512.png",
-  favicon: "https://crafter.net.tr/favicon.ico",
+  icon192: "https://crafter.net.tr/assets/favicon.ico",
+  icon512: "https://crafter.net.tr/assets/favicon.ico",
+  favicon: "https://crafter.net.tr/assets/favicon.ico",
+  gaId: null,
+  keywords: ["crafter", "website"]
 };
 
 export const DEFAULT_MANIFEST = {
@@ -22,13 +24,13 @@ export const DEFAULT_MANIFEST = {
   orientation: "portrait-primary",
   icons: [
     {
-      src: "https://crafter.net.tr/icon-192x192.png",
+      src: "https://crafter.net.tr/assets/favicon.ico",
       sizes: "192x192",
       type: "image/png",
       purpose: "maskable any",
     },
     {
-      src: "https://crafter.net.tr/icon-512x512.png",
+      src: "https://crafter.net.tr/assets/favicon.ico",
       sizes: "512x512",
       type: "image/png",
       purpose: "maskable any",

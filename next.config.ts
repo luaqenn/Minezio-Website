@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         hostname: "api.crafter.net.tr",
         pathname: "/uploads/**",
       },
+      {
+        hostname: "minotar.net",
+        pathname: "/**",
+      },
     ],
   },
 };

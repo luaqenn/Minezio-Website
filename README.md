@@ -63,6 +63,7 @@ cp .env.example .env
 NEXT_PUBLIC_WEBSITE_ID=
 NEXT_PUBLIC_LICENCE_KEY=
 NEXT_PUBLIC_BACKEND_URL=https://api.crafter.net.tr
+NEXT_PUBLIC_BASE_URL=https://api.crafter.net.tr
 
 # Geliştirme Modu (isteğe bağlı)
 NODE_ENV=development

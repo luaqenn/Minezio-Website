@@ -30,7 +30,7 @@ export const WebsiteProvider = ({
   useEffect(() => {
     const fetchWebsite = async () => {
       try {
-        const response = await fetch('/api/website');
+        const response = await fetch("/api/website");
         const data = await response.json();
 
         if (data.success) {
@@ -40,7 +40,7 @@ export const WebsiteProvider = ({
           setIsExpired(true);
         }
       } catch (error) {
-        console.error('Website fetch error:', error);
+        console.error("Website fetch error:", error);
         setIsExpired(true);
       } finally {
         setIsLoading(false);

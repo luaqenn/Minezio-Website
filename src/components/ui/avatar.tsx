@@ -1,53 +1,30 @@
-"use client"
+import Image from 'next/image';
 
-import * as React from "react"
-import * as AvatarPrimitive from "@radix-ui/react-avatar"
-
-import { cn } from "@/lib/utils"
-
-function Avatar({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
-  return (
-    <AvatarPrimitive.Root
-      data-slot="avatar"
-      className={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
-        className
-      )}
-      {...props}
-    />
-  )
+interface AvatarProps {
+  username: string;
+  size?: number;
+  className?: string;
 }
 
-function AvatarImage({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return (
-    <AvatarPrimitive.Image
-      data-slot="avatar-image"
-      className={cn("aspect-square size-full", className)}
-      {...props}
-    />
-  )
-}
+export function Avatar({ username, size = 40, className = '' }: AvatarProps) {
+  const avatarUrl = `https://minotar.net/avatar/${username}/${size}`;
 
-function AvatarFallback({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
   return (
-    <AvatarPrimitive.Fallback
-      data-slot="avatar-fallback"
-      className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full",
-        className
-      )}
-      {...props}
+    <Image
+      src={avatarUrl}
+      alt={`${username} adlı kullanıcının avatarı`}
+      width={size}
+      height={size}
+      className={`rounded-md ${className}`}
+      // Minotar gibi servisler her zaman stabil olmayabilir,
+      // bu yüzden hata durumunda gösterilecek bir yedek resim eklemek iyi bir pratiktir.
+      onError={(e) => {
+        // Hedef elementin tipini kontrol ediyoruz
+        const target = e.target as HTMLImageElement;
+        // Yedek resim (steve)
+        target.onerror = null; // Sonsuz döngüyü engelle
+        target.src = `https://minotar.net/avatar/steve/${size}`;
+      }}
     />
-  )
+  );
 }
-
-export { Avatar, AvatarImage, AvatarFallback }
