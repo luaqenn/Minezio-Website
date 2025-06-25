@@ -10,6 +10,15 @@ import { IPublicWebsiteStatistics } from "@/lib/types/statistics";
 import { Server } from "@/lib/types/server";
 import { formatTimeAgo } from "@/lib/utils";
 
+// shadcn/ui Carousel ve Autoplay Eklentisi
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import React from "react";
+
 // UI ve Widget Component'leri
 import { AuthForm } from "@/components/widgets/auth-form";
 import DiscordWidget from "@/components/widgets/discord-widget";
@@ -47,6 +56,62 @@ const WidgetSkeleton = ({ lines = 3 }: { lines?: number }) => (
   </Widget>
 );
 
+// Progress Bar Component
+const CarouselProgressBar = ({
+  totalSlides,
+  currentSlide,
+  autoplayDelay = 5000,
+  isPaused = false,
+}: {
+  totalSlides: number;
+  currentSlide: number;
+  autoplayDelay?: number;
+  isPaused?: boolean;
+}) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (isPaused) {
+      return;
+    }
+
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          return 0;
+        }
+        return prev + 100 / (autoplayDelay / 50);
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [currentSlide, autoplayDelay, isPaused]);
+
+  return (
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-xs px-4">
+      <div className="flex space-x-2 mb-2">
+        {totalSlides !== 1 &&
+          Array.from({ length: totalSlides }).map((_, index) => (
+            <div
+              key={index}
+              className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                index === currentSlide ? "bg-white" : "bg-white/30"
+              }`}
+            >
+              {index === currentSlide && (
+                <div
+                  className="h-full bg-green-400 rounded-full transition-all duration-100 ease-linear"
+                  style={{ width: `${progress}%` }}
+                />
+              )}
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
   const { isAuthenticated } = useContext(AuthContext);
   const { website } = useContext(WebsiteContext);
@@ -57,6 +122,12 @@ export default function Home() {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  );
 
   useEffect(() => {
     getServers().then((servers) =>
@@ -67,54 +138,79 @@ export default function Home() {
       .then((stats) => setStatistics(stats))
       .catch((err) => console.error("Failed to fetch statistics:", err))
       .finally(() => setIsLoading(false));
-  }, [getServers, getStatistics]);
+  }, []);
 
   return (
     <main className="min-h-screen">
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20 pb-8">
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-12 items-start">
-          {/* Sol Taraf - Ana İçerik */}
           <div
             className={`${
               !isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"
             } space-y-4 sm:space-y-6 order-2 lg:order-1`}
           >
-            {/* Hero Slider */}
-            <div className="rounded-xl sm:rounded-2xl">
-              <div className="carousel zippy-carousel relative overflow-hidden rounded-xl sm:rounded-2xl">
-                <div className="inner">
-                  <div
-                    className="los-slide active relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]"
-                    style={{
-                      backgroundImage: "url('/images/header-bg.png')",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    <div className="text-center md:text-left h-full flex flex-col justify-center p-4 sm:p-6 relative z-30">
-                      <div className="text-white text-xl sm:text-2xl lg:text-3xl font-semibold mb-2 sm:mb-3">
-                        Play Now!
-                      </div>
-                      <p className="text-white/75 text-sm sm:text-base mb-4 sm:mb-6 max-w-md mx-auto md:mx-0">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Ea, sapiente quam. Rerum voluptatibus placeat blanditiis
-                        sapiente dignissimos veritatis porro earum.
-                      </p>
-                      <Link
-                        href="/play"
-                        className="w-fit mx-auto md:mx-0 rounded-md rounded-tr-xl rounded-bl-xl py-2 sm:py-3 px-4 sm:px-6 font-medium text-white opacity-75 transition duration-300 hover:opacity-100 bg-green-500 text-sm sm:text-base"
+            {website?.sliders && website.sliders.length > 0 && (
+              <Carousel
+                plugins={[plugin.current]}
+                className="w-full relative"
+                onMouseEnter={() => {
+                  plugin.current.stop();
+                  setIsPaused(true);
+                }}
+                onMouseLeave={() => {
+                  plugin.current.reset();
+                  setIsPaused(false);
+                }}
+                opts={{
+                  loop: true,
+                }}
+                onSelect={(emblaApi: any) => {
+                  setCurrentSlide(emblaApi.selectedScrollSnap());
+                }}
+              >
+                <CarouselContent>
+                  {website.sliders.map((slider) => (
+                    <CarouselItem key={slider.id}>
+                      <div
+                        className="relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-xl sm:rounded-2xl overflow-hidden"
+                        style={{
+                          backgroundImage: `url(${process.env.NEXT_PUBLIC_BACKEND_URL}${slider.image})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
                       >
-                        Bağlantıya git
-                      </Link>
-                    </div>
-                    <div className="bg-black/25 absolute z-20 top-0 left-0 h-full w-full">
-                      <div className="absolute top-0 left-0 h-full w-full bg-green-900/25" />
-                      <div className="absolute z-10 top-0 left-0 h-full w-full bg-gradient-to-r from-black/50 via-transparent to-black/50" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                        <div className="text-center md:text-left h-full flex flex-col justify-center p-4 sm:p-6 lg:p-12 relative z-30">
+                          <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-semibold mb-2 sm:mb-3">
+                            {slider.text}
+                          </h2>
+                          <p className="text-white/75 text-sm sm:text-base mb-4 sm:mb-6 max-w-md mx-auto md:mx-0">
+                            {slider.description}
+                          </p>
+                          <Link
+                            href={slider.route}
+                            className="w-fit mx-auto md:mx-0 rounded-md rounded-tr-xl rounded-bl-xl py-2 sm:py-3 px-4 sm:px-6 font-medium text-white opacity-75 transition duration-300 hover:opacity-100 bg-green-500 text-sm sm:text-base"
+                          >
+                            {slider.buttonText}
+                          </Link>
+                        </div>
+                        <div className="bg-black/25 absolute z-20 top-0 left-0 h-full w-full">
+                          <div className="absolute top-0 left-0 h-full w-full bg-green-900/25" />
+                          <div className="absolute z-10 top-0 left-0 h-full w-full bg-gradient-to-r from-black/50 via-transparent to-black/50" />
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                {/* Progress Bar */}
+                <CarouselProgressBar
+                  totalSlides={website.sliders.length}
+                  currentSlide={currentSlide}
+                  autoplayDelay={5000}
+                  isPaused={isPaused}
+                />
+              </Carousel>
+            )}
           </div>
 
           <div
@@ -135,6 +231,7 @@ export default function Home() {
               </>
             ) : statistics ? (
               <>
+                {/* En Cömertler Widget */}
                 <Widget>
                   <Widget.Header>
                     <FaCrown className="inline mr-2 text-yellow-400" />
@@ -172,7 +269,7 @@ export default function Home() {
                   </Widget.Body>
                 </Widget>
 
-                {/* Son Kredi Yüklemeleri */}
+                {/* Son Kredi Yüklemeleri Widget */}
                 <Widget>
                   <Widget.Header>
                     <FaGift className="inline mr-2 text-green-500" />
@@ -296,7 +393,7 @@ export default function Home() {
 
             {website?.discord && (
               <div className="">
-                <DiscordWidget guild_id={website.discord.guild_id} />
+                <DiscordWidget guild_id={website?.discord.guild_id ?? ""} />
               </div>
             )}
           </div>
