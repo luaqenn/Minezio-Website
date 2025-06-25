@@ -22,6 +22,8 @@ export async function GET(
       icon192: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
       icon512: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
       favicon: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.favicon}`,
+      gaId: website.google_analytics?.gaId || null,
+      keywords: website.keywords || ["crafter", "minecraft", "cms"]
     };
 
     return NextResponse.json(appConfig, {

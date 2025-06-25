@@ -5,22 +5,23 @@ export interface Website {
   url: string;
   favicon: string;
   image: string;
+  keywords: string[];
   sliders: {
+    id: string;
     image: string;
     text: string;
+    description: string;
     buttonText: string;
     route: string;
   }[];
   currency: string;
   discord: {
-    id: string;
-    name: string;
-    avatar: string;
+    webhook_url: string;
+    guild_id: string;
   };
   users: {
     id: string;
     name: string;
-    avatar: string;
   }[];
   roles: {
     id: string;
@@ -38,6 +39,9 @@ export interface Website {
     id: string;
     name: string;
   }[];
+  google_analytics: {
+    gaId: string;
+  };
   broadcast_items: string[];
   createdAt: string;
   updatedAt: string;

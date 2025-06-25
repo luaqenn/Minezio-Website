@@ -7,6 +7,8 @@ export interface AppConfig {
   icon192: string;
   icon512: string;
   favicon: string;
+  gaId: string | null;
+  keywords: string[];
 }
 
 export interface ManifestIcon {

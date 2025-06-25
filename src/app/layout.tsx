@@ -6,17 +6,8 @@ import PWAInstaller from "@/components/pwa-installer";
 import "@/styles/globals.css";
 import { MainLayout } from "@/components/main-layout";
 import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
-
-type AppConfig = {
-  appName: string;
-  shortName: string;
-  description: string;
-  themeColor: string;
-  backgroundColor: string;
-  icon192: string;
-  icon512: string;
-  favicon: string;
-};
+import { GoogleAnalytics } from '@next/third-parties/google'
+import type { AppConfig } from "@/lib/types/app";
 
 async function getAppConfig(): Promise<AppConfig> {
   try {
@@ -49,6 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: appConfig.description,
     manifest: "/api/manifest",
+    keywords: appConfig.keywords,
     icons: {
       icon: [
         {
@@ -116,6 +108,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           </WebsiteProvider>
         </PWAProvider>
       </body>
+      { appConfig.gaId && (
+        <GoogleAnalytics gaId={appConfig.gaId} />
+      ) }
     </html>
   );
 }

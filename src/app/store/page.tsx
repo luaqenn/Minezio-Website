@@ -1,13 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { TopBar } from "@/components/top-bar";
-import Header from "@/components/header";
-import { WebsiteContext } from "@/lib/context/website.context";
-import { useContext } from "react";
 import { useServerService } from "@/lib/services/server.service";
 import { Server } from "@/lib/types/server";
-import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -39,7 +34,6 @@ interface ServerWithStatus extends Server {
 }
 
 export default function Store() {
-  const { website } = useContext(WebsiteContext);
   const [servers, setServers] = React.useState<ServerWithStatus[] | null>(null);
   const [loading, setLoading] = React.useState(true);
 
