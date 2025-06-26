@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline - Bağlantı Yok</title>
+    <title>Çevrimdışı - Crafter</title>
+    <link rel="icon" href="https://crafter.net.tr/favicon.ico" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -11,196 +12,420 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --primary: #000000;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #171717;
+            --muted: #f5f5f5;
+            --muted-foreground: #737373;
+            --border: #e5e5e5;
+            --input: #ffffff;
+            --ring: #000000;
+            --radius: 0.5rem;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0a0a0a;
+                --foreground: #ededed;
+                --muted: #262626;
+                --muted-foreground: #a3a3a3;
+                --border: #262626;
+                --input: #262626;
+            }
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-sans);
+            background: var(--background);
+            color: var(--foreground);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            padding: 1rem;
+            line-height: 1.6;
         }
         
         .container {
-            text-align: center;
-            padding: 2rem;
             max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .offline-card {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         .offline-icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            background: rgba(255, 255, 255, 0.1);
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--muted);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
         }
         
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
+        .offline-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
         }
         
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            line-height: 1.6;
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
-        .retry-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--muted);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
         }
         
-        .retry-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
+        .status-indicator.offline {
+            color: #dc2626;
         }
         
-        .status {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            border-left: 4px solid #ffd700;
+        .status-indicator.online {
+            color: #16a34a;
         }
         
-        .status.online {
-            border-left-color: #4caf50;
-        }
-        
-        .status.offline {
-            border-left-color: #f44336;
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            p {
-                font-size: 1rem;
-            }
-            
-            .offline-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 2rem;
-            }
-        }
-        
-        .pulse {
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             animation: pulse 2s infinite;
         }
         
+        .status-dot.offline {
+            background: #dc2626;
+        }
+        
+        .status-dot.online {
+            background: #16a34a;
+        }
+        
         @keyframes pulse {
-            0% { opacity: 1; }
+            0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        }
+        
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--foreground);
+        }
+        
+        p {
+            font-size: 1rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .retry-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            min-width: 140px;
+        }
+        
+        .retry-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .retry-button:active {
+            transform: translateY(0);
+        }
+        
+        .retry-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .retry-button svg {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .suggestions {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .suggestions h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--foreground);
+        }
+        
+        .suggestions ul {
+            list-style: none;
+            text-align: left;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .suggestions li {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .suggestions li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        .logo {
+            margin-bottom: 2rem;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+        
+        @media (max-width: 480px) {
+            .offline-card {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .offline-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="offline-icon pulse">
-            📶
-        </div>
-        
-        <h1>Bağlantı Yok</h1>
-        
-        <p>
-            İnternet bağlantınız kesilmiş görünüyor. 
-            Lütfen bağlantınızı kontrol edin ve tekrar deneyin.
-        </p>
-        
-        <button class="retry-btn" onclick="retry()">
-            🔄 Tekrar Dene
-        </button>
-        
-        <div class="status" id="status">
-            <strong>Durum:</strong> <span id="statusText">Bağlantı kontrol ediliyor...</span>
+    <div class="container fade-in">
+        <div class="offline-card">
+            <div class="logo">
+                <img src="https://crafter.net.tr/logo.png" alt="Crafter" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="offline-icon">
+                📶
+            </div>
+            
+            <div class="status-indicator offline" id="statusIndicator">
+                <div class="status-dot offline" id="statusDot"></div>
+                <span id="statusText">Çevrimdışı</span>
+            </div>
+            
+            <h1>Bağlantı Yok</h1>
+            
+            <p>
+                İnternet bağlantınız kesilmiş görünüyor. 
+                Lütfen bağlantınızı kontrol edin ve tekrar deneyin.
+            </p>
+            
+            <button class="retry-button" id="retryButton" onclick="retry()">
+                <svg class="spinner" id="spinner" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                </svg>
+                <span id="buttonText">🔄 Tekrar Dene</span>
+            </button>
+            
+            <div class="suggestions">
+                <h3>Bağlantı Sorunları İçin:</h3>
+                <ul>
+                    <li>Wi-Fi bağlantınızı kontrol edin</li>
+                    <li>Mobil veri kullanıyorsanız sinyal gücünü kontrol edin</li>
+                    <li>Tarayıcınızı yeniden başlatın</li>
+                    <li>Farklı bir ağ deneyin</li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <script>
         let isOnline = navigator.onLine;
+        let retryCount = 0;
+        const maxRetries = 3;
         
         function updateStatus() {
-            const statusElement = document.getElementById('status');
+            const statusIndicator = document.getElementById('statusIndicator');
             const statusText = document.getElementById('statusText');
+            const statusDot = document.getElementById('statusDot');
             const icon = document.querySelector('.offline-icon');
             
             if (navigator.onLine) {
-                statusElement.className = 'status online';
-                statusText.textContent = 'Çevrimiçi - Sayfa yenileniyor...';
+                statusIndicator.className = 'status-indicator online';
+                statusDot.className = 'status-dot online';
+                statusText.textContent = 'Çevrimiçi';
                 icon.textContent = '✅';
                 
                 // Online olduğunda sayfayı yenile
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000);
+                }, 1500);
             } else {
-                statusElement.className = 'status offline';
-                statusText.textContent = 'Çevrimdışı - Bağlantı bekleniyor...';
+                statusIndicator.className = 'status-indicator offline';
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Çevrimdışı';
                 icon.textContent = '📶';
             }
         }
         
-        function retry() {
-            if (navigator.onLine) {
-                window.location.reload();
+        function setButtonLoading(loading) {
+            const button = document.getElementById('retryButton');
+            const spinner = document.getElementById('spinner');
+            const buttonText = document.getElementById('buttonText');
+            
+            if (loading) {
+                button.disabled = true;
+                spinner.style.display = 'block';
+                buttonText.textContent = 'Kontrol ediliyor...';
             } else {
-                // Manuel yenileme denemesi
-                fetch('/', { method: 'HEAD', cache: 'no-cache' })
-                    .then(() => {
-                        window.location.reload();
-                    })
-                    .catch(() => {
-                        alert('Hala bağlantı sorunu var. Lütfen internet bağlantınızı kontrol edin.');
-                    });
+                button.disabled = false;
+                spinner.style.display = 'none';
+                buttonText.textContent = '🔄 Tekrar Dene';
+            }
+        }
+        
+        async function retry() {
+            if (retryCount >= maxRetries) {
+                alert('Maksimum deneme sayısına ulaştınız. Lütfen internet bağlantınızı kontrol edin.');
+                return;
+            }
+            
+            retryCount++;
+            setButtonLoading(true);
+            
+            try {
+                // Önce basit bir bağlantı testi
+                const response = await fetch('/', { 
+                    method: 'HEAD', 
+                    cache: 'no-cache',
+                    signal: AbortSignal.timeout(5000) // 5 saniye timeout
+                });
+                
+                if (response.ok) {
+                    // Bağlantı başarılı, sayfayı yenile
+                    window.location.reload();
+                } else {
+                    throw new Error('Response not ok');
+                }
+            } catch (error) {
+                // Hala bağlantı sorunu var
+                setTimeout(() => {
+                    setButtonLoading(false);
+                    
+                    if (retryCount >= maxRetries) {
+                        const buttonText = document.getElementById('buttonText');
+                        buttonText.textContent = '❌ Bağlantı Yok';
+                    }
+                }, 1000);
             }
         }
         
         // Online/offline durumunu dinle
-        window.addEventListener('online', updateStatus);
-        window.addEventListener('offline', updateStatus);
+        window.addEventListener('online', () => {
+            isOnline = true;
+            updateStatus();
+        });
+        
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            updateStatus();
+        });
         
         // Sayfa yüklendiğinde durumu kontrol et
-        document.addEventListener('DOMContentLoaded', updateStatus);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatus();
+            
+            // Periyodik bağlantı kontrolü (sadece offline durumdayken)
+            setInterval(() => {
+                if (!navigator.onLine) {
+                    fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                        .then(() => {
+                            // Bağlantı geri geldi
+                            if (!navigator.onLine) {
+                                // Navigator.onLine güncellemesi geç gelebilir
+                                window.location.reload();
+                            }
+                        })
+                        .catch(() => {
+                            // Hala offline, bir şey yapma
+                        });
+                }
+            }, 10000); // 10 saniyede bir kontrol et
+        });
         
-        // Periyodik bağlantı kontrolü
-        setInterval(() => {
-            if (!navigator.onLine) {
-                fetch('/', { method: 'HEAD', cache: 'no-cache' })
-                    .then(() => {
-                        // Bağlantı geri geldi
-                        if (!navigator.onLine) {
-                            // Navigator.onLine güncellemesi geç gelebilir
-                            window.location.reload();
-                        }
-                    })
-                    .catch(() => {
-                        // Hala offline
-                    });
-            }
-        }, 10000); // Her 10 saniyede bir kontrol
+        // Service Worker güncellemelerini kontrol et
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
+        }
     </script>
 </body>
 </html>

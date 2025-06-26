@@ -26,7 +26,6 @@ export async function GET() {
       });
     }
   } catch (error: any) {
-    console.error("Website API error:", error);
 
     return NextResponse.json(
       {

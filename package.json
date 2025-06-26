@@ -6,7 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "analyze": "ANALYZE=true next build",
+    "build:analyze": "cross-env ANALYZE=true next build",
+    "performance": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json",
+    "bundle-analyzer": "next-bundle-analyzer"
   },
   "dependencies": {
     "@next/third-parties": "^15.3.4",
@@ -20,6 +24,7 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
@@ -34,10 +39,14 @@
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.3.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
+    "image-webpack-loader": "^8.1.0",
+    "lighthouse": "^11.6.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5"

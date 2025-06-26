@@ -2,8 +2,8 @@
 
 import { createContext, useEffect, useState } from "react";
 import { SignUpRequest, useAuthService } from "@/lib/services/auth.service";
-import { Spinner } from "@/components/ui/spinner";
 import { User } from "@/lib/types/user";
+import Loading from "@/components/loading";
 
 export const AuthContext = createContext<{
   user: User | null;
@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
         setIsAuthenticated(true);
       } catch (error) {
-        console.error(error);
         setIsLoading(false);
         setIsAuthenticated(false);
       }
@@ -77,9 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">
-      <Spinner />
-    </div>;
+    return <Loading show={true} message="Yükleniyor..." size="lg" />;
   }
 
   return <AuthContext.Provider value={{ user, setUser, isLoading, isAuthenticated, signIn, signUp, signOut }}>{children}</AuthContext.Provider>;

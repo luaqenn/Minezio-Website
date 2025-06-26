@@ -41,8 +41,7 @@ type ErrorResponse = ValidationError | CustomError | { message: string };
 export const useApi = ({
   baseUrl = BACKEND_URL,
   headers = {
-    'Content-Type': 'application/json',
-    'Origin': process.env.NEXT_PUBLIC_BASE_URL || ""
+    'Content-Type': 'application/json'
   },
 }: {
   baseUrl?: string;
@@ -198,7 +197,7 @@ export const useApi = ({
             };
           }
         }
-        
+
         const response: AxiosResponse<T> = await api.current(config);
         return {
           data: response.data,

@@ -21,7 +21,6 @@ export default function ServerStatusBar({ status }: Props) {
   const handleCopy = () => {
     setIsCopied(true);
     navigator.clipboard.writeText(serverAddress).catch((err) => {
-      console.error("Failed to copy server address: ", err);
     });
   };
 

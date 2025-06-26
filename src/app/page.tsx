@@ -26,6 +26,8 @@ import Widget from "@/components/widgets/widget";
 import { Avatar } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaShoppingCart, FaCrown, FaGift, FaUserPlus } from "react-icons/fa";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 // Boş liste durumunda gösterilecek component
 const EmptyList = ({ message }: { message: string }) => (
@@ -136,7 +138,14 @@ export default function Home() {
 
     getStatistics()
       .then((stats) => setStatistics(stats))
-      .catch((err) => console.error("Failed to fetch statistics:", err))
+      .catch((err) => {
+        withReactContent(Swal).fire({
+          title: "Hata!",
+          text: "İstatistikler yüklenirken bir hata oluştu.",
+          icon: "error",
+          confirmButtonText: "Tamamdır.",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -219,7 +228,7 @@ export default function Home() {
             } space-y-4 sm:space-y-6 order-1 lg:order-2`}
           >
             {!isAuthenticated && (
-              <div className="relative z-50">
+              <div className="relative z-10">
                 <AuthForm asWidget={true} />
               </div>
             )}

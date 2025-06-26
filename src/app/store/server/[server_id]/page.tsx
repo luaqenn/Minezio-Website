@@ -59,7 +59,6 @@ export default function ServerPage({
         setServerCategories(filteredCategories);
         setServer(serverData);
       } catch (error) {
-        console.error("Server yüklenirken hata:", error);
         setError("Sunucu bilgileri yüklenirken bir hata oluştu.");
       } finally {
         setLoading(false);

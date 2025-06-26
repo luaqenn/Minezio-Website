@@ -120,7 +120,6 @@ export default function ProductPage({
         setCategory(categoryData);
         setServer(serverData);
       } catch (err) {
-        console.error("Veri yüklenirken bir hata oluştu:", err);
         setError(
           "Ürün, kategori veya sunucu bilgileri yüklenemedi. Lütfen daha sonra tekrar deneyin."
         );

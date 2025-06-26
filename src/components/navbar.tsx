@@ -26,32 +26,56 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AuthContext } from "@/lib/context/auth.context";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { WebsiteContext } from "@/lib/context/website.context";
+import { Avatar } from "./ui/avatar";
 
 export function Navbar() {
   const { isAuthenticated, user, signOut } = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
   const { website } = useContext(WebsiteContext);
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const headerHeight = 280; // Daha hassas trigger noktası
+          const scrollPosition = window.scrollY;
+
+          if (scrollPosition > headerHeight) {
+            setIsSticky(true);
+          } else {
+            setIsSticky(false);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const getLinkClassName = (path: string) => {
     const isActive = pathname === path;
-    return `relative inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-200 ${
-      isActive
+    return `relative inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 ease-in-out ${isActive
         ? "bg-blue-500 text-white shadow-md"
         : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-    }`;
+      }`;
   };
 
   const getMobileLinkClassName = (path: string) => {
     const isActive = pathname === path;
-    return `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-      isActive
+    return `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out ${isActive
         ? "bg-blue-500 text-white"
         : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
-    }`;
+      }`;
   };
 
   const navigationItems = [
@@ -69,7 +93,13 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    <nav 
+      className={`z-30 w-full bg-white/90 backdrop-blur-lg dark:bg-gray-900/90 border-b border-gray-200/30 dark:border-gray-700/30 transition-all duration-700 ease-out transform ${isSticky ? 'fixed top-0 shadow-xl shadow-black/10 dark:shadow-black/30 translate-y-0' : 'relative translate-y-0'}`}
+      style={{
+        transition: 'all 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+        willChange: 'transform, opacity, background-color'
+      }}
+    >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Mobile Menu Button - Sol tarafta */}
@@ -79,7 +109,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
                 >
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Menü</span>
@@ -87,7 +117,7 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="w-[280px] bg-white dark:bg-gray-900 pl-2 pr-5 pt-5"
+                className="z-50 w-[280px] bg-white dark:bg-gray-900 pl-2 pr-5 pt-5"
               >
                 <div className="flex flex-col h-full pt-6">
                   {/* Mobile Navigation */}
@@ -114,17 +144,7 @@ export function Navbar() {
                         {/* User Info */}
                         <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                           <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-                            <img
-                              src={`https://minotar.net/avatar/${
-                                user?.username || "steve"
-                              }/100.png`}
-                              alt={user?.username || "Player"}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.src =
-                                  "https://minotar.net/avatar/steve/100.png";
-                              }}
-                            />
+                            <Avatar username={user?.username || "steve"} size={48} />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
@@ -159,7 +179,7 @@ export function Navbar() {
                           onClick={signOut}
                           variant="outline"
                           size="sm"
-                          className="w-full text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:text-red-400"
+                          className="w-full text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:text-red-400 transition-all duration-300 ease-in-out hover:scale-105"
                         >
                           <LogOut className="mr-2 h-4 w-4" />
                           Çıkış Yap
@@ -167,12 +187,8 @@ export function Navbar() {
                       </div>
                     ) : (
                       <div className="text-center py-4 px-5">
-                        <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg mx-auto mb-3 overflow-hidden">
-                          <img
-                            src="https://minotar.net/avatar/steve/100.png"
-                            alt="Steve"
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg mx-auto mb-3 overflow-hidden flex items-center justify-center">
+                          <Avatar username="steve" size={64} />
                         </div>
                         <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                           Misafir
@@ -180,13 +196,13 @@ export function Navbar() {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                           Tıkla Giriş Yap!
                         </p>
-                        <Button
-                          onClick={() => router.push("/auth/sign-in")}
-                          className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-                          size="sm"
+                        <Link
+                          href="/auth/sign-in"
+                          className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-300 mx-auto"
+                          style={{ minWidth: 120 }}
                         >
-                          Giriş Yap
-                        </Button>
+                          <span>Giriş Yap</span>
+                        </Link>
                       </div>
                     )}
                   </div>
@@ -221,7 +237,7 @@ export function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="relative flex-shrink-0 ml-8 pr-16 z-10"
+                      className="relative flex-shrink-0 ml-8 pr-16 z-10 transition-all duration-300 ease-in-out"
                     >
                       <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
                         <div className="text-right">
@@ -233,14 +249,7 @@ export function Navbar() {
                           </p>
                         </div>
                       </div>
-                      <div
-                        className="absolute w-16 h-22 bg-cover bg-top bottom-0 right-0 transform scale-x-reverse"
-                        style={{
-                          backgroundImage: `url('${`https://minotar.net/body/${
-                            user?.username || "steve"
-                          }/100.png`}')`,
-                        }}
-                      ></div>
+                      <Avatar username={user?.username || "steve"} size={40} />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
@@ -280,23 +289,19 @@ export function Navbar() {
               ) : (
                 <Link
                   href="/auth/sign-in"
-                  className="relative flex-shrink-0 ml-8 pr-16 z-10"
+                  className="relative flex-shrink-0 ml-8 pr-16 z-10 transition-all duration-300 ease-in-out"
                 >
-                  <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
-                    <span className="text-gray-800 font-semibold dark:text-green-300">
-                      Misafir
-                    </span>
-                    <span className="text-sm text-gray-400 font-medium dark:text-green-300/75">
-                      Tıkla Giriş Yap!
-                    </span>
+                  <div className="my-2 flex flex-wrap justify-center items-center text-right py-2 pr-4">
+                    <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
+                      <span className="text-gray-800 font-semibold dark:text-green-300">
+                        Misafir
+                      </span>
+                      <span className="text-sm text-gray-400 font-medium dark:text-green-300/75">
+                        Tıkla Giriş Yap!
+                      </span>
+                    </div>
+                    <Avatar username="steve" className="w-10 h-10" />
                   </div>
-                  <div
-                    className="absolute w-16 h-22 bg-cover bg-top bottom-0 right-0 transform scale-x-reverse"
-                    style={{
-                      backgroundImage:
-                        "url('https://minotar.net/body/steve/100.png')",
-                    }}
-                  ></div>
                 </Link>
               )}
             </div>
@@ -304,30 +309,9 @@ export function Navbar() {
             {/* Mobile Avatar */}
             <div className="lg:hidden">
               {isAuthenticated ? (
-                <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-                  <img
-                    src={`https://minotar.net/avatar/${
-                      user?.username || "steve"
-                    }/100.png`}
-                    alt={user?.username || "Player"}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://minotar.net/avatar/steve/100.png";
-                    }}
-                  />
-                </div>
+                <Avatar username={user?.username || "steve"} size={40} />
               ) : (
-                <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-                  <img
-                    src="https://minotar.net/avatar/steve/100.png"
-                    alt="Steve"
-                    className="w-full h-full object-cover"
-                    onClick={() => {
-                      router.push("/auth/sign-in");
-                    }}
-                  />
-                </div>
+                <Avatar username="steve" size={40} />
               )}
             </div>
           </div>
