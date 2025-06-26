@@ -55,7 +55,6 @@ export default function Store() {
         type: data.type,
       };
     } catch (error) {
-      console.error(`Sunucu durumu alınamadı (${server.name}):`, error);
       return { online: false };
     }
   };
@@ -83,7 +82,6 @@ export default function Store() {
         setServers([]);
       }
     } catch (error) {
-      console.error("Error fetching servers:", error);
       setServers([]);
     }
   };

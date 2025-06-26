@@ -3,8 +3,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Website } from "../types/website";
 import { WebsiteContextType } from "../types/context";
-import { Spinner } from "@/components/ui/spinner";
 import { Expired } from "@/components/ui/expired";
+import Loading from "@/components/loading";
 
 export const WebsiteContext = createContext<WebsiteContextType>({
   website: null,
@@ -40,7 +40,6 @@ export const WebsiteProvider = ({
           setIsExpired(true);
         }
       } catch (error) {
-        console.error("Website fetch error:", error);
         setIsExpired(true);
       } finally {
         setIsLoading(false);
@@ -51,7 +50,7 @@ export const WebsiteProvider = ({
   }, []);
 
   if (isLoading) {
-    return <Spinner />;
+    return <Loading show={true} message="Yükleniyor..." size="lg" />;
   }
 
   if (isExpired) {

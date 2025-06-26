@@ -15,7 +15,11 @@ interface PWAContextType {
   loading: boolean;
   isOnline: boolean;
   isInstalled: boolean;
+  swVersion: string | null;
+  cacheInfo: Record<string, number> | null;
   refreshConfig: () => Promise<void>;
+  clearCache: () => Promise<void>;
+  getCacheInfo: () => Promise<void>;
 }
 
 // Provider props türü
@@ -31,34 +35,63 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [isInstalled, setIsInstalled] = useState<boolean>(false);
+  const [swVersion, setSwVersion] = useState<string | null>(null);
+  const [cacheInfo, setCacheInfo] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
-    // Service Worker kayıt
+    // Service Worker kayıt ve yönetimi
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((registration: ServiceWorkerRegistration) => {
-          console.log("SW registered:", registration);
+      let swRegistration: ServiceWorkerRegistration | null = null;
+
+      const registerServiceWorker = async () => {
+        try {
+          swRegistration = await navigator.serviceWorker.register("/sw.js", {
+            scope: "/",
+            updateViaCache: "none",
+          });
+
+          // Service Worker versiyonunu al
+          if (navigator.serviceWorker.controller) {
+            const messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = (event) => {
+              if (event.data && event.data.version) {
+                setSwVersion(event.data.version);
+              }
+            };
+            navigator.serviceWorker.controller.postMessage(
+              { type: "GET_VERSION" },
+              [messageChannel.port2]
+            );
+          }
 
           // Service Worker güncellemesi kontrol et
-          registration.addEventListener("updatefound", () => {
-            const newWorker = registration.installing;
+          swRegistration.addEventListener("updatefound", () => {
+            const newWorker = swRegistration!.installing;
             if (newWorker) {
               newWorker.addEventListener("statechange", () => {
                 if (
                   newWorker.state === "installed" &&
                   navigator.serviceWorker.controller
                 ) {
-                  // Yeni versiyon mevcut
-                  console.log("Yeni versiyon mevcut!");
+                  // Yeni versiyon mevcut - sessizce işle
                 }
               });
             }
           });
-        })
-        .catch((error: Error) => {
-          console.error("SW registration failed:", error);
-        });
+
+          // Service Worker mesajlarını dinle
+          navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data && event.data.type === "SW_UPDATED") {
+              window.location.reload();
+            }
+          });
+
+        } catch (error: any) {
+          // Sessizce hataları yoksay
+        }
+      };
+
+      registerServiceWorker();
     }
 
     // PWA yüklü mü kontrol et
@@ -74,8 +107,27 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     setIsInstalled(checkIfInstalled());
 
     // Online/offline durumu
-    const handleOnline = (): void => setIsOnline(true);
-    const handleOffline = (): void => setIsOnline(false);
+    const handleOnline = (): void => {
+      setIsOnline(true);
+      // Service worker'a online durumunu bildir
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: "ONLINE_STATUS",
+          online: true,
+        });
+      }
+    };
+    
+    const handleOffline = (): void => {
+      setIsOnline(false);
+      // Service worker'a offline durumunu bildir
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: "ONLINE_STATUS",
+          online: false,
+        });
+      }
+    };
 
     if (typeof window !== "undefined") {
       window.addEventListener("online", handleOnline);
@@ -97,7 +149,9 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
   const refreshConfig = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch("/api/app-config");
+      const response = await fetch("/api/app-config", {
+        cache: "no-cache",
+      });
       if (response.ok) {
         const newConfig: AppConfig = await response.json();
         setConfig(newConfig);
@@ -124,9 +178,36 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
         }
       }
     } catch (error) {
-      console.error("Config güncellenirken hata:", error);
+      // Sessizce hataları yoksay
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Cache temizleme fonksiyonu
+  const clearCache = async (): Promise<void> => {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: "CLEAR_CACHE",
+      });
+      setCacheInfo(null);
+    }
+  };
+
+  // Cache bilgilerini alma fonksiyonu
+  const getCacheInfo = async (): Promise<void> => {
+    if (navigator.serviceWorker.controller) {
+      const messageChannel = new MessageChannel();
+      messageChannel.port1.onmessage = (event) => {
+        if (event.data && event.data.cacheInfo) {
+          setCacheInfo(event.data.cacheInfo);
+          setSwVersion(event.data.version);
+        }
+      };
+      navigator.serviceWorker.controller.postMessage(
+        { type: "GET_CACHE_INFO" },
+        [messageChannel.port2]
+      );
     }
   };
 
@@ -135,7 +216,11 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     loading,
     isOnline,
     isInstalled,
+    swVersion,
+    cacheInfo,
     refreshConfig,
+    clearCache,
+    getCacheInfo,
   };
 
   return <PWAContext.Provider value={value}>{children}</PWAContext.Provider>;

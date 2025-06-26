@@ -31,7 +31,6 @@ export default function ChestPage() {
         setChest(items);
         setError(null);
       } catch (err) {
-        console.error("Sandık eşyaları alınırken hata oluştu:", err);
         setError(
           "Eşyalar yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin."
         );

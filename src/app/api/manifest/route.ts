@@ -43,7 +43,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     });
   } catch (error) {
-    console.error("Manifest oluşturulurken hata:", error);
 
     // Hata durumunda varsayılan manifest döndür
     const defaultManifest: PWAManifest = DEFAULT_MANIFEST;

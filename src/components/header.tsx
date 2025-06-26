@@ -48,7 +48,6 @@ export default function Header() {
           });
         }
       } catch (error) {
-        console.error("Sunucu durumu alınamadı:", error);
         setServerStatus({ online: false });
       }
     }
@@ -63,7 +62,6 @@ export default function Header() {
         const data = await res.json();
         setDiscordStatus(data);
       } catch (error) {
-        console.error("Discord durumu alınamadı:", error);
         setDiscordStatus(null);
       }
     }
@@ -81,8 +79,8 @@ export default function Header() {
   }, []);
 
   return (
-    <header id="header" className="h-[370px]">
-      <div className="h-80 -mb-8 flex flex-col relative z-30">
+    <header id="header" className="relative">
+      <div className="h-80 flex flex-col relative z-30">
         {/* Server Info & Buttons */}
         <div
           className="absolute w-full top-24 md:top-32"
@@ -135,7 +133,7 @@ export default function Header() {
         {/* Background Image */}
         <div
           className="absolute top-0 left-0 h-full w-full bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/header-bg.png')" }}
+          style={{ backgroundImage: "url('/images/header-bg.webp')" }}
         />
       </div>
 

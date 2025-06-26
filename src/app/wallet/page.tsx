@@ -77,7 +77,6 @@ export default function BalancePage() {
 
       setPaymentProviders(activeProviders);
     } catch (error) {
-      console.error("Failed to fetch payment providers:", error);
       withReactContent(Swal).fire({
         title: "Hata!",
         text: "Ödeme yöntemleri yüklenirken hata oluştu.",
@@ -320,7 +319,6 @@ export default function BalancePage() {
         });
       }
     } catch (error) {
-      console.error("Payment initiation error:", error);
       withReactContent(Swal).fire({
         title: "Hata!",
         text: "Ödeme işlemi başlatılırken bir hata oluştu. Lütfen tekrar deneyin.",

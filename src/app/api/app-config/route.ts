@@ -32,8 +32,6 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("App config API hatası:", error);
-
     // Hata durumunda varsayılan değerler döndür
     const defaultConfig: AppConfig = DEFAULT_APPCONFIG;
 

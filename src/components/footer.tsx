@@ -50,7 +50,6 @@ const Footer = ({ server }: Props) => {
         setCopiedStates((prev) => ({ ...prev, [buttonId]: false }));
       }, 2000);
     } catch (err) {
-      console.error("Kopyalama hatası:", err);
     }
   };
 

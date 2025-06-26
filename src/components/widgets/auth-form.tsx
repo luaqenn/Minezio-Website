@@ -12,14 +12,6 @@ import { AuthContext } from "@/lib/context/auth.context";
 // Shadcn UI ve Lucide React
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { 
@@ -32,6 +24,9 @@ import {
     AlertCircle, 
     UserPlus 
 } from "lucide-react";
+
+// Widget Component
+import Widget from "@/components/widgets/widget";
 
 // Props Tipi
 interface AuthFormProps {
@@ -69,26 +64,29 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
       // üst bileşen bir eylem tetikleyebilir. Şimdilik yönlendirme yok.
     } catch (err) {
       setError("Giriş bilgileri hatalı. Lütfen kontrol edip tekrar deneyin.");
-      console.error("Giriş Hatası:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
   const renderFormContent = () => (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4">
       {/* Kullanıcı Adı Alanı */}
       <div className="space-y-2">
-        <Label htmlFor="username">Kullanıcı Adı</Label>
+        <Label htmlFor="username" className="sr-only">
+          Kullanıcı Adı
+        </Label>
         <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <User className="h-5 w-5 text-gray-400" />
+          </div>
+          <input
             id="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="kullaniciadiniz"
-            className="pl-10 h-11"
+            placeholder="Kullanıcı Adı"
+            className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 sm:text-sm transition-all duration-300"
             disabled={isLoading}
             onFocus={() => setFocusedField('username')}
             onBlur={() => setFocusedField(null)}
@@ -98,26 +96,20 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
       
       {/* Şifre Alanı */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Şifre</Label>
-          {!asWidget && (
-            <Link 
-              href="/auth/forgot-password"
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              Şifremi unuttum
-            </Link>
-          )}
-        </div>
+        <Label htmlFor="password" className="sr-only">
+          Şifre
+        </Label>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Lock className="h-5 w-5 text-gray-400" />
+          </div>
+          <input
             id="password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="pl-10 pr-10 h-11"
+            placeholder="Şifre"
+            className="form-input block w-full pl-10 pr-10 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 sm:text-sm transition-all duration-300"
             disabled={isLoading}
             onFocus={() => setFocusedField('password')}
             onBlur={() => setFocusedField(null)}
@@ -125,7 +117,7 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
             disabled={isLoading}
           >
             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -134,10 +126,10 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
       </div>
       
       {/* Giriş Butonu */}
-      <Button
+      <button
         type="submit"
         disabled={isLoading || !username || !password}
-        className="w-full h-11 text-base font-semibold"
+        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>
@@ -150,61 +142,96 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
             Giriş Yap
           </>
         )}
-      </Button>
+      </button>
     </form>
   );
 
-  return (
-    <div className={`w-full ${asWidget ? '' : 'min-h-screen flex items-center justify-center p-4 bg-gray-100 dark:bg-gray-900'}`}>
-      <Card className={`w-full ${asWidget ? 'border-none shadow-none bg-transparent' : 'max-w-md shadow-2xl bg-card/80 backdrop-blur-lg'}`}>
-        {/* Card Header: Sadece tam sayfa modunda gösterilir */}
-        {!asWidget && (
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold">Tekrar Hoş Geldiniz!</CardTitle>
-            <CardDescription>Hesabınıza giriş yaparak maceraya devam edin.</CardDescription>
-          </CardHeader>
-        )}
-
-        <CardContent className={asWidget ? 'p-0' : 'pt-0'}>
+  // Widget modu için render
+  if (asWidget) {
+    return (
+      <Widget>
+        <Widget.Header>
+          <LogIn className="inline mr-2 h-5 w-5 text-blue-500" />
+          Giriş Yap
+        </Widget.Header>
+        <Widget.Body>
           {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Giriş Başarısız</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
+            <Alert variant="destructive" className="mb-4 text-xs">
+              <AlertCircle className="h-3 w-3" />
+              <AlertTitle className="text-xs">Giriş Başarısız</AlertTitle>
+              <AlertDescription className="text-xs">{error}</AlertDescription>
             </Alert>
           )}
           {renderFormContent()}
-        </CardContent>
-
-        {/* Card Footer: asWidget prop'una göre farklı içerik gösterir */}
-        <CardFooter className="flex flex-col items-center gap-4 pt-6">
-            <div className="relative w-full">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                        {asWidget ? 'Veya' : 'Hesabınız yok mu?'}
-                    </span>
-                </div>
-            </div>
           
-            {asWidget ? (
-                <Button variant="outline" className="w-full" asChild>
-                    <Link href="/auth/sign-in">
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Yeni Hesap Oluştur
-                    </Link>
-                </Button>
-            ) : (
-                <Button variant="secondary" className="w-full" asChild>
-                    <Link href="/auth/sign-in">
-                        Hemen Kayıt Olun
-                    </Link>
-                </Button>
+          {/* Widget footer */}
+          <div className="mt-4 pt-4 border-t border-white/10 dark:border-gray-700/50">
+            <div className="text-center text-xs text-gray-500 dark:text-gray-400 mb-3">
+              Hesabınız yok mu?
+            </div>
+            <Link 
+              href="/auth/sign-up"
+              className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Yeni Hesap Oluştur
+            </Link>
+          </div>
+        </Widget.Body>
+      </Widget>
+    );
+  }
+
+  // Tam sayfa modu için render
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
+      <div className="w-full max-w-md">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          {/* Header */}
+          <div className="p-6 text-center border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+              Tekrar Hoş Geldiniz!
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Hesabınıza giriş yaparak maceraya devam edin.
+            </p>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Giriş Başarısız</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
-        </CardFooter>
-      </Card>
+            {renderFormContent()}
+          </div>
+
+          {/* Footer */}
+          <div className="p-6 pt-0">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-200 dark:border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
+                  Hesabınız yok mu?
+                </span>
+              </div>
+            </div>
+            <div className="mt-4">
+              <Link 
+                href="/auth/sign-up"
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+              >
+                Hemen Kayıt Olun
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

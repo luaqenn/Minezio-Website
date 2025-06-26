@@ -56,7 +56,6 @@ export default function CategoryPage({
         setCategory(categoryData);
         setProducts(productsData);
       } catch (error) {
-        console.error("Kategori yüklenirken hata:", error);
         setError("Kategori bilgileri yüklenirken bir hata oluştu.");
       } finally {
         setLoading(false);

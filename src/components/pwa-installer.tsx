@@ -82,7 +82,6 @@ export default function PWAInstaller(): JSX.Element | null {
         isInstalling: false,
       });
     } catch (error) {
-      console.error('Install prompt hatası:', error);
       setInstallState(prev => ({ ...prev, isInstalling: false }));
     }
   };
