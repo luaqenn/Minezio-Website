@@ -1,6 +1,6 @@
 import Marquee from "react-fast-marquee";
 
-export function TopBar({ broadcastItems }: { broadcastItems: string[] }) {
+export function TopBar({ broadcastItems }: { broadcastItems?: string[] }) {
   if (!broadcastItems || broadcastItems.length === 0) {
     return null;
   }

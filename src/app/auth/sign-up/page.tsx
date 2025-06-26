@@ -74,7 +74,7 @@ export default function SignUp() {
            </div>
           <h1 className="text-4xl font-bold tracking-tight">Aramıza Katılın!</h1>
           <p className="mt-4 text-lg max-w-sm">
-            {website.name} ailesine katılın ve tüm özelliklerin keyfini çıkarın!
+            {website?.name} ailesine katılın ve tüm özelliklerin keyfini çıkarın!
           </p>
         </div>
       </div>

@@ -22,13 +22,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       orientation: "portrait-primary",
       icons: [
         {
-          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
+          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.image}`,
           sizes: "192x192",
           type: "image/png",
           purpose: "maskable any",
         },
         {
-          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website.image}`,
+          src: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.image}`,
           sizes: "512x512",
           type: "image/png",
           purpose: "maskable any",

@@ -70,7 +70,7 @@ export default function SignIn() {
            </div>
           <h1 className="text-4xl font-bold tracking-tight">Tekrar Hoş Geldiniz!</h1>
           <p className="mt-4 text-lg max-w-sm">
-            {website.name} içindeki tüm özelliklere ve hesabınıza erişin!
+            {website?.name} içindeki tüm özelliklere ve hesabınıza erişin!
           </p>
         </div>
       </div>

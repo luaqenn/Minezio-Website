@@ -36,7 +36,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <TopBar broadcastItems={website.broadcast_items} />
+      <TopBar broadcastItems={website?.broadcast_items} />
       <Header />
       {/* Sayfa içeriği (örneğin Home component'i) buraya gelecek */}
       <main>{children}</main>

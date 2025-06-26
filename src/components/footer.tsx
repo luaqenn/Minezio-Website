@@ -28,6 +28,7 @@ import {
   Check,
 } from "lucide-react";
 import { Server } from "@/lib/types/server";
+import Link from "next/link";
 
 type Props = {
   server: Server | null;
@@ -35,30 +36,32 @@ type Props = {
 
 const Footer = ({ server }: Props) => {
   const { website } = useContext(WebsiteContext);
-  const [copiedStates, setCopiedStates] = useState<{ [key: string]: boolean }>({});
+  const [copiedStates, setCopiedStates] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const copyToClipboard = async (text: string, buttonId: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopiedStates(prev => ({ ...prev, [buttonId]: true }));
-      
+      setCopiedStates((prev) => ({ ...prev, [buttonId]: true }));
+
       // 2 saniye sonra animasyonu sıfırla
       setTimeout(() => {
-        setCopiedStates(prev => ({ ...prev, [buttonId]: false }));
+        setCopiedStates((prev) => ({ ...prev, [buttonId]: false }));
       }, 2000);
     } catch (err) {
-      console.error('Kopyalama hatası:', err);
+      console.error("Kopyalama hatası:", err);
     }
   };
 
   const handlePlayNowClick = () => {
-    const serverIP = server?.ip || 'play.hypixel.net';
-    copyToClipboard(serverIP, 'play-now');
+    const serverIP = server?.ip || "play.hypixel.net";
+    copyToClipboard(serverIP, "play-now");
   };
 
   const handleServerIPClick = () => {
-    const serverIP = server?.ip || 'play.hypixel.net';
-    copyToClipboard(serverIP, 'server-ip');
+    const serverIP = server?.ip || "play.hypixel.net";
+    copyToClipboard(serverIP, "server-ip");
   };
 
   return (
@@ -93,8 +96,9 @@ const Footer = ({ server }: Props) => {
 
             {/* DEĞİŞİKLİK: Metin rengi daha okunaklı bir tona çevrildi. */}
             <p className="text-slate-600 mb-6 leading-relaxed">
-              {website?.footer_description ||
-                "En iyi Minecraft server deneyimi için bize katılın. Premium eşyalar ve eşsiz oyun modları sizi bekliyor."}
+              {
+                "En iyi Minecraft server deneyimi için bize katılın. Premium eşyalar ve eşsiz oyun modları sizi bekliyor."
+              }
             </p>
 
             {/* Social Links */}
@@ -141,14 +145,14 @@ const Footer = ({ server }: Props) => {
                 >
                   <div className="flex items-center w-full">
                     <div className="flex items-center justify-center w-4 h-4 mr-2">
-                      {copiedStates['play-now'] ? (
+                      {copiedStates["play-now"] ? (
                         <Check className="h-4 w-4 text-green-500" />
                       ) : (
                         <Play className="h-4 w-4" />
                       )}
                     </div>
                     <span className="inline-block min-w-[120px] text-left">
-                      {copiedStates['play-now'] ? (
+                      {copiedStates["play-now"] ? (
                         <span className="text-green-500 animate-pulse">
                           IP Kopyalandı!
                         </span>
@@ -197,7 +201,10 @@ const Footer = ({ server }: Props) => {
             </h4>
             <div className="space-y-4">
               {/* DEĞİŞİKLİK: Kart stili açık temaya uyarlandı. */}
-              <Card className="bg-slate-50 border-slate-200 hover:shadow-md transition-shadow cursor-pointer" onClick={handleServerIPClick}>
+              <Card
+                className="bg-slate-50 border-slate-200 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={handleServerIPClick}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 justify-between">
                     <div className="flex items-center gap-3">
@@ -210,7 +217,7 @@ const Footer = ({ server }: Props) => {
                       </div>
                     </div>
                     <div className="flex items-center">
-                      {copiedStates['server-ip'] ? (
+                      {copiedStates["server-ip"] ? (
                         <div className="flex items-center gap-1">
                           <Check className="h-4 w-4 text-green-500" />
                           <span className="text-xs text-green-500 animate-pulse">
@@ -293,14 +300,14 @@ const Footer = ({ server }: Props) => {
               >
                 v1.0.0
               </Badge>
-              {website?.platform && (
+              <Link href="https://crafter.net.tr">
                 <Badge
                   variant="outline"
                   className="border-blue-300 text-blue-700 bg-blue-50"
                 >
-                  {website.platform}
+                  Crafter
                 </Badge>
-              )}
+              </Link>
             </div>
           </div>
 
@@ -343,10 +350,15 @@ const Footer = ({ server }: Props) => {
                 <Button
                   size="lg"
                   className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
-                  onClick={() => copyToClipboard(server?.ip || 'play.hypixel.net', 'cta-play')}
+                  onClick={() =>
+                    copyToClipboard(
+                      server?.ip || "play.hypixel.net",
+                      "cta-play"
+                    )
+                  }
                 >
                   <div className="flex items-center">
-                    {copiedStates['cta-play'] ? (
+                    {copiedStates["cta-play"] ? (
                       <>
                         <Check className="h-5 w-5 mr-2 text-green-600" />
                         <span className="text-green-600 animate-pulse">

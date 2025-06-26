@@ -57,7 +57,7 @@ export default function Header() {
       try {
         if (!website?.discord?.guild_id) return;
         const res = await fetch(
-          `/api/status/discord?guildId=${website.discord.guild_id}`,
+          `/api/status/discord?guildId=${website?.discord.guild_id}`,
           { cache: "no-store" }
         );
         const data = await res.json();

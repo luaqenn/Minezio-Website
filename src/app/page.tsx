@@ -169,7 +169,7 @@ export default function Home() {
                 }}
               >
                 <CarouselContent>
-                  {website.sliders.map((slider) => (
+                  {website?.sliders.map((slider) => (
                     <CarouselItem key={slider.id}>
                       <div
                         className="relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-xl sm:rounded-2xl overflow-hidden"
@@ -204,7 +204,7 @@ export default function Home() {
 
                 {/* Progress Bar */}
                 <CarouselProgressBar
-                  totalSlides={website.sliders.length}
+                  totalSlides={website?.sliders.length}
                   currentSlide={currentSlide}
                   autoplayDelay={5000}
                   isPaused={isPaused}
