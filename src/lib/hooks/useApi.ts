@@ -42,6 +42,7 @@ export const useApi = ({
   baseUrl = BACKEND_URL,
   headers = {
     'Content-Type': 'application/json',
+    'Origin': process.env.NEXT_PUBLIC_BASE_URL
   },
 }: {
   baseUrl?: string;
