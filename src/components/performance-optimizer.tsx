@@ -20,7 +20,7 @@ export function PerformanceOptimizer({
   children, 
   enableMonitoring = true,
   enableLazyLoading = true,
-  fallback = <Loading show={true} message="Yükleniyor..." />
+  fallback = <Loading show={true} message="Yükleniyor..." fullScreen={true} />
 }: PerformanceOptimizerProps) {
   const [isClient, setIsClient] = useState(false);
   const performanceMetrics = usePerformance({
@@ -96,7 +96,7 @@ interface LazyComponentProps {
 
 export function LazyComponent({ 
   component, 
-  fallback = <Loading show={true} message="Bileşen yükleniyor..." />,
+  fallback = <Loading show={true} message="Bileşen yükleniyor..." fullScreen={true} />,
   props = {}
 }: LazyComponentProps) {
   const LazyComponent = lazy(component);

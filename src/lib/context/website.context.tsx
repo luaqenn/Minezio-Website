@@ -50,7 +50,7 @@ export const WebsiteProvider = ({
   }, []);
 
   if (isLoading) {
-    return <Loading show={true} message="Yükleniyor..." size="lg" />;
+    return <Loading show={true} message="Yükleniyor..." fullScreen={true} />;
   }
 
   if (isExpired) {

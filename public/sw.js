@@ -9,7 +9,6 @@ const IMAGE_CACHE = `image-cache-${CACHE_VERSION}`;
 const STATIC_ASSETS = [
   "/",
   "/offline.html",
-  "/manifest.json",
   "/api/manifest",
   "/api/app-config"
 ];

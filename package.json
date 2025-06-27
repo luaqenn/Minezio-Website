@@ -10,7 +10,15 @@
     "analyze": "ANALYZE=true next build",
     "build:analyze": "cross-env ANALYZE=true next build",
     "performance": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json",
-    "bundle-analyzer": "next-bundle-analyzer"
+    "performance:html": "lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html",
+    "performance:all": "lighthouse http://localhost:3000 --output=json,html --output-path=./lighthouse-report",
+    "bundle-analyzer": "next-bundle-analyzer",
+    "build:prod": "NODE_ENV=production next build",
+    "start:prod": "NODE_ENV=production next start",
+    "type-check": "tsc --noEmit",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@next/third-parties": "^15.3.4",
@@ -24,10 +32,9 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "crafter-default": ".",
     "critters": "^0.0.25",
     "date-fns": "^4.1.0",
-    "embla-carousel-autoplay": "^8.6.0",
-    "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.503.0",
     "next": "15.3.1",
     "react": "^19.0.0",

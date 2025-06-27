@@ -6,6 +6,8 @@ interface PerformanceMetrics {
   fid: number | null; // First Input Delay
   cls: number | null; // Cumulative Layout Shift
   ttfb: number | null; // Time to First Byte
+  tti: number | null; // Time to Interactive
+  tbt: number | null; // Total Blocking Time
 }
 
 interface UsePerformanceOptions {
@@ -24,6 +26,13 @@ interface FirstInputEntry extends PerformanceEntry {
   startTime: number;
 }
 
+interface NetworkInformation {
+  effectiveType: string;
+  downlink: number;
+  rtt: number;
+  saveData: boolean;
+}
+
 export function usePerformance(options: UsePerformanceOptions = {}) {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     fcp: null,
@@ -31,12 +40,15 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
     fid: null,
     cls: null,
     ttfb: null,
+    tti: null,
+    tbt: null,
   });
   
   const observerRef = useRef<PerformanceObserver | null>(null);
   const lcpObserverRef = useRef<PerformanceObserver | null>(null);
   const clsObserverRef = useRef<PerformanceObserver | null>(null);
   const fidObserverRef = useRef<PerformanceObserver | null>(null);
+  const tbtObserverRef = useRef<PerformanceObserver | null>(null);
 
   useEffect(() => {
     // Measure Time to First Byte
@@ -113,11 +125,46 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
       console.warn('FID observer not supported');
     }
 
+    // Measure Total Blocking Time
+    let totalBlockingTime = 0;
+    const tbtObserver = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (entry.duration > 50) {
+          totalBlockingTime += entry.duration - 50;
+        }
+      }
+      setMetrics(prev => ({ ...prev, tbt: totalBlockingTime }));
+    });
+    
+    try {
+      tbtObserver.observe({ entryTypes: ['longtask'] });
+      tbtObserverRef.current = tbtObserver;
+    } catch (e) {
+      console.warn('TBT observer not supported');
+    }
+
+    // Measure Time to Interactive (approximation)
+    const measureTTI = () => {
+      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (navigationEntry) {
+        const domContentLoaded = navigationEntry.domContentLoadedEventEnd - navigationEntry.fetchStart;
+        setMetrics(prev => ({ ...prev, tti: domContentLoaded }));
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      measureTTI();
+    } else {
+      window.addEventListener('load', measureTTI);
+    }
+
     return () => {
       observerRef.current?.disconnect();
       lcpObserverRef.current?.disconnect();
       clsObserverRef.current?.disconnect();
       fidObserverRef.current?.disconnect();
+      tbtObserverRef.current?.disconnect();
+      window.removeEventListener('load', measureTTI);
     };
   }, []);
 
@@ -134,6 +181,41 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
   }, [metrics, options]);
 
   return metrics;
+}
+
+// Network status monitoring
+export function useNetworkStatus() {
+  const [isOnline, setIsOnline] = useState(true);
+  const [connection, setConnection] = useState<NetworkInformation | null>(null);
+
+  useEffect(() => {
+    const updateNetworkStatus = () => {
+      setIsOnline(navigator.onLine);
+      
+      if ('connection' in navigator) {
+        setConnection((navigator as any).connection);
+      }
+    };
+
+    updateNetworkStatus();
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    if ('connection' in navigator) {
+      (navigator as any).connection?.addEventListener('change', updateNetworkStatus);
+    }
+
+    return () => {
+      window.removeEventListener('online', updateNetworkStatus);
+      window.removeEventListener('offline', updateNetworkStatus);
+      if ('connection' in navigator) {
+        (navigator as any).connection?.removeEventListener('change', updateNetworkStatus);
+      }
+    };
+  }, []);
+
+  return { isOnline, connection };
 }
 
 // Performance optimization utilities
@@ -188,46 +270,50 @@ export function useMemoryUsage() {
   return memoryInfo;
 }
 
-// Network status monitoring
-export function useNetworkStatus() {
-  const [isOnline, setIsOnline] = useState(true);
-  const [connection, setConnection] = useState<{
-    effectiveType: string;
-    downlink: number;
-    rtt: number;
+// Resource loading monitoring
+export function useResourceTiming() {
+  const [resourceMetrics, setResourceMetrics] = useState<{
+    totalResources: number;
+    totalSize: number;
+    averageLoadTime: number;
+    slowestResource: string;
   } | null>(null);
 
   useEffect(() => {
-    const updateOnlineStatus = () => setIsOnline(navigator.onLine);
-    const updateConnectionInfo = () => {
-      if ('connection' in navigator) {
-        const conn = (navigator as any).connection;
-        setConnection({
-          effectiveType: conn.effectiveType,
-          downlink: conn.downlink,
-          rtt: conn.rtt,
-        });
-      }
+    const calculateResourceMetrics = () => {
+      const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+      
+      if (resources.length === 0) return;
+
+      const totalSize = resources.reduce((sum, resource) => sum + (resource.transferSize || 0), 0);
+      const totalLoadTime = resources.reduce((sum, resource) => sum + resource.duration, 0);
+      const averageLoadTime = totalLoadTime / resources.length;
+      
+      const slowestResource = resources.reduce((slowest, current) => 
+        current.duration > slowest.duration ? current : slowest
+      );
+
+      setResourceMetrics({
+        totalResources: resources.length,
+        totalSize,
+        averageLoadTime,
+        slowestResource: slowestResource.name,
+      });
     };
 
-    updateOnlineStatus();
-    updateConnectionInfo();
-
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    
-    if ('connection' in navigator) {
-      (navigator as any).connection?.addEventListener('change', updateConnectionInfo);
+    // Wait for resources to load
+    if (document.readyState === 'complete') {
+      calculateResourceMetrics();
+    } else {
+      window.addEventListener('load', calculateResourceMetrics);
     }
 
     return () => {
-      window.removeEventListener('online', updateOnlineStatus);
-      window.removeEventListener('offline', updateOnlineStatus);
-      (navigator as any).connection?.removeEventListener('change', updateConnectionInfo);
+      window.removeEventListener('load', calculateResourceMetrics);
     };
   }, []);
 
-  return { isOnline, connection };
+  return resourceMetrics;
 }
 
 // Helper function to report metrics to analytics
@@ -245,6 +331,8 @@ function reportToAnalytics(metrics: PerformanceMetrics) {
         fid: metrics.fid,
         cls: metrics.cls,
         ttfb: metrics.ttfb,
+        tti: metrics.tti,
+        tbt: metrics.tbt,
       },
     });
   }

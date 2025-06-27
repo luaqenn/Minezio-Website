@@ -145,18 +145,26 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://minotar.net" />
-        
+        <link rel="preconnect" href="https://api.crafter.net.tr" />
+
         {/* DNS prefetch for performance */}
         <link rel="dns-prefetch" href="//api.crafter.net.tr" />
         <link rel="dns-prefetch" href="//minotar.net" />
-        
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
         {/* Preload critical resources */}
         <link rel="preload" href="/api/manifest" as="fetch" crossOrigin="anonymous" />
         <link rel="preload" href={appConfig.favicon} as="image" />
-        
+
         {/* Resource hints */}
         <link rel="prefetch" href="/store" />
         <link rel="prefetch" href="/auth/sign-in" />
+        <link rel="prefetch" href="/auth/sign-up" />
+
+        {/* Performance optimizations */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
       <body>
         <PerformanceOptimizer enableMonitoring={process.env.NODE_ENV === 'development'}>
@@ -170,78 +178,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           </PWAProvider>
           <PerformanceMonitor />
         </PerformanceOptimizer>
-        {/* Service Worker registration */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                let swRegistration = null;
-                
-                async function registerServiceWorker() {
-                  try {
-                    swRegistration = await navigator.serviceWorker.register('/sw.js', {
-                      scope: '/',
-                      updateViaCache: 'none'
-                    });
-                    
-                    // Service Worker güncellemelerini dinle
-                    swRegistration.addEventListener('updatefound', () => {
-                      const newWorker = swRegistration.installing;
-                      
-                      newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                          // Yeni versiyon mevcut - sessizce işle
-                        }
-                      });
-                    });
-                    
-                    // Service Worker mesajlarını dinle
-                    navigator.serviceWorker.addEventListener('message', (event) => {
-                      if (event.data && event.data.type === 'SW_UPDATED') {
-                        window.location.reload();
-                      }
-                    });
-                    
-                  } catch (error) {
-                    // Sessizce hataları yoksay
-                  }
-                }
-                
-                // Sayfa yüklendiğinde service worker'ı kaydet
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', registerServiceWorker);
-                } else {
-                  registerServiceWorker();
-                }
-                
-                // Online/offline durumunu dinle
-                window.addEventListener('online', () => {
-                  // Service worker'a online durumunu bildir
-                  if (navigator.serviceWorker.controller) {
-                    navigator.serviceWorker.controller.postMessage({
-                      type: 'ONLINE_STATUS',
-                      online: true
-                    });
-                  }
-                });
-                
-                window.addEventListener('offline', () => {
-                  // Service worker'a offline durumunu bildir
-                  if (navigator.serviceWorker.controller) {
-                    navigator.serviceWorker.controller.postMessage({
-                      type: 'ONLINE_STATUS',
-                      online: false
-                    });
-                  }
-                });
-              }
-            `,
-          }}
-        />
+
       </body>
-      { appConfig.gaId && (
+      {appConfig.gaId && (
         <GoogleAnalytics gaId={appConfig.gaId} />
-      ) }
+      )}
     </html>
   );
 }
