@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   if (isLoading) {
-    return <Loading show={true} message="Yükleniyor..." size="lg" />;
+    return <Loading show={true} message="Yükleniyor..." fullScreen={true} />;
   }
 
   return <AuthContext.Provider value={{ user, setUser, isLoading, isAuthenticated, signIn, signUp, signOut }}>{children}</AuthContext.Provider>;

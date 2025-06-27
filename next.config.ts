@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
     },
   },
   
+  // Bundle pages router dependencies
+  bundlePagesRouterDependencies: true,
+  
   // Image optimizations
   images: {
     remotePatterns: [
@@ -44,12 +47,19 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Performance optimizations
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    loader: 'default',
+    loaderFile: '',
+    disableStaticImages: false,
+    unoptimized: false,
   },
 
   // Experimental features for performance
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'react-icons'],
   },
 
   // Webpack optimizations (only for non-Turbopack builds)
@@ -68,15 +78,36 @@ const nextConfig: NextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: 10,
+            enforce: true,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             enforce: true,
+            priority: 5,
+          },
+          // Separate React and React DOM
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            priority: 20,
+          },
+          // Separate icons
+          icons: {
+            test: /[\\/]node_modules[\\/](react-icons|lucide-react)[\\/]/,
+            name: 'icons',
+            chunks: 'all',
+            priority: 15,
           },
         },
       };
+
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
     }
 
     // Optimize images
@@ -108,6 +139,14 @@ const nextConfig: NextConfig = {
       ],
     });
 
+    // Performance optimizations
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+
     return config;
   },
 
@@ -133,6 +172,11 @@ const nextConfig: NextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
+          // Performance headers
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
         ],
       },
       {
@@ -153,6 +197,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=600',
+          },
+        ],
+      },
     ];
   },
 
@@ -166,6 +219,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  
+  // Output configuration
+  output: 'standalone',
+  
+  // Trailing slash for better caching
+  trailingSlash: false,
+  
+  // Asset prefix for CDN support
+  assetPrefix: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_CDN_URL : '',
 };
 
 export default nextConfig;
