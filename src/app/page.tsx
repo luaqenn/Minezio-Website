@@ -236,11 +236,11 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [getServers, getStatistics]);
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   return (
     <main className="min-h-screen">
