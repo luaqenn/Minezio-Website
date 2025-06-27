@@ -149,7 +149,7 @@ const UserProfilePage = () => {
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="flex-1">
                     <ProfileStats {...stats} />
-                    <Wall currentUser={currentUser} profileUser={user} initialMessages={user.wall || []} />
+                    <Wall currentUser={currentUser} profileUser={user} initialMessages={[]} />
                     <ProfileTabs tabs={tabs} />
                     <ProfileHistoryTimeline events={historyEvents} />
                 </div>
