@@ -15,6 +15,10 @@
     @apply bg-green-50 text-green-500 dark:bg-green-700/25 dark:text-green-300;
   }
 
+  .action-button {
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 shadow-lg;
+  }
+
   .nav-item i {
     @apply text-lg;
   }

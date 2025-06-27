@@ -85,13 +85,21 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
               window.location.reload();
             }
           });
-
         } catch (error: any) {
           // Sessizce hataları yoksay
         }
       };
 
-      registerServiceWorker();
+      if (process.env.NODE_ENV === 'production') {
+        registerServiceWorker();
+      } else {
+        // Development ortamında varsa SW'yi unregister et
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
     }
 
     // PWA yüklü mü kontrol et

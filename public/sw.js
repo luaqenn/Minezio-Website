@@ -1,3 +1,16 @@
+// Development ortamında SW otomatik unregister
+if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
+  self.addEventListener('install', function(e) {
+    self.skipWaiting();
+  });
+  self.addEventListener('activate', function(e) {
+    self.registration.unregister();
+  });
+  // Diğer event'leri engelle
+  self.addEventListener('fetch', function(e) {});
+  return;
+}
+
 // Service Worker versiyonu - güncellemeler için artırın
 const CACHE_VERSION = "v2.0.1";
 const STATIC_CACHE = `static-cache-${CACHE_VERSION}`;
