@@ -10,10 +10,10 @@ import {
   Home,
   User,
   LogOut,
-  LogIn,
   Wallet,
   CoinsIcon,
   BoxIcon,
+  Ticket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -30,13 +30,25 @@ import { useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { WebsiteContext } from "@/lib/context/website.context";
 import { Avatar } from "./ui/avatar";
+import { useCart } from "@/lib/context/cart.context";
+import { Badge } from "./ui/badge";
+
+// Helper function to format balance as XX.00
+const formatBalance = (balance: number | undefined): string => {
+  if (balance === undefined || balance === null) return "0.00";
+  return balance.toFixed(2);
+};
 
 export function Navbar() {
   const { isAuthenticated, user, signOut } = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
   const { website } = useContext(WebsiteContext);
+  const { cart } = useCart();
   const [isSticky, setIsSticky] = useState(false);
+
+  // Calculate total items in cart
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
     let ticking = false;
@@ -81,6 +93,7 @@ export function Navbar() {
   const navigationItems = [
     { href: "/", icon: Home, label: "Anasayfa" },
     { href: "/store", icon: ShoppingCart, label: "Mağaza" },
+    { href: "/redeem", icon: Ticket, label: "Kod Kullan" },
     { href: "/forum", icon: MessageSquare, label: "Forum" },
     { href: "/help", icon: HelpCircle, label: "Yardım" },
     { href: "/support", icon: LifeBuoy, label: "Destek" },
@@ -135,6 +148,25 @@ export function Navbar() {
                         </Link>
                       );
                     })}
+                    
+                    {/* Mobile Cart Item */}
+                    <Link
+                      href="/cart"
+                      className={getMobileLinkClassName("/cart")}
+                    >
+                      <div className="relative">
+                        <ShoppingCart className="h-5 w-5" />
+                        {totalItems > 0 && (
+                          <Badge 
+                            variant="destructive" 
+                            className="absolute -top-2 -right-2 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs font-bold"
+                          >
+                            {totalItems > 99 ? '99+' : totalItems}
+                          </Badge>
+                        )}
+                      </div>
+                      <span>Sepet ({totalItems})</span>
+                    </Link>
                   </nav>
 
                   {/* Mobile User Section */}
@@ -152,7 +184,7 @@ export function Navbar() {
                             </p>
                             <p className="flex items-center gap-1 text-sm text-green-500 dark:text-green-400">
                               <CoinsIcon className="h-4 w-4" />
-                              {user?.balance} {website?.currency}
+                              {formatBalance(user?.balance)} {website?.currency}
                             </p>
                           </div>
                         </div>
@@ -230,6 +262,28 @@ export function Navbar() {
 
           {/* Right Section - User & Avatar */}
           <div className="flex items-center">
+            {/* Cart Icon - Desktop */}
+            <div className="hidden lg:flex items-center mr-2">
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {totalItems > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs font-bold"
+                    >
+                      {totalItems > 99 ? '99+' : totalItems}
+                    </Badge>
+                  )}
+                  <span className="sr-only">Sepet</span>
+                </Button>
+              </Link>
+            </div>
+
             {/* Desktop User Section */}
             <div className="hidden lg:flex items-center">
               {isAuthenticated ? (
@@ -237,15 +291,15 @@ export function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="relative flex-shrink-0 ml-8 pr-16 z-10 transition-all duration-300 ease-in-out"
+                      className="relative flex-shrink-0 ml-2 pr-2 z-10 transition-all duration-300 ease-in-out"
                     >
-                      <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
+                      <div className="flex flex-col justify-center text-right py-2 pr-3">
                         <div className="text-right">
                           <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {user?.username}
                           </p>
-                          <p className="flex gap-3 text-sm text-green-500 dark:text-green-400">
-                            <CoinsIcon /> {user?.balance} {website?.currency}
+                          <p className="flex gap-2 text-sm text-green-500 dark:text-green-400">
+                            <CoinsIcon className="h-4 w-4" /> {formatBalance(user?.balance)} {website?.currency}
                           </p>
                         </div>
                       </div>
@@ -289,10 +343,10 @@ export function Navbar() {
               ) : (
                 <Link
                   href="/auth/sign-in"
-                  className="relative flex-shrink-0 ml-8 pr-16 z-10 transition-all duration-300 ease-in-out"
+                  className="relative flex-shrink-0 ml-2 pr-2 z-10 transition-all duration-300 ease-in-out"
                 >
-                  <div className="my-2 flex flex-wrap justify-center items-center text-right py-2 pr-4">
-                    <div className="my-2 flex flex-col justify-center text-right py-2 pr-4">
+                  <div className="flex flex-wrap justify-center items-center text-right py-2 pr-3">
+                    <div className="flex flex-col justify-center text-right py-2 pr-3">
                       <span className="text-gray-800 font-semibold dark:text-green-300">
                         Misafir
                       </span>
@@ -307,7 +361,27 @@ export function Navbar() {
             </div>
 
             {/* Mobile Avatar */}
-            <div className="lg:hidden">
+            <div className="lg:hidden flex items-center gap-2">
+              {/* Mobile Cart Icon */}
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {totalItems > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs font-bold"
+                    >
+                      {totalItems > 99 ? '99+' : totalItems}
+                    </Badge>
+                  )}
+                  <span className="sr-only">Sepet</span>
+                </Button>
+              </Link>
+              
               {isAuthenticated ? (
                 <Avatar username={user?.username || "steve"} size={40} />
               ) : (

@@ -26,7 +26,7 @@ export const AuthContext = createContext<{
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { getMe, signIn: signInService, signUp: signUpService } = useAuthService();
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -34,45 +34,64 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const user = await getMe();
         setUser(user);
-        setIsLoading(false);
         setIsAuthenticated(true);
       } catch (error) {
-        setIsLoading(false);
         setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchUser();
   }, []);
 
   const signIn = async (username: string, password: string) => {
-    const response = await signInService({ username, password });
+    setIsLoading(true);
+    try {
+      const response = await signInService({ username, password });
 
-    localStorage.setItem("accessToken", response.accessToken);
-    localStorage.setItem("refreshToken", response.refreshToken);
+      localStorage.setItem("accessToken", response.accessToken);
+      localStorage.setItem("refreshToken", response.refreshToken);
 
-    const user = await getMe();
+      const user = await getMe();
 
-    setUser(user);
-    setIsAuthenticated(true);
+      setUser(user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signUp = async (data: SignUpRequest) => {
-    const response = await signUpService(data);
+    setIsLoading(true);
+    try {
+      const response = await signUpService(data);
 
-    localStorage.setItem("accessToken", response.accessToken);
-    localStorage.setItem("refreshToken", response.refreshToken);
+      localStorage.setItem("accessToken", response.accessToken);
+      localStorage.setItem("refreshToken", response.refreshToken);
 
-    const user = await getMe();
+      const user = await getMe();
 
-    setUser(user);
-    setIsAuthenticated(true);
+      setUser(user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signOut = async () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setUser(null);
-    setIsAuthenticated(false);
+    setIsLoading(true);
+    try {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {

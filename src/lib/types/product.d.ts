@@ -10,4 +10,6 @@ export type Product = {
   stock: number;
   createdAt: string;
   updatedAt: string;
+  discountType: "fixed" | "percentage";
+  discountValue: number;
 };

@@ -3,12 +3,14 @@ import { WebsiteProvider } from "@/lib/context/website.context";
 import { AuthProvider } from "@/lib/context/auth.context";
 import { PWAProvider } from "@/lib/context/pwa-provider.context";
 import PWAInstaller from "@/components/pwa-installer";
+import { DevelopmentToolbar } from "@/components/development-toolbar";
 import "@/styles/globals.css";
 import { MainLayout } from "@/components/main-layout";
 import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import type { AppConfig } from "@/lib/types/app";
 import { PerformanceOptimizer, PerformanceMonitor } from "@/components/performance-optimizer";
+import { CartProvider } from "@/lib/context/cart.context";
 
 async function getAppConfig(): Promise<AppConfig> {
   try {
@@ -171,8 +173,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <PWAProvider initialConfig={appConfig}>
             <WebsiteProvider>
               <AuthProvider>
-                <MainLayout>{children}</MainLayout>
-                <PWAInstaller />
+                <CartProvider>
+                  <MainLayout>{children}</MainLayout>
+                  <PWAInstaller />
+                  <DevelopmentToolbar />
+                </CartProvider>
               </AuthProvider>
             </WebsiteProvider>
           </PWAProvider>

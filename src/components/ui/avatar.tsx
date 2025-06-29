@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface AvatarProps {
   username: string;
@@ -7,23 +8,40 @@ interface AvatarProps {
 }
 
 export function Avatar({ username, size = 40, className = '' }: AvatarProps) {
+  const [imageError, setImageError] = useState(false);
+  const [fallbackError, setFallbackError] = useState(false);
+  
   const avatarUrl = `https://minotar.net/avatar/${username}/${size}`;
+  const fallbackUrl = `https://minotar.net/avatar/stevemain/${size}`;
+
+  // Eğer hem ana resim hem de fallback resim yüklenemezse, varsayılan bir div göster
+  if (imageError && fallbackError) {
+    return (
+      <div 
+        className={`bg-gray-300 flex items-center justify-center text-gray-600 font-medium ${className}`}
+        style={{ width: size, height: size }}
+      >
+        {username.charAt(0).toUpperCase()}
+      </div>
+    );
+  }
 
   return (
     <Image
-      src={avatarUrl}
+      src={imageError ? fallbackUrl : avatarUrl}
       alt={`${username} adlı kullanıcının avatarı`}
       width={size}
       height={size}
       className={`rounded-md ${className}`}
-      // Minotar gibi servisler her zaman stabil olmayabilir,
-      // bu yüzden hata durumunda gösterilecek bir yedek resim eklemek iyi bir pratiktir.
       onError={(e) => {
-        // Hedef elementin tipini kontrol ediyoruz
-        const target = e.target as HTMLImageElement;
-        // Yedek resim (steve)
-        target.onerror = null; // Sonsuz döngüyü engelle
-        target.src = `https://minotar.net/avatar/steve/${size}`;
+        if (!imageError) {
+          // İlk hata - fallback resmi dene
+          setImageError(true);
+        } else if (!fallbackError) {
+          // Fallback resmi de başarısız - sonsuz döngüyü engelle
+          setFallbackError(true);
+          e.currentTarget.onerror = null;
+        }
       }}
     />
   );

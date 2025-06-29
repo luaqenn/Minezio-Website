@@ -4,22 +4,17 @@ const nextConfig: NextConfig = {
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
-  generateEtags: false,
-  
-  // Turbopack configuration (stable in Next.js 15)
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
-  
-  // Bundle pages router dependencies
+
+  // Next.js 15 ile generateEtags varsayılan olarak true
+  generateEtags: process.env.NODE_ENV === 'production',
+
+  // React optimizations for Next.js 15
+  reactStrictMode: true,
+
+  // Bundle optimizations
   bundlePagesRouterDependencies: true,
-  
-  // Image optimizations
+
+  // Image optimizations - Next.js 15 ile güncellenmiş
   images: {
     remotePatterns: [
       {
@@ -43,141 +38,174 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    // Next.js 15'te formats artık desteklenmiyor, loader seviyesinde yapılıyor
+    minimumCacheTTL: process.env.NODE_ENV === 'development' ? 0 : 31536000, // 1 yıl
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Performance optimizations
+    // Optimize edilmiş boyutlar
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Next.js 15'te loader konfigürasyonu
     loader: 'default',
-    loaderFile: '',
-    disableStaticImages: false,
-    unoptimized: false,
+    unoptimized: false, // Her zaman optimizasyon kullan
   },
 
-  // Experimental features for performance
+  // Next.js 15 experimental features
   experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'react-icons'],
+    // CSS optimizasyonu
+    optimizeCss: process.env.NODE_ENV === 'production',
+
+    // Package import optimizasyonu
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-icons',
+      'react-icons',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      'clsx',
+      'tailwind-merge'
+    ],
+
+    // Cache ayarları
+    staleTimes: {
+      dynamic: process.env.NODE_ENV === 'development' ? 0 : 300, // 5 dakika
+      static: process.env.NODE_ENV === 'development' ? 0 : 31536000, // 1 yıl
+    },
+
+    // React 19 desteği
+    reactCompiler: process.env.NODE_ENV === 'production',
   },
 
-  // Webpack optimizations (only for non-Turbopack builds)
-  webpack: (config, { dev, isServer }) => {
-    // Only apply webpack optimizations when not using Turbopack
-    if (dev && process.env.TURBOPACK) {
-      return config;
-    }
+  // Turbopack configuration - Next.js 15'te turbo yerine turbopack kullanılıyor
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+    resolveAlias: {
+      '@': require('path').resolve(__dirname, './src'),
+    },
+  },
 
-    // Optimize bundle size
-    if (!dev && !isServer) {
+  // Webpack optimizations
+  webpack: (config, { dev, isServer, webpack }) => {
+    // Production optimizasyonları
+    if (!dev) {
+      // Tree shaking
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+
+      // Bundle splitting
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
-          vendor: {
+          framework: {
+            chunks: 'all',
+            name: 'framework',
+            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+            priority: 40,
+            enforce: true,
+          },
+          lib: {
             test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-            priority: 10,
-            enforce: true,
+            name: 'lib',
+            priority: 30,
+            minChunks: 1,
+            reuseExistingChunk: true,
           },
-          common: {
-            name: 'common',
+          commons: {
+            name: 'commons',
             minChunks: 2,
-            chunks: 'all',
-            enforce: true,
-            priority: 5,
-          },
-          // Separate React and React DOM
-          react: {
-            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-            name: 'react',
-            chunks: 'all',
             priority: 20,
+            reuseExistingChunk: true,
           },
-          // Separate icons
-          icons: {
-            test: /[\\/]node_modules[\\/](react-icons|lucide-react)[\\/]/,
-            name: 'icons',
-            chunks: 'all',
-            priority: 15,
+          shared: {
+            name: 'shared',
+            minChunks: 2,
+            priority: 10,
+            reuseExistingChunk: true,
           },
         },
       };
-
-      // Tree shaking optimization
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
     }
 
-    // Optimize images
-    config.module.rules.push({
-      test: /\.(png|jpe?g|gif|svg)$/i,
-      use: [
-        {
-          loader: 'image-webpack-loader',
-          options: {
-            mozjpeg: {
-              progressive: true,
-              quality: 65,
-            },
-            optipng: {
-              enabled: false,
-            },
-            pngquant: {
-              quality: [0.65, 0.90],
-              speed: 4,
-            },
-            gifsicle: {
-              interlaced: false,
-            },
-            webp: {
-              quality: 75,
-            },
-          },
-        },
-      ],
-    });
+    // Development'ta hızlı refresh için
+    if (dev) {
+      config.watchOptions = {
+        ignored: ['**/node_modules/**', '**/.git/**', '**/.next/**'],
+        poll: false,
+      };
+    }
 
-    // Performance optimizations
+    // Module resolve optimizasyonu
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
       net: false,
       tls: false,
+      crypto: false,
+    };
+
+    // Performance optimizasyonu
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname, './src'),
     };
 
     return config;
   },
 
-  // Headers for caching and security
+  // Headers for performance and security
   async headers() {
+    const securityHeaders = [
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'X-Frame-Options',
+        value: 'DENY',
+      },
+      {
+        key: 'X-XSS-Protection',
+        value: '1; mode=block',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=()',
+      },
+      {
+        key: 'X-DNS-Prefetch-Control',
+        value: 'on',
+      },
+    ];
+
+    const cacheHeaders = process.env.NODE_ENV === 'production'
+      ? [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, stale-while-revalidate=86400',
+        },
+      ]
+      : [
+        {
+          key: 'Cache-Control',
+          value: 'no-cache, no-store, must-revalidate',
+        },
+      ];
+
     return [
       {
         source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          // Performance headers
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on',
-          },
-        ],
+        headers: [...securityHeaders, ...cacheHeaders],
       },
       {
         source: '/_next/static/(.*)',
@@ -189,11 +217,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/_next/image(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
         source: '/images/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: 'public, max-age=31536000, stale-while-revalidate=86400',
           },
         ],
       },
@@ -202,14 +239,24 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=600',
+            value: 'public, max-age=300, s-maxage=600, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      // Font optimizasyonu
+      {
+        source: '/fonts/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
     ];
   },
 
-  // Redirects for performance
+  // Redirects
   async redirects() {
     return [
       {
@@ -220,19 +267,42 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Performance optimizations
+  // Compiler optimizations
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+    // React Server Components için
+    reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
-  
+
   // Output configuration
   output: 'standalone',
-  
-  // Trailing slash for better caching
+
+  // URL yapısı
   trailingSlash: false,
-  
-  // Asset prefix for CDN support
-  assetPrefix: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_CDN_URL : '',
+
+  // CDN desteği
+  assetPrefix: process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_CDN_URL || ''
+    : '',
+
+  // Logging optimizasyonu
+  logging: {
+    fetches: {
+      fullUrl: process.env.NODE_ENV === 'development',
+    },
+  },
+
+  // TypeScript strict mode
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  // ESLint strict mode
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
 };
 
 export default nextConfig;
