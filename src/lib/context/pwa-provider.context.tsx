@@ -20,6 +20,7 @@ interface PWAContextType {
   refreshConfig: () => Promise<void>;
   clearCache: () => Promise<void>;
   getCacheInfo: () => Promise<void>;
+  forceRefresh: () => void;
 }
 
 // Provider props türü
@@ -37,6 +38,7 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
   const [isInstalled, setIsInstalled] = useState<boolean>(false);
   const [swVersion, setSwVersion] = useState<string | null>(null);
   const [cacheInfo, setCacheInfo] = useState<Record<string, number> | null>(null);
+  const [forceRefreshKey, setForceRefreshKey] = useState<number>(0);
 
   useEffect(() => {
     // Service Worker kayıt ve yönetimi
@@ -99,6 +101,17 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
             registration.unregister();
           }
         });
+        
+        // Development ortamında cache temizleme
+        if ('caches' in window) {
+          caches.keys().then(function(cacheNames) {
+            return Promise.all(
+              cacheNames.map(function(cacheName) {
+                return caches.delete(cacheName);
+              })
+            );
+          });
+        }
       }
     }
 
@@ -145,6 +158,32 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
       setIsOnline(navigator.onLine);
     }
 
+    // Development ortamında hot reload sonrası cache temizleme
+    if (process.env.NODE_ENV === 'development') {
+      const handleBeforeUnload = () => {
+        // Sayfa yenilenmeden önce cache temizle
+        if ('caches' in window) {
+          caches.keys().then(function(cacheNames) {
+            return Promise.all(
+              cacheNames.map(function(cacheName) {
+                return caches.delete(cacheName);
+              })
+            );
+          });
+        }
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+
+      return () => {
+        if (typeof window !== "undefined") {
+          window.removeEventListener("online", handleOnline);
+          window.removeEventListener("offline", handleOffline);
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+        }
+      };
+    }
+
     return () => {
       if (typeof window !== "undefined") {
         window.removeEventListener("online", handleOnline);
@@ -159,6 +198,11 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     try {
       const response = await fetch("/api/app-config", {
         cache: "no-cache",
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       });
       if (response.ok) {
         const newConfig: AppConfig = await response.json();
@@ -200,6 +244,18 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
       });
       setCacheInfo(null);
     }
+    
+    // Browser cache'ini de temizle
+    if ('caches' in window) {
+      try {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+      } catch (error) {
+        // Sessizce hataları yoksay
+      }
+    }
   };
 
   // Cache bilgilerini alma fonksiyonu
@@ -219,6 +275,18 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     }
   };
 
+  // Zorla yenileme fonksiyonu
+  const forceRefresh = (): void => {
+    setForceRefreshKey(prev => prev + 1);
+    
+    // Development ortamında cache temizle ve sayfayı yenile
+    if (process.env.NODE_ENV === 'development') {
+      clearCache().then(() => {
+        window.location.reload();
+      });
+    }
+  };
+
   const value: PWAContextType = {
     config,
     loading,
@@ -229,9 +297,16 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
     refreshConfig,
     clearCache,
     getCacheInfo,
+    forceRefresh,
   };
 
-  return <PWAContext.Provider value={value}>{children}</PWAContext.Provider>;
+  return (
+    <PWAContext.Provider value={value}>
+      <div key={forceRefreshKey}>
+        {children}
+      </div>
+    </PWAContext.Provider>
+  );
 }
 
 // Custom hook

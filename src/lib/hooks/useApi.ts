@@ -78,7 +78,7 @@ export const useApi = ({
 
       const response = await axios.post<RefreshTokenResponse>(
         `${BACKEND_URL}/auth/refresh-token`,
-        { refreshToken }
+        { refresh_token: refreshToken }
       );
 
       localStorage.setItem('accessToken', response.data.accessToken);

@@ -5,6 +5,16 @@ if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.
   });
   self.addEventListener('activate', function(e) {
     self.registration.unregister();
+    // Development ortamında tüm cache'leri temizle
+    e.waitUntil(
+      caches.keys().then(function(cacheNames) {
+        return Promise.all(
+          cacheNames.map(function(cacheName) {
+            return caches.delete(cacheName);
+          })
+        );
+      })
+    );
   });
   // Diğer event'leri engelle
   self.addEventListener('fetch', function(e) {});
@@ -12,7 +22,7 @@ if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.
 }
 
 // Service Worker versiyonu - güncellemeler için artırın
-const CACHE_VERSION = "v2.0.1";
+const CACHE_VERSION = "v2.0.2";
 const STATIC_CACHE = `static-cache-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-cache-${CACHE_VERSION}`;
 const API_CACHE = `api-cache-${CACHE_VERSION}`;
@@ -160,7 +170,9 @@ async function handleAppConfigRequest(request) {
     const networkResponse = await fetch(request, {
       cache: 'no-cache',
       headers: {
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     });
 

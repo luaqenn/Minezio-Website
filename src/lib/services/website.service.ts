@@ -25,6 +25,17 @@ export interface VerifyLicenseKeyResponse {
   license: License;
 }
 
+export interface RedeemCodeRequest {
+  code: string;
+}
+
+export interface RedeemCodeResponse {
+  success: boolean;
+  message: string;
+  bonus?: number;
+  product?: any; // Ürün tipi daha sonra detaylandırılabilir
+}
+
 export const serverWebsiteService = () => {
   const createWebsite = async (data: CreateWebsiteRequest): Promise<Website> => {
     const response = await serverApi.post<Website>('/website/create', data);
@@ -44,6 +55,6 @@ export const serverWebsiteService = () => {
   return {
     createWebsite,
     verifyLicenseKey,
-    getWebsite
+    getWebsite,
   };
 };

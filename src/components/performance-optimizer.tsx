@@ -18,7 +18,7 @@ const LazyDiscordWidget = lazy(() => import('./widgets/discord-widget'));
 
 export function PerformanceOptimizer({ 
   children, 
-  enableMonitoring = true,
+  enableMonitoring = false,
   enableLazyLoading = true,
   fallback = <Loading show={true} message="Yükleniyor..." fullScreen={true} />
 }: PerformanceOptimizerProps) {
@@ -27,7 +27,6 @@ export function PerformanceOptimizer({
     reportToAnalytics: enableMonitoring,
     onMetrics: (metrics) => {
       if (enableMonitoring) {
-        console.log('Performance Metrics:', metrics);
       }
     }
   });
@@ -43,14 +42,6 @@ export function PerformanceOptimizer({
   useEffect(() => {
     if (!enableMonitoring) return;
 
-    // Log performance metrics to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.group('Performance Monitoring');
-      console.log('Network Status:', { isOnline, connection });
-      console.log('Memory Usage:', memoryInfo);
-      console.log('Performance Metrics:', performanceMetrics);
-      console.groupEnd();
-    }
 
     // Report to analytics if available
     if (typeof window !== 'undefined' && (window as any).gtag) {

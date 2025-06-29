@@ -115,3 +115,77 @@ export function lazyLoad(
     })
   );
 }
+
+/**
+ * Development ortamında cache temizleme
+ */
+export const clearDevelopmentCache = async (): Promise<void> => {
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      // Browser cache'ini temizle
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+      }
+
+      // Service Worker cache'ini temizle
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: "CLEAR_CACHE",
+        });
+      }
+
+      // Local Storage'ı temizle (opsiyonel)
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+
+      console.log('Development cache cleared');
+    } catch (error) {
+      console.error('Error clearing development cache:', error);
+    }
+  }
+};
+
+/**
+ * Component'i zorla yenileme
+ */
+export const forceComponentRefresh = (): void => {
+  if (process.env.NODE_ENV === 'development') {
+    // Sayfayı yenile
+    window.location.reload();
+  }
+};
+
+/**
+ * Hot reload sonrası cache temizleme
+ */
+export const handleHotReload = (): void => {
+  if (process.env.NODE_ENV === 'development') {
+    // Hot reload sonrası cache temizle
+    clearDevelopmentCache();
+    
+    // Component'leri yenile
+    setTimeout(() => {
+      forceComponentRefresh();
+    }, 100);
+  }
+};
+
+/**
+ * Development ortamında cache kontrolü
+ */
+export const isDevelopmentCacheEnabled = (): boolean => {
+  return process.env.NODE_ENV === 'development';
+};
+
+/**
+ * Cache temizleme ve yenileme
+ */
+export const refreshAndClearCache = async (): Promise<void> => {
+  await clearDevelopmentCache();
+  forceComponentRefresh();
+};
