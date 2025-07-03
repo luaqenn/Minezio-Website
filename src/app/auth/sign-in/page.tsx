@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AuthContext } from "@/lib/context/auth.context";
 import { useContext } from "react";
 import Image from "next/image";
@@ -14,6 +14,7 @@ export default function SignIn() {
   const { signIn } = useContext(AuthContext);
   const { website } = useContext(WebsiteContext);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,7 +32,8 @@ export default function SignIn() {
           showConfirmButton: false,
           timerProgressBar: true,
         });
-        router.push("/");
+        const returnPath = searchParams.get("return");
+        router.push(returnPath && returnPath.startsWith("/") ? returnPath : "/");
       })
       .catch((error) => {
         withReactContent(Swal).fire({

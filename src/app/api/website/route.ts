@@ -10,6 +10,8 @@ export async function GET() {
 
     if (license.success) {
       const website = await getWebsite({ id: license.website.id || "" });
+      console.log(website);
+
 
       return NextResponse.json({
         success: true,
@@ -19,6 +21,8 @@ export async function GET() {
     } else {
       const website = await getWebsite({ id: WEBSITE_ID || "" });
 
+      console.log(website);
+
       return NextResponse.json({
         success: true,
         website,
@@ -26,6 +30,7 @@ export async function GET() {
       });
     }
   } catch (error: any) {
+    console.error(error);
 
     return NextResponse.json(
       {

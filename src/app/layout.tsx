@@ -3,26 +3,25 @@ import { WebsiteProvider } from "@/lib/context/website.context";
 import { AuthProvider } from "@/lib/context/auth.context";
 import { PWAProvider } from "@/lib/context/pwa-provider.context";
 import PWAInstaller from "@/components/pwa-installer";
-import { DevelopmentToolbar } from "@/components/development-toolbar";
 import "@/styles/globals.css";
 import { MainLayout } from "@/components/main-layout";
 import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import type { AppConfig } from "@/lib/types/app";
-import { PerformanceOptimizer, PerformanceMonitor } from "@/components/performance-optimizer";
 import { CartProvider } from "@/lib/context/cart.context";
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 
 async function getAppConfig(): Promise<AppConfig> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    const response = await fetch(`${baseUrl}/api/app-config`, {
-      next: {
+    const fetchOptions: any = {};
+    if (process.env.NODE_ENV !== 'development') {
+      fetchOptions.next = {
         revalidate: 3600,
         tags: ["app-config"],
-      },
-    });
-
+      };
+    }
+    const response = await fetch(`${baseUrl}/api/app-config`, fetchOptions);
     if (!response.ok) {
       throw new Error(`Config API hatası: ${response.status}`);
     }
@@ -157,40 +156,44 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
 
         {/* Preload critical resources */}
-        <link rel="preload" href="/api/manifest" as="fetch" crossOrigin="anonymous" />
-        <link rel="preload" href={appConfig.favicon} as="image" />
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <link rel="preload" href="/api/manifest" as="fetch" crossOrigin="anonymous" />
+            <link rel="preload" href={appConfig.favicon} as="image" />
+          </>
+        )}
 
         {/* Resource hints */}
-        <link rel="prefetch" href="/store" />
-        <link rel="prefetch" href="/cart" />
-        <link rel="prefetch" href="/chest" />
-        <link rel="prefetch" href="/profile" />
-        <link rel="prefetch" href="/redeem" />
-        <link rel="prefetch" href="/wallet" />
-        <link rel="prefetch" href="/auth/sign-in" />
-        <link rel="prefetch" href="/auth/sign-up" />
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <link rel="prefetch" href="/store" />
+            <link rel="prefetch" href="/cart" />
+            <link rel="prefetch" href="/chest" />
+            <link rel="prefetch" href="/profile" />
+            <link rel="prefetch" href="/redeem" />
+            <link rel="prefetch" href="/wallet" />
+            <link rel="prefetch" href="/auth/sign-in" />
+            <link rel="prefetch" href="/auth/sign-up" />
+          </>
+        )}
 
         {/* Performance optimizations */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
       <body>
-        <PerformanceOptimizer enableMonitoring={process.env.NODE_ENV === 'development'}>
-          <PWAProvider initialConfig={appConfig}>
-            <WebsiteProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
-                    <MainLayout>{children}</MainLayout>
-                    <PWAInstaller />
-                  </NextThemesProvider>
-                  <DevelopmentToolbar />
-                </CartProvider>
-              </AuthProvider>
-            </WebsiteProvider>
-          </PWAProvider>
-          <PerformanceMonitor />
-        </PerformanceOptimizer>
+        <PWAProvider initialConfig={appConfig}>
+          <WebsiteProvider>
+            <AuthProvider>
+              <CartProvider>
+                <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+                  <MainLayout>{children}</MainLayout>
+                  <PWAInstaller />
+                </NextThemesProvider>
+              </CartProvider>
+            </AuthProvider>
+          </WebsiteProvider>
+        </PWAProvider>
 
       </body>
       {appConfig.gaId && (

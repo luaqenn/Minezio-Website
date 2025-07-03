@@ -39,7 +39,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Manifest'i JSON olarak döndür
     return NextResponse.json(manifest, {
       headers: {
-        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+        "Cache-Control": process.env.NODE_ENV === 'development'
+          ? "no-cache, no-store, must-revalidate"
+          : "public, max-age=3600, stale-while-revalidate=86400",
       },
     });
   } catch (error) {
@@ -49,7 +51,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(defaultManifest, {
       headers: {
-        "Cache-Control": "public, max-age=300",
+        "Cache-Control": process.env.NODE_ENV === 'development'
+          ? "no-cache, no-store, must-revalidate"
+          : "public, max-age=300",
       },
     });
   }

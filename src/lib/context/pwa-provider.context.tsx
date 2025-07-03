@@ -41,6 +41,19 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
   const [forceRefreshKey, setForceRefreshKey] = useState<number>(0);
 
   useEffect(() => {
+    // Development ortamında her mount'ta cache temizle
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+      if ('caches' in window) {
+        caches.keys().then(function(cacheNames) {
+          return Promise.all(
+            cacheNames.map(function(cacheName) {
+              return caches.delete(cacheName);
+            })
+          );
+        });
+      }
+    }
+
     // Service Worker kayıt ve yönetimi
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
       let swRegistration: ServiceWorkerRegistration | null = null;
