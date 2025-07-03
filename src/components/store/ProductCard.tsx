@@ -109,8 +109,8 @@ export default function ProductCard({ item }: { item: Product }) {
         hover:shadow-xl hover:-translate-y-1 cursor-pointer 
         border-2 rounded-lg
         ${isOutOfStock
-          ? "border-red-200 bg-gray-50 opacity-80"
-          : "border-gray-200 hover:border-blue-300 bg-white"
+          ? "border-red-200 dark:border-red-700 bg-gray-50 dark:bg-gray-900 opacity-80"
+          : "border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 bg-white dark:bg-gray-900"
         }
       `}
     >
@@ -118,7 +118,7 @@ export default function ProductCard({ item }: { item: Product }) {
         {/* Header with Image and Badges */}
         <div className="relative w-full">
           {/* Image Container - Responsive aspect ratio */}
-          <div className="relative w-full aspect-square bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden">
+          <div className="relative w-full aspect-square bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 overflow-hidden">
             {item.image ? (
               <img
                 src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image}`}
@@ -126,7 +126,7 @@ export default function ProductCard({ item }: { item: Product }) {
                 className="w-full h-full object-contain p-4 drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center text-gray-400 h-full w-full">
+              <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 h-full w-full">
                 <ImageIcon className="h-12 w-12 mb-2" />
                 <span className="text-sm">Resim Yok</span>
               </div>
@@ -134,7 +134,7 @@ export default function ProductCard({ item }: { item: Product }) {
             
             {/* Overlay for hover effect */}
             {!isOutOfStock && (
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 dark:from-blue-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             )}
           </div>
 
@@ -143,7 +143,7 @@ export default function ProductCard({ item }: { item: Product }) {
             {isOutOfStock ? (
               <Badge 
                 variant="destructive" 
-                className="bg-red-500 hover:bg-red-600 text-white border-red-600 shadow-lg text-xs font-medium px-2 py-1 whitespace-nowrap"
+                className="bg-red-500 dark:bg-red-700 hover:bg-red-600 dark:hover:bg-red-800 text-white border-red-600 dark:border-red-800 shadow-lg text-xs font-medium px-2 py-1 whitespace-nowrap"
               >
                 <AlertTriangle className="h-3 w-3 mr-1 flex-shrink-0" />
                 <span className="truncate">Stokta Yok</span>
@@ -151,7 +151,7 @@ export default function ProductCard({ item }: { item: Product }) {
             ) : isLowStock ? (
               <Badge 
                 variant="secondary" 
-                className="bg-yellow-500 hover:bg-yellow-500 text-white border-amber-600 shadow-md text-xs font-medium px-2 py-1 whitespace-nowrap"
+                className="bg-yellow-500 dark:bg-yellow-700 hover:bg-yellow-500 dark:hover:bg-yellow-600 text-white border-amber-600 dark:border-amber-800 shadow-md text-xs font-medium px-2 py-1 whitespace-nowrap"
               >
                 <Package className="h-3 w-3 mr-1 flex-shrink-0" />
                 <span className="truncate">Son {item.stock}</span>
@@ -162,7 +162,7 @@ export default function ProductCard({ item }: { item: Product }) {
           {/* Discount Badge - Top right */}
           {hasDiscount && (
             <div className="absolute top-2 right-2 z-10">
-              <Badge className="bg-red-500 text-white text-xs font-medium px-2 py-1 shadow-lg whitespace-nowrap">
+              <Badge className="bg-red-500 dark:bg-red-700 text-white text-xs font-medium px-2 py-1 shadow-lg whitespace-nowrap">
                 {item.discountType === "percentage"
                   ? `%${discountValue}`
                   : `${discountAmount.toFixed(0)}₺`}
@@ -175,7 +175,7 @@ export default function ProductCard({ item }: { item: Product }) {
         <div className="flex flex-col flex-1 p-4 min-h-0">
           {/* Product Name - Fixed height container */}
           <div className="h-16 flex items-center justify-center mb-3">
-            <h3 className="text-base font-semibold text-gray-800 text-center line-clamp-2 group-hover:text-blue-600 transition-colors leading-tight">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 text-center line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
               {item.name}
             </h3>
           </div>
@@ -184,17 +184,17 @@ export default function ProductCard({ item }: { item: Product }) {
           <div className="flex flex-col items-center justify-center mb-4 min-h-[4rem]">
             {hasDiscount ? (
               <div className="flex flex-col items-center space-y-1">
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                   {originalPrice.toFixed(2)} ₺
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-green-600">
+                  <span className="text-xl font-bold text-green-600 dark:text-green-400">
                     {finalPrice.toFixed(2)} ₺
                   </span>
                 </div>
               </div>
             ) : (
-              <span className="text-xl font-bold text-gray-800">
+              <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
                 {originalPrice.toFixed(2)} ₺
               </span>
             )}
@@ -208,10 +208,10 @@ export default function ProductCard({ item }: { item: Product }) {
               className={`
                 w-full h-10 transition-all duration-200 ease-in-out hover:scale-[1.02]
                 ${isOutOfStock
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-300 cursor-not-allowed"
                   : hasDiscount
-                  ? "bg-green-600 hover:bg-green-700 text-white"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                  ? "bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white"
+                  : "bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white"
                 }
               `}
             >
@@ -225,10 +225,10 @@ export default function ProductCard({ item }: { item: Product }) {
               className={`
                 w-full h-10 transition-all duration-300 ease-in-out hover:scale-[1.02]
                 ${isOutOfStock
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300"
+                  ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-300 cursor-not-allowed border-gray-300 dark:border-gray-700"
                   : addedToCart
-                  ? "bg-emerald-500 text-white cursor-default border-emerald-500"
-                  : "text-orange-600 border-orange-500 hover:bg-orange-50 hover:text-orange-700 bg-white"
+                  ? "bg-emerald-500 dark:bg-emerald-700 text-white cursor-default border-emerald-500 dark:border-emerald-700"
+                  : "text-orange-600 dark:text-orange-400 border-orange-500 dark:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900 hover:text-orange-700 dark:hover:text-orange-300 bg-white dark:bg-gray-900"
                 }
               `}
               variant="outline"

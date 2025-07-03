@@ -44,30 +44,30 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col md:flex-row">
+    <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900 flex flex-col md:flex-row">
       {/* Left Column: Image and Welcome Text (Visible on Medium screens and up) */}
-      <div className="relative hidden md:flex w-full md:w-1/2 flex-col items-center justify-center text-white text-center p-8 bg-gradient-to-br from-indigo-500 to-blue-600">
+      <div className="relative hidden md:flex w-full md:w-1/2 flex-col items-center justify-center text-white text-center p-8 bg-gradient-to-br from-sky-400 to-blue-600 dark:from-gray-900 dark:to-gray-800">
         <div className="absolute inset-0">
           <Image
             src={headerBg}
             alt="Arka Plan"
             layout="fill"
             objectFit="cover"
-            className="opacity-20"
+            className="opacity-20 dark:opacity-30"
             priority
           />
         </div>
         <div className="relative z-10 flex flex-col items-center">
-           <div className="w-48 h-16 relative mb-8">
-             <Image
-                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
-                  website?.image || "/images/default-logo.png"
+          <div className="relative mb-8">
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.image || "/images/default-logo.png"
                 }`}
-                alt="Logo"
-                layout="fill"
-                objectFit="contain"
-             />
-           </div>
+              alt="Logo"
+              width={200}
+              height={200}
+              objectFit="contain"
+            />
+          </div>
           <h1 className="text-4xl font-bold tracking-tight">Tekrar Hoş Geldiniz!</h1>
           <p className="mt-4 text-lg max-w-sm">
             {website?.name} içindeki tüm özelliklere ve hesabınıza erişin!
@@ -76,24 +76,23 @@ export default function SignIn() {
       </div>
 
       {/* Right Column: Sign-In Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12" style={{ backgroundImage: "url('/images/background.png')" }}>
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-white dark:bg-gray-900" style={{ backgroundImage: "url('/images/background.png')" }}>
         <div className="w-full max-w-md">
           <div className="md:hidden flex justify-center mb-8">
-             <div className="w-40 h-12 relative">
-                <Image
-                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
-                      website?.image || "/images/default-logo.png"
-                    }`}
-                    alt="Logo"
-                    layout="fill"
-                    objectFit="contain"
-                />
+            <div className="w-40 h-12 relative">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.image || "/images/default-logo.png"
+                  }`}
+                alt="Logo"
+                layout="fill"
+                objectFit="contain"
+              />
             </div>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 text-center">
             Giriş Yap
           </h2>
-          <p className="text-gray-600 text-center mt-2 mb-8">
+          <p className="text-gray-600 dark:text-gray-300 text-center mt-2 mb-8">
             Hesabınıza erişmek için bilgilerinizi girin.
           </p>
 
@@ -111,7 +110,7 @@ export default function SignIn() {
                   name="username"
                   type="text"
                   required
-                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Kullanıcı Adı"
                 />
               </div>
@@ -130,7 +129,7 @@ export default function SignIn() {
                   name="password"
                   type="password"
                   required
-                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="form-input block w-full pl-10 pr-3 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Şifre"
                 />
               </div>
@@ -142,13 +141,13 @@ export default function SignIn() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-gray-900">
+                <label htmlFor="remember-me" className="ml-2 block text-gray-900 dark:text-gray-200">
                   Beni hatırla
                 </label>
               </div>
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <a href="#" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">
                 Şifremi unuttum
               </a>
             </div>
@@ -161,16 +160,16 @@ export default function SignIn() {
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-300">
             Hesabınız yok mu?{' '}
-            <a href="/auth/sign-up" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="/auth/sign-up" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">
               Hemen Kayıt Ol
             </a>
           </p>
 
-           <p className="text-center mt-6 text-xs text-gray-500">
-             Powered by Crafter
-           </p>
+          <p className="text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
+            Powered by Crafter
+          </p>
         </div>
       </div>
     </div>

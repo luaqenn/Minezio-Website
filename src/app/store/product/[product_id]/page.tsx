@@ -56,38 +56,6 @@ import NotFound from "@/components/not-found";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 
-// Örnek tiplerin projenizdeki tanımlarla eşleştiğinden emin olun
-/*
-export type Product = {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  category: string; // Category ID
-  server_id: string;
-  tags: string[];
-  stock: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Category = {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  server_id: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Server = {
-    id: string;
-    name: string;
-}
-*/
-
 export default function ProductPage({
   params,
 }: {
@@ -109,7 +77,6 @@ export default function ProductPage({
   const { getCategory } = useCategoryService();
   const { getServer } = useServerService();
   const { purchaseProduct } = useMarketplaceService();
-  const { website } = useContext(WebsiteContext);
   const { isAuthenticated } = useContext(AuthContext);
   const { addToCart } = useCart();
   const router = useRouter();
@@ -127,6 +94,7 @@ export default function ProductPage({
 
   const isOutOfStock = product?.stock === 0;
   const isLowStock = product?.stock && product.stock > 0 && product.stock <= 10;
+  const isUnlimitedStock = product?.stock === -1;
 
   // Veri Çekme Mantığı
   useEffect(() => {
@@ -232,24 +200,24 @@ export default function ProductPage({
 
   // Arayüz (JSX)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
+    <div className="min-h-screen">
       <div className="container mx-auto max-w-7xl px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <Button
             variant="ghost"
             onClick={() => router.back()}
-            className="mb-4 text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-colors"
+            className="mb-4 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" /> Geri Dön
           </Button>
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 mb-2">
                 {product.name}
               </h1>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
                 <span className="flex items-center gap-1">
                   <Eye className="h-4 w-4" />
                   Ürün Detayları
@@ -265,10 +233,10 @@ export default function ProductPage({
             
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="text-gray-600 hover:text-gray-800">
+              <Button variant="outline" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
                 <Heart className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="text-gray-600 hover:text-gray-800">
+              <Button variant="outline" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
                 <Share2 className="h-4 w-4" />
               </Button>
             </div>
@@ -279,8 +247,8 @@ export default function ProductPage({
           {/* Sol Taraf: Görsel ve Açıklama */}
           <div className="lg:col-span-2 space-y-8">
             {/* Ürün Görseli */}
-            <Card className="overflow-hidden shadow-xl border-0 bg-gradient-to-br from-white to-blue-50/50">
-              <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+            <Card className="overflow-hidden shadow-xl border-0 bg-gradient-to-br from-white to-blue-50/50 dark:from-gray-900 dark:to-blue-900/50">
+              <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 flex items-center justify-center">
                 {product.image ? (
                   <img
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.image}`}
@@ -288,7 +256,7 @@ export default function ProductPage({
                     className="w-full h-full object-contain p-8 drop-shadow-lg hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
-                  <div className="flex flex-col items-center justify-center text-gray-400">
+                  <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
                     <ImageIcon className="h-16 w-16 mb-2" />
                     <span className="text-sm">Resim Yok</span>
                   </div>
@@ -296,10 +264,18 @@ export default function ProductPage({
                 
                 {/* Stok Durumu Badge */}
                 <div className="absolute top-4 left-4 z-10">
-                  {isOutOfStock ? (
+                  {isUnlimitedStock ? (
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-green-500 dark:bg-green-700 text-white border-green-600 dark:border-green-800 shadow-md text-xs font-medium px-3 py-1"
+                    >
+                      <Package className="h-3 w-3 mr-1 flex-shrink-0" />
+                      Sınırsız
+                    </Badge>
+                  ) : isOutOfStock ? (
                     <Badge 
                       variant="destructive" 
-                      className="bg-red-500 hover:bg-red-600 text-white border-red-600 shadow-lg text-xs font-medium px-3 py-1"
+                      className="bg-red-500 dark:bg-red-700 hover:bg-red-600 dark:hover:bg-red-800 text-white border-red-600 dark:border-red-800 shadow-lg text-xs font-medium px-3 py-1"
                     >
                       <AlertTriangle className="h-3 w-3 mr-1 flex-shrink-0" />
                       Stokta Yok
@@ -307,7 +283,7 @@ export default function ProductPage({
                   ) : isLowStock ? (
                     <Badge 
                       variant="secondary" 
-                      className="bg-yellow-500 hover:bg-yellow-500 text-white border-amber-600 shadow-md text-xs font-medium px-3 py-1"
+                      className="bg-yellow-500 dark:bg-yellow-700 hover:bg-yellow-500 dark:hover:bg-yellow-600 text-white border-amber-600 dark:border-amber-800 shadow-md text-xs font-medium px-3 py-1"
                     >
                       <Package className="h-3 w-3 mr-1 flex-shrink-0" />
                       Son {product.stock}
@@ -318,7 +294,7 @@ export default function ProductPage({
                 {/* İndirim Badge */}
                 {hasDiscount && (
                   <div className="absolute top-4 right-4 z-10">
-                    <Badge className="bg-red-500 text-white text-xs font-medium px-3 py-1 shadow-lg">
+                    <Badge className="bg-red-500 dark:bg-red-700 text-white text-xs font-medium px-3 py-1 shadow-lg">
                       {product.discountType === "percentage"
                         ? `%${discountValue}`
                         : `${discountAmount.toFixed(0)}₺`}
@@ -329,15 +305,15 @@ export default function ProductPage({
             </Card>
 
             {/* Ürün Açıklaması */}
-            <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-purple-50/50">
+            <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-purple-50/50 dark:from-gray-900 dark:to-purple-900/50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800">
+                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 dark:text-gray-100">
                   <NotebookText className="w-6 h-6 text-purple-600" />
                   Ürün Açıklaması
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 leading-relaxed text-base">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-base">
                   {product.description ||
                     "Bu ürün için bir açıklama girilmemiş."}
                 </p>
@@ -345,13 +321,13 @@ export default function ProductPage({
                 {/* Etiketler Bölümü */}
                 {product.tags && product.tags.length > 0 && (
                   <div className="mt-6">
-                    <h4 className="font-semibold mb-3 flex items-center gap-2 text-gray-700">
+                    <h4 className="font-semibold mb-3 flex items-center gap-2 text-gray-700 dark:text-gray-200">
                       <Tags className="w-5 h-5 text-purple-500" />
                       Etiketler
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {product.tags.map((tag) => (
-                        <Badge key={tag} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100">
+                        <Badge key={tag} variant="outline" className="bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700 hover:bg-purple-100 dark:hover:bg-purple-800">
                           {tag}
                         </Badge>
                       ))}
@@ -365,19 +341,19 @@ export default function ProductPage({
           {/* Sağ Taraf: Satın Alma ve Bilgiler */}
           <div className="lg:col-span-1 space-y-8">
             {/* Fiyat Bilgisi */}
-            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 shadow-xl border-0">
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 shadow-xl border-0 dark:bg-gray-900/80">
               <CardContent className="p-6">
                 <div className="space-y-3">
                   {hasDiscount ? (
                     <div className="space-y-2">
-                      <span className="text-lg text-gray-500 line-through">
+                      <span className="text-lg text-gray-500 dark:text-gray-400 line-through">
                         {originalPrice.toFixed(2)} ₺
                       </span>
                       <div className="flex items-center gap-3">
-                        <span className="text-4xl font-extrabold text-green-600">
+                        <span className="text-4xl font-extrabold text-green-600 dark:text-green-400">
                           {finalPrice.toFixed(2)} ₺
                         </span>
-                        <Badge className="bg-red-500 text-white text-sm font-medium px-3 py-1">
+                        <Badge className="bg-red-500 dark:bg-red-700 text-white text-sm font-medium px-3 py-1">
                           {product.discountType === "percentage"
                             ? `%${discountValue} İndirim`
                             : `${discountAmount.toFixed(0)}₺ İndirim`}
@@ -385,7 +361,7 @@ export default function ProductPage({
                       </div>
                     </div>
                   ) : (
-                    <span className="text-4xl font-extrabold text-blue-600">
+                    <span className="text-4xl font-extrabold text-blue-600 dark:text-blue-400">
                       {originalPrice.toFixed(2)} ₺
                     </span>
                   )}
@@ -394,10 +370,10 @@ export default function ProductPage({
             </Card>
 
             {/* Satın Alma Kartı */}
-            <Card className="bg-gradient-to-br from-green-50 to-blue-50 shadow-xl border-0">
+            <Card className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900 dark:to-blue-900 shadow-xl border-0 dark:bg-gray-900/80">
               <CardHeader>
-                <CardTitle className="text-xl text-gray-800">Hemen Sahip Ol</CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardTitle className="text-xl text-gray-800 dark:text-gray-100">Hemen Sahip Ol</CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-300">
                   Güvenli ve hızlı bir şekilde satın al.
                 </CardDescription>
               </CardHeader>
@@ -409,10 +385,10 @@ export default function ProductPage({
                   className={`
                     w-full h-12 text-lg font-medium transition-all duration-200 ease-in-out hover:scale-[1.02]
                     ${isOutOfStock
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-300 cursor-not-allowed"
                       : hasDiscount
-                      ? "bg-green-600 hover:bg-green-700 text-white shadow-lg"
-                      : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                      ? "bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white shadow-lg"
+                      : "bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white shadow-lg"
                     }
                   `}
                 >
@@ -432,10 +408,10 @@ export default function ProductPage({
                   className={`
                     w-full h-12 text-lg font-medium transition-all duration-300 ease-in-out hover:scale-[1.02]
                     ${isOutOfStock
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300"
+                      ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-300 cursor-not-allowed border-gray-300 dark:border-gray-700"
                       : addedToCart
-                      ? "bg-emerald-500 text-white cursor-default border-emerald-500"
-                      : "text-orange-600 border-orange-500 hover:bg-orange-50 hover:text-orange-700 bg-white"
+                      ? "bg-emerald-500 dark:bg-emerald-700 text-white cursor-default border-emerald-500 dark:border-emerald-700"
+                      : "text-orange-600 dark:text-orange-400 border-orange-500 dark:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900 hover:text-orange-700 dark:hover:text-orange-300 bg-white dark:bg-gray-900"
                     }
                   `}
                 >
@@ -450,55 +426,63 @@ export default function ProductPage({
             </Card>
 
             {/* Ürün Bilgileri */}
-            <Card className="shadow-xl border-0 bg-white">
+            <Card className="shadow-xl border-0 bg-white dark:bg-gray-900">
               <CardHeader>
-                <CardTitle className="text-lg text-gray-800">Ürün Bilgileri</CardTitle>
+                <CardTitle className="text-lg text-gray-800 dark:text-gray-100">Ürün Bilgileri</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-gray-600 flex items-center gap-2">
+                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <span className="text-gray-600 dark:text-gray-300 flex items-center gap-2">
                     <Tag className="w-4 h-4 text-purple-500" />
                     Kategori
                   </span>
                   <Badge
                     variant="secondary"
-                    className="cursor-pointer bg-purple-100 text-purple-800 hover:bg-purple-200 transition-colors"
+                    className="cursor-pointer bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
                     onClick={() => category && router.push(`/store/category/${category.id}`)}
                   >
                     {category?.name || "Yükleniyor..."}
                   </Badge>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-gray-600 flex items-center gap-2">
+                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <span className="text-gray-600 dark:text-gray-300 flex items-center gap-2">
                     <ServerIcon className="w-4 h-4 text-blue-500" />
                     Sunucu
                   </span>
-                  <span className="font-medium text-gray-800">
+                  <span className="font-medium text-gray-800 dark:text-gray-100">
                     {server?.name || "Yükleniyor..."}
                   </span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-gray-600 flex items-center gap-2">
+                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <span className="text-gray-600 dark:text-gray-300 flex items-center gap-2">
                     <PackageCheck className="w-4 h-4 text-green-500" />
                     Stok Durumu
                   </span>
                   <span
                     className={`font-medium ${
-                      isOutOfStock ? "text-red-600" : "text-green-600"
+                      isUnlimitedStock
+                        ? "text-green-600 dark:text-green-400"
+                        : isOutOfStock
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-green-600 dark:text-green-400"
                     }`}
                   >
-                    {isOutOfStock ? "Tükendi" : `${product.stock} Adet`}
+                    {isUnlimitedStock
+                      ? "Sınırsız"
+                      : isOutOfStock
+                      ? "Tükendi"
+                      : `${product.stock} Adet`}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-gray-600 flex items-center gap-2">
+                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <span className="text-gray-600 dark:text-gray-300 flex items-center gap-2">
                     <Star className="w-4 h-4 text-yellow-500" />
                     Ürün ID
                   </span>
-                  <span className="font-mono text-xs text-gray-500">
+                  <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
                     {product.id}
                   </span>
                 </div>

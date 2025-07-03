@@ -367,25 +367,25 @@ export default function BalancePage() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <Wallet className="h-8 w-8 text-green-600" />
-            <h1 className="text-3xl font-bold text-gray-900">
+            <Wallet className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
               Cüzdanına Bakiye Yükle
             </h1>
           </div>
 
           {/* Current Balance Card */}
-          <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200 mb-6">
+          <Card className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 border-green-200 dark:border-green-700 mb-6">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600 mb-1">
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400 mb-1">
                     Mevcut Bakiye
                   </p>
-                  <p className="text-4xl font-bold text-green-800">
+                  <p className="text-4xl font-bold text-green-800 dark:text-green-200">
                     {balance} TL
                   </p>
                 </div>
-                <TrendingUp className="h-12 w-12 text-green-500" />
+                <TrendingUp className="h-12 w-12 text-green-500 dark:text-green-400" />
               </div>
             </CardContent>
           </Card>
@@ -393,9 +393,9 @@ export default function BalancePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Amount Selection */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg bg-white dark:bg-gray-900">
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <Plus className="h-5 w-5" />
                 Yükleme Miktarı
               </CardTitle>
@@ -405,8 +405,8 @@ export default function BalancePage() {
             <CardContent className="p-6">
               <div className="space-y-4">
                 {/* Kullanıcı Bilgileri */}
-                <div className="space-y-4 pb-4 border-b border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-800 mb-3">
+                <div className="space-y-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-3">
                     Kullanıcı Bilgileri
                   </h3>
 
@@ -414,7 +414,7 @@ export default function BalancePage() {
                     <div>
                       <Label
                         htmlFor="first-name"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-gray-700 dark:text-gray-200"
                       >
                         İsim *
                       </Label>
@@ -436,7 +436,7 @@ export default function BalancePage() {
                     <div>
                       <Label
                         htmlFor="last-name"
-                        className="text-sm font-medium text-gray-700"
+                        className="text-sm font-medium text-gray-700 dark:text-gray-200"
                       >
                         Soyisim *
                       </Label>
@@ -456,7 +456,7 @@ export default function BalancePage() {
                   <div>
                     <Label
                       htmlFor="username"
-                      className="text-sm font-medium text-gray-700"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-200"
                     >
                       Kullanıcı Adı
                     </Label>
@@ -465,9 +465,9 @@ export default function BalancePage() {
                       type="text"
                       value={user?.username || "demo"}
                       disabled
-                      className="mt-1 bg-gray-100 cursor-not-allowed"
+                      className="mt-1 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       Bu alan değiştirilemez
                     </p>
                   </div>
@@ -475,7 +475,7 @@ export default function BalancePage() {
                   <div>
                     <Label
                       htmlFor="email"
-                      className="text-sm font-medium text-gray-700"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-200"
                     >
                       E-mail Adresi *
                     </Label>
@@ -494,7 +494,7 @@ export default function BalancePage() {
                   <div>
                     <Label
                       htmlFor="phone"
-                      className="text-sm font-medium text-gray-700"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-200"
                     >
                       Telefon Numarası *
                     </Label>
@@ -515,7 +515,7 @@ export default function BalancePage() {
                 <div>
                   <Label
                     htmlFor="custom-amount"
-                    className="text-sm font-medium text-gray-700"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-200"
                   >
                     Yükleme Miktarı (TL) *
                   </Label>
@@ -530,7 +530,7 @@ export default function BalancePage() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-3 block">
                     Hızlı Seçim
                   </Label>
                   <div className="grid grid-cols-3 gap-3">
@@ -543,7 +543,7 @@ export default function BalancePage() {
                             : "outline"
                         }
                         onClick={() => setSelectedAmount(amount.toString())}
-                        className="h-12"
+                        className="h-12 dark:bg-gray-900 dark:text-gray-100"
                       >
                         {amount} TL
                       </Button>
@@ -555,9 +555,9 @@ export default function BalancePage() {
           </Card>
 
           {/* Payment Methods */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg bg-white dark:bg-gray-900">
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <CreditCard className="h-5 w-5" />
                 Ödeme Yöntemi
               </CardTitle>
@@ -568,21 +568,21 @@ export default function BalancePage() {
               {isLoadingProviders ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
-                    <p className="text-sm text-gray-600">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mx-auto mb-2"></div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       Ödeme yöntemleri yükleniyor...
                     </p>
                   </div>
                 </div>
               ) : paymentProviders.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     Aktif ödeme yöntemi bulunamadı.
                   </p>
                   <Button
                     onClick={fetchPaymentProviders}
                     variant="outline"
-                    className="mt-2"
+                    className="mt-2 dark:bg-gray-900 dark:text-gray-100"
                   >
                     Tekrar Dene
                   </Button>
@@ -594,29 +594,29 @@ export default function BalancePage() {
                       key={provider.id}
                       className={`p-4 border rounded-lg cursor-pointer transition-all ${
                         selectedPaymentProvider === provider.id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                       onClick={() => setSelectedPaymentProvider(provider.id)}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <CreditCard className="h-5 w-5 text-gray-600" />
+                          <CreditCard className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
                               {provider.name}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 dark:text-gray-300">
                               {provider.description}
                             </p>
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                               Min: {provider.minAmount} TL - Max:{" "}
                               {provider.maxAmount} TL
                             </p>
                           </div>
                         </div>
                         {provider.provider === "Shipy" && (
-                          <Badge className="bg-orange-100 text-orange-800">
+                          <Badge className="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200">
                             25% Cashback
                           </Badge>
                         )}
@@ -628,7 +628,7 @@ export default function BalancePage() {
 
               <Button
                 onClick={handleTopUp}
-                className="w-full mt-6 h-12 bg-green-600 hover:bg-green-700"
+                className="w-full mt-6 h-12 bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white"
                 disabled={
                   !selectedAmount ||
                   !selectedPaymentProvider ||
@@ -658,9 +658,9 @@ export default function BalancePage() {
 
         {/* Additional Info */}
         <div className="mt-8 text-center">
-          <Card className="bg-gray-50 border-gray-200">
+          <Card className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700">
             <CardContent className="p-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 <strong>Bilgi:</strong> Yüklediğiniz bakiye, sağlayıcının onayı
                 sonrası hesabınıza yansır. Bazı ödeme yöntemleri ile yapılan
                 ödemelerde ekstra avantajlar kazanabilirsiniz.
@@ -680,7 +680,7 @@ export default function BalancePage() {
                 <DialogDescription>
                   Ödeme işlemini tamamlamak için aşağıdaki formu doldurun.
                   {paymentId && (
-                    <span className="block text-xs text-gray-500 mt-1">
+                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
                       İşlem ID: {paymentId}
                     </span>
                   )}
@@ -711,7 +711,7 @@ export default function BalancePage() {
                 height: 100% !important;
                 min-height: 600px !important;
               }
-            `,
+            `
                   }}
                 />
                 <div

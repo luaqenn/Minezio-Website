@@ -2,7 +2,6 @@
 
 import { AuthContext } from "@/lib/context/auth.context";
 import { useContext, useEffect, useState, useMemo, useCallback, Suspense } from "react";
-import Link from "next/link";
 import { WebsiteContext } from "@/lib/context/website.context";
 import { useServerService } from "@/lib/services/server.service";
 import { useStatisticsService } from "@/lib/services/statistics.service";
@@ -10,6 +9,8 @@ import { IPublicWebsiteStatistics } from "@/lib/types/statistics";
 import { Server } from "@/lib/types/server";
 import { formatTimeAgo } from "@/lib/utils";
 import dynamic from 'next/dynamic';
+import { useWebsitePostsService } from "@/lib/services/posts.service";
+import LatestPostCard from "@/components/LatestPostCard";
 
 // Lazy load heavy components
 const InnovativeCarousel = dynamic(
@@ -194,11 +195,14 @@ export default function Home() {
   const { website } = useContext(WebsiteContext);
   const { getServers } = useServerService();
   const { getStatistics } = useStatisticsService();
+  const { getPosts } = useWebsitePostsService(website?.id);
   const [server, setServer] = useState<Server | null>(null);
   const [statistics, setStatistics] = useState<IPublicWebsiteStatistics | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [latestPosts, setLatestPosts] = useState<any[] | null>(null);
+  const [isPostsLoading, setIsPostsLoading] = useState(true);
 
   // Memoized carousel items
   const carouselItems = useMemo(() => 
@@ -240,7 +244,21 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    // Son gönderileri çek
+    const fetchPosts = async () => {
+      if (!website?.id) return; // id yoksa fetch etme
+      try {
+        const res = await getPosts({ websiteId: website.id, params: { limit: 5, sortBy: 'createdAt', sortOrder: 'desc', status: 'published' } });
+        console.log(res)
+        setLatestPosts(res.data);
+      } catch {
+        setLatestPosts([]);
+      } finally {
+        setIsPostsLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [website?.id]);
 
   return (
     <main className="min-h-screen">
@@ -262,6 +280,19 @@ export default function Home() {
                 />
               </Suspense>
             )}
+            {/* Son Gönderiler - Carousel altı yatay kartlar */}
+            <div className="mt-6 space-y-4">
+              {isPostsLoading ? (
+                <WidgetSkeleton lines={2} />
+              ) : latestPosts && latestPosts.length > 0 ? (
+                [...latestPosts].sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0) || new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())
+                  .map((post) => (
+                    <LatestPostCard key={post.id} post={post} />
+                  ))
+              ) : (
+                <EmptyList message="Henüz gönderi yok." />
+              )}
+            </div>
           </div>
 
           <div

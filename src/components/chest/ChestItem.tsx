@@ -26,7 +26,7 @@ export default function ChestItemCard({ item }: { item: ChestItem }) {
   }
 
   const handleClick = () => {
-    router.push(`${pathname}/item/${item.product.id}`);
+    router.push(`/store/products/${item.product.id}`);
   };
 
   const handleUseClick = (e: React.MouseEvent) => {

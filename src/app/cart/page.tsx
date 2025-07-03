@@ -310,30 +310,30 @@ export default function CartPage() {
             {/* Page Header */}
             <div className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
-                    <ShoppingCart className="h-8 w-8 text-blue-600" />
-                    <h1 className="text-3xl font-bold text-gray-900">Sepetim</h1>
+                    <ShoppingCart className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Sepetim</h1>
                 </div>
 
-                <p className="text-gray-600 text-lg">
+                <p className="text-gray-600 dark:text-gray-300 text-lg">
                     Seçtiğiniz ürünleri inceleyin ve ödeme işlemini tamamlayın
                 </p>
             </div>
 
             {cartProducts.length === 0 ? (
                 // Empty Cart State
-                <Card className="shadow-lg">
+                <Card className="shadow-lg bg-white dark:bg-gray-900">
                     <CardContent className="p-12 text-center">
-                        <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-600 mb-2">
+                        <ShoppingCart className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-2">
                             Sepetiniz boş
                         </h3>
-                        <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                        <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
                             Henüz sepetinize ürün eklemediniz. Mağazamızı keşfedin ve favori
                             ürünlerinizi sepete ekleyin.
                         </p>
                         <Button
                             onClick={() => router.push("/store")}
-                            className="bg-blue-600 hover:bg-blue-700"
+                            className="text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800"
                         >
                             <Package className="h-4 w-4 mr-2" />
                             Mağazaya Git
@@ -344,10 +344,10 @@ export default function CartPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Cart Items */}
                     <div className="lg:col-span-2">
-                        <Card className="shadow-lg">
+                        <Card className="shadow-lg bg-white dark:bg-gray-900">
                             <CardHeader className="pb-4">
                                 <div className="flex items-center justify-between">
-                                    <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                                    <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                                         <ShoppingCart className="h-5 w-5" />
                                         Sepet Ürünleri ({cartProducts.length})
                                     </CardTitle>
@@ -355,7 +355,7 @@ export default function CartPage() {
                                         variant="outline"
                                         size="sm"
                                         onClick={handleClearCart}
-                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                        className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900"
                                     >
                                         <Trash2 className="h-4 w-4 mr-1" />
                                         Sepeti Temizle
@@ -396,10 +396,10 @@ export default function CartPage() {
                                         return (
                                             <div
                                                 key={product.id}
-                                                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                                className="flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                                             >
                                                 {/* Product Image */}
-                                                <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg overflow-hidden flex-shrink-0">
+                                                <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 rounded-lg overflow-hidden flex-shrink-0">
                                                     {product.image ? (
                                                         <img
                                                             src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.image}`}
@@ -407,7 +407,7 @@ export default function CartPage() {
                                                             className="w-full h-full object-contain p-2"
                                                         />
                                                     ) : (
-                                                        <div className="flex items-center justify-center text-gray-400 h-full">
+                                                        <div className="flex items-center justify-center text-gray-400 dark:text-gray-500 h-full">
                                                             <Package className="h-8 w-8" />
                                                         </div>
                                                     )}
@@ -415,10 +415,10 @@ export default function CartPage() {
 
                                                 {/* Product Info */}
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="font-semibold text-gray-800 truncate">
+                                                    <h3 className="font-semibold text-gray-800 dark:text-gray-100 truncate">
                                                         {product.name}
                                                     </h3>
-                                                    <p className="text-sm text-gray-500 truncate">
+                                                    <p className="text-sm text-gray-500 dark:text-gray-300 truncate">
                                                         {product.description}
                                                     </p>
 
@@ -426,20 +426,20 @@ export default function CartPage() {
                                                     <div className="flex items-center gap-2 mt-1">
                                                         {hasDiscount ? (
                                                             <>
-                                                                <span className="text-sm text-gray-500 line-through">
+                                                                <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                                                                     {originalPrice.toFixed(2)} ₺
                                                                 </span>
-                                                                <span className="font-semibold text-green-600">
+                                                                <span className="font-semibold text-green-600 dark:text-green-400">
                                                                     {finalPrice.toFixed(2)} ₺
                                                                 </span>
-                                                                <Badge className="bg-red-500 text-white text-xs">
+                                                                <Badge className="bg-red-500 dark:bg-red-700 text-white text-xs">
                                                                     {product.discountType === "percentage"
                                                                         ? `%${discountValue}`
                                                                         : `${discountAmount.toFixed(0)}₺`}
                                                                 </Badge>
                                                             </>
                                                         ) : (
-                                                            <span className="font-semibold text-gray-800">
+                                                            <span className="font-semibold text-gray-800 dark:text-gray-100">
                                                                 {originalPrice.toFixed(2)} ₺
                                                             </span>
                                                         )}
@@ -447,13 +447,13 @@ export default function CartPage() {
                                                         {/* Kupon indirimi gösterimi */}
                                                         {hasCouponDiscount && (
                                                             <>
-                                                                <span className="text-sm text-gray-500 line-through">
+                                                                <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                                                                     {finalPrice.toFixed(2)} ₺
                                                                 </span>
-                                                                <span className="font-semibold text-blue-600">
+                                                                <span className="font-semibold text-blue-600 dark:text-blue-400">
                                                                     {finalPriceWithCoupon.toFixed(2)} ₺
                                                                 </span>
-                                                                <Badge className="bg-blue-500 text-white text-xs">
+                                                                <Badge className="bg-blue-500 dark:bg-blue-700 text-white text-xs">
                                                                     {appliedCoupon?.discountType === "percentage"
                                                                         ? `%${appliedCoupon.discountValue}`
                                                                         : `${couponDiscount.toFixed(0)}₺`}
@@ -469,7 +469,7 @@ export default function CartPage() {
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => handleUpdateQuantity(product.id, product.quantity - 1)}
-                                                        className="h-8 w-8 p-0"
+                                                        className="h-8 w-8 p-0 dark:bg-gray-900"
                                                     >
                                                         <Minus className="h-3 w-3" />
                                                     </Button>
@@ -480,7 +480,7 @@ export default function CartPage() {
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => handleUpdateQuantity(product.id, product.quantity + 1)}
-                                                        className="h-8 w-8 p-0"
+                                                        className="h-8 w-8 p-0 dark:bg-gray-900"
                                                     >
                                                         <Plus className="h-3 w-3" />
                                                     </Button>
@@ -488,7 +488,7 @@ export default function CartPage() {
 
                                                 {/* Total Price for this item */}
                                                 <div className="text-right min-w-[80px]">
-                                                    <span className="font-semibold text-gray-800">
+                                                    <span className="font-semibold text-gray-800 dark:text-gray-100">
                                                         {(finalPriceWithCoupon * product.quantity).toFixed(2)} ₺
                                                     </span>
                                                 </div>
@@ -498,7 +498,7 @@ export default function CartPage() {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => removeFromCart(product.id)}
-                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                                                    className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900 h-8 w-8 p-0"
                                                 >
                                                     <X className="h-4 w-4" />
                                                 </Button>
@@ -512,9 +512,9 @@ export default function CartPage() {
 
                     {/* Order Summary */}
                     <div className="lg:col-span-1">
-                        <Card className="shadow-lg sticky top-8">
+                        <Card className="shadow-lg sticky top-8 bg-white dark:bg-gray-900">
                             <CardHeader className="pb-4">
-                                <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                                <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                                     <CreditCard className="h-5 w-5" />
                                     Sipariş Özeti
                                 </CardTitle>
@@ -524,33 +524,33 @@ export default function CartPage() {
                             <CardContent className="p-6 space-y-6">
                                 {/* Coupon Section */}
                                 <div className="space-y-3">
-                                    <h4 className="font-medium text-gray-800 flex items-center gap-2">
+                                    <h4 className="font-medium text-gray-800 dark:text-gray-100 flex items-center gap-2">
                                         <Tag className="h-4 w-4" />
                                         Kupon Kodu
                                     </h4>
 
                                     {appliedCoupon ? (
-                                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="p-3 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-2">
-                                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                                    <span className="text-sm font-medium text-green-800">
+                                                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                                    <span className="text-sm font-medium text-green-800 dark:text-green-300">
                                                         {appliedCoupon.code}
                                                     </span>
                                                     {appliedCoupon.type === "free_product" && (
-                                                        <Gift className="h-4 w-4 text-green-600" />
+                                                        <Gift className="h-4 w-4 text-green-600 dark:text-green-400" />
                                                     )}
                                                 </div>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={removeCoupon}
-                                                    className="h-6 w-6 p-0 text-green-600 hover:text-green-700"
+                                                    className="h-6 w-6 p-0 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
                                                 >
                                                     <X className="h-3 w-3" />
                                                 </Button>
                                             </div>
-                                            <p className="text-xs text-green-600 mt-1">
+                                            <p className="text-xs text-green-600 dark:text-green-300 mt-1">
                                                 {appliedCoupon.type === "product_discount" && (
                                                     appliedCoupon.discountType === "percentage"
                                                         ? `Belirli ürünlere %${appliedCoupon.discountValue} indirim`
@@ -579,7 +579,7 @@ export default function CartPage() {
                                                 onClick={applyCoupon}
                                                 disabled={couponLoading || !couponCode.trim()}
                                                 size="sm"
-                                                className="bg-blue-600 hover:bg-blue-700"
+                                                className="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800"
                                             >
                                                 {couponLoading ? (
                                                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -596,14 +596,14 @@ export default function CartPage() {
                                 {/* Price Breakdown */}
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Ara Toplam</span>
+                                        <span className="text-gray-600 dark:text-gray-300">Ara Toplam</span>
                                         <span className="font-medium">{subtotal.toFixed(2)} ₺</span>
                                     </div>
 
                                     {appliedCoupon && appliedCoupon.type === "cart_discount" && (
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-green-600">Kupon İndirimi</span>
-                                            <span className="font-medium text-green-600">
+                                            <span className="text-green-600 dark:text-green-400">Kupon İndirimi</span>
+                                            <span className="font-medium text-green-600 dark:text-green-400">
                                                 -{cartCouponDiscount.toFixed(2)} ₺
                                             </span>
                                         </div>
@@ -612,15 +612,15 @@ export default function CartPage() {
                                     <Separator />
 
                                     <div className="flex justify-between text-lg font-semibold">
-                                        <span className="text-gray-800">Toplam</span>
-                                        <span className="text-blue-600">{total.toFixed(2)} ₺</span>
+                                        <span className="text-gray-800 dark:text-gray-100">Toplam</span>
+                                        <span className="text-blue-600 dark:text-blue-400">{total.toFixed(2)} ₺</span>
                                     </div>
                                 </div>
 
                                 {/* Checkout Button */}
                                 <Button
                                     onClick={handlePurchase}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-lg font-medium"
+                                    className="w-full bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 h-12 text-lg font-medium"
                                     disabled={cartProducts.length === 0}
                                 >
                                     <ShoppingCart className="h-5 w-5 mr-2" />
@@ -632,7 +632,7 @@ export default function CartPage() {
                                 <Button
                                     variant="outline"
                                     onClick={() => router.push("/store")}
-                                    className="w-full"
+                                    className="w-full dark:bg-gray-900 dark:text-gray-100"
                                 >
                                     <Package className="h-4 w-4 mr-2" />
                                     Alışverişe Devam Et
