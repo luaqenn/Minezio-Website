@@ -4,6 +4,14 @@ import { formatDistanceToNow, format } from "date-fns";
 import { tr } from "date-fns/locale";
 import React from "react";
 
+declare global {
+  interface ImportMeta {
+    hot?: {
+      accept: (cb: () => void) => void;
+    };
+  }
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -149,6 +157,22 @@ export const clearDevelopmentCache = async (): Promise<void> => {
     }
   }
 };
+
+// Hot reload sonrası otomatik cache temizleme ve component refresh
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+  // Vite veya Next.js 13+ için import.meta.hot kullanımı
+  if (typeof import.meta !== 'undefined' && import.meta.hot) {
+    import.meta.hot.accept(() => {
+      clearDevelopmentCache();
+      setTimeout(() => {
+        if (typeof forceComponentRefresh === 'function') {
+          forceComponentRefresh();
+        }
+      }, 100);
+    });
+  }
+  window.addEventListener('beforeunload', clearDevelopmentCache);
+}
 
 /**
  * Component'i zorla yenileme

@@ -7,6 +7,7 @@ import { translatePostType } from "@/lib/utils";
 
 const LatestPostCard = ({ post }: { post: any }) => {
   const plainText = lexicalToPlainText(post.content) || "";
+  
   return (
     <Card className="group py-0 relative flex flex-col sm:flex-row items-stretch gap-0 bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-3xl shadow-2xl border border-white/10 dark:border-gray-700/50 overflow-hidden min-h-[18rem] transition-transform duration-300 hover:scale-[1.025] hover:shadow-3xl">
       {post.isPinned && (

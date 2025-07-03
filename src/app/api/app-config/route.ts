@@ -28,17 +28,20 @@ export async function GET(
 
     return NextResponse.json(appConfig, {
       headers: {
-        "Cache-Control": "public, max-age=1800, stale-while-revalidate=3600",
+        "Cache-Control": process.env.NODE_ENV === 'development'
+          ? "no-cache, no-store, must-revalidate"
+          : "public, max-age=1800, stale-while-revalidate=3600",
       },
     });
   } catch (error) {
-    console.log(error);
     // Hata durumunda varsayılan değerler döndür
     const defaultConfig: AppConfig = DEFAULT_APPCONFIG;
 
     return NextResponse.json(defaultConfig, {
       headers: {
-        "Cache-Control": "public, max-age=300",
+        "Cache-Control": process.env.NODE_ENV === 'development'
+          ? "no-cache, no-store, must-revalidate"
+          : "public, max-age=300",
       },
     });
   }

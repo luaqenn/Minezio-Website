@@ -1,4 +1,4 @@
-// Development ortamında SW otomatik unregister
+// Development ortamında SW hiçbir şey yapmasın, sadece unregister ve cache temizle
 if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
   self.addEventListener('install', function(e) {
     self.skipWaiting();
@@ -18,6 +18,10 @@ if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.
   });
   // Diğer event'leri engelle
   self.addEventListener('fetch', function(e) {});
+  self.addEventListener('message', function(e) {});
+  self.addEventListener('sync', function(e) {});
+  self.addEventListener('push', function(e) {});
+  self.addEventListener('notificationclick', function(e) {});
   return;
 }
 
