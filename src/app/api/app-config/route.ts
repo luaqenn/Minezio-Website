@@ -32,6 +32,7 @@ export async function GET(
       },
     });
   } catch (error) {
+    console.log(error);
     // Hata durumunda varsayılan değerler döndür
     const defaultConfig: AppConfig = DEFAULT_APPCONFIG;
 

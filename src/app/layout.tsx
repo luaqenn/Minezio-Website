@@ -11,6 +11,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import type { AppConfig } from "@/lib/types/app";
 import { PerformanceOptimizer, PerformanceMonitor } from "@/components/performance-optimizer";
 import { CartProvider } from "@/lib/context/cart.context";
+import { ThemeProvider as NextThemesProvider } from "next-themes"
 
 async function getAppConfig(): Promise<AppConfig> {
   try {
@@ -161,6 +162,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
         {/* Resource hints */}
         <link rel="prefetch" href="/store" />
+        <link rel="prefetch" href="/cart" />
+        <link rel="prefetch" href="/chest" />
+        <link rel="prefetch" href="/profile" />
+        <link rel="prefetch" href="/redeem" />
+        <link rel="prefetch" href="/wallet" />
         <link rel="prefetch" href="/auth/sign-in" />
         <link rel="prefetch" href="/auth/sign-up" />
 
@@ -174,8 +180,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <WebsiteProvider>
               <AuthProvider>
                 <CartProvider>
-                  <MainLayout>{children}</MainLayout>
-                  <PWAInstaller />
+                  <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+                    <MainLayout>{children}</MainLayout>
+                    <PWAInstaller />
+                  </NextThemesProvider>
                   <DevelopmentToolbar />
                 </CartProvider>
               </AuthProvider>

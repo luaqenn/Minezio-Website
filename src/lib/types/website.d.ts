@@ -218,4 +218,9 @@ export interface Website {
   logs: Logs[];
   createdAt: Date;
   updatedAt: Date;
+  socials?: {
+    instagram?: string;
+    youtube?: string;
+    discord?: string;
+  };
 }

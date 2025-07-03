@@ -107,27 +107,27 @@ export default function Store() {
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <StoreIcon className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Mağaza</h1>
+            <StoreIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Mağaza</h1>
           </div>
 
-          <p className="text-gray-600 text-lg mb-6">
+          <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
             Oyun sunucularımızı keşfedin ve favori eşyalarınızı satın alın
           </p>
 
           {/* Stats Card */}
-          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mb-6">
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 border-blue-200 dark:border-blue-700 mb-6">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="bg-blue-100 p-3 rounded-full">
-                    <ServerIcon className="h-6 w-6 text-blue-600" />
+                  <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
+                    <ServerIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                       Sunucu Durumu
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-300">
                       {onlineServers}/{totalServers} sunucu aktif - Binlerce
                       eşya sizi bekliyor
                     </p>
@@ -136,13 +136,13 @@ export default function Store() {
                 <div className="flex gap-2">
                   <Badge
                     variant="secondary"
-                    className="bg-green-100 text-green-800 text-sm px-3 py-1"
+                    className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-sm px-3 py-1"
                   >
                     {onlineServers} Online
                   </Badge>
                   <Badge
                     variant="secondary"
-                    className="bg-blue-100 text-blue-800 text-sm px-3 py-1"
+                    className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 text-sm px-3 py-1"
                   >
                     {totalServers} Toplam
                   </Badge>
@@ -156,14 +156,14 @@ export default function Store() {
         <Card className="shadow-lg">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                 <ShoppingBag className="h-5 w-5" />
                 Sunucular
               </CardTitle>
               {totalServers > 0 && (
                 <Badge
                   variant="outline"
-                  className="bg-green-50 text-green-700 border-green-200"
+                  className="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
                 >
                   <Sparkles className="h-3 w-3 mr-1" />
                   {onlineServers} aktif
@@ -177,11 +177,11 @@ export default function Store() {
             {!servers || totalServers === 0 ? (
               // Empty State
               <div className="text-center py-12">
-                <ServerIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-600 mb-2">
+                <ServerIcon className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-2">
                   Henüz sunucu bulunmuyor
                 </h3>
-                <p className="text-gray-500 max-w-md mx-auto">
+                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
                   Şu anda aktif sunucu bulunmamaktadır. Lütfen daha sonra tekrar
                   kontrol edin.
                 </p>

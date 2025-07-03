@@ -93,7 +93,7 @@ export default function ServerPage({
           <Button
             variant="ghost"
             onClick={() => router.push("/store")}
-            className="mb-4 text-gray-600 hover:text-gray-800"
+            className="mb-4 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Mağazaya Dön
@@ -102,12 +102,12 @@ export default function ServerPage({
 
         {/* Server Header */}
         <div className="mb-8">
-          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 border-blue-200 dark:border-blue-700">
             <CardContent className="p-6">
               <div className="flex items-center gap-6">
                 {/* Server Image */}
                 <div className="flex-shrink-0">
-                  <div className="w-20 h-20 bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden">
+                  <div className="w-20 h-20 bg-white dark:bg-gray-900 rounded-lg shadow-md flex items-center justify-center overflow-hidden">
                     {server.image ? (
                       <img
                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${server.image}`}
@@ -115,7 +115,7 @@ export default function ServerPage({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <ImageIcon className="h-8 w-8 text-gray-400" />
+                      <ImageIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
                     )}
                   </div>
                 </div>
@@ -123,18 +123,18 @@ export default function ServerPage({
                 {/* Server Info */}
                 <div className="flex-grow">
                   <div className="flex items-center gap-3 mb-2">
-                    <ServerIcon className="h-6 w-6 text-blue-600" />
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <ServerIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                       {server.name}
                     </h1>
                   </div>
-                  <p className="text-gray-600 mb-3">
+                  <p className="text-gray-600 dark:text-gray-300 mb-3">
                     Bu sunucuya ait kategorileri keşfedin ve eşyalarınızı seçin
                   </p>
                   <div className="flex items-center gap-4">
                     <Badge
                       variant="secondary"
-                      className="bg-blue-100 text-blue-800"
+                      className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300"
                     >
                       <Grid3X3 className="h-3 w-3 mr-1" />
                       {totalCategories} Kategori
@@ -150,14 +150,14 @@ export default function ServerPage({
         <Card className="shadow-lg">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                 <Package className="h-5 w-5" />
                 Kategoriler
               </CardTitle>
               {totalCategories > 0 && (
                 <Badge
                   variant="outline"
-                  className="bg-green-50 text-green-700 border-green-200"
+                  className="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
                 >
                   <Sparkles className="h-3 w-3 mr-1" />
                   {totalCategories} aktif
@@ -171,11 +171,11 @@ export default function ServerPage({
             {totalCategories === 0 ? (
               // Empty State
               <div className="text-center py-12">
-                <Grid3X3 className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-600 mb-2">
+                <Grid3X3 className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-2">
                   Henüz kategori bulunmuyor
                 </h3>
-                <p className="text-gray-500 max-w-md mx-auto">
+                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
                   Bu sunucu için henüz kategori eklenmemiş. Lütfen daha sonra
                   tekrar kontrol edin.
                 </p>

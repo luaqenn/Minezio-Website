@@ -90,7 +90,7 @@ export default function CategoryPage({
           <Button
             variant="ghost"
             onClick={() => router.push("/store")}
-            className="mb-4 text-gray-600 hover:text-gray-800"
+            className="mb-4 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Mağazaya Dön
@@ -99,12 +99,12 @@ export default function CategoryPage({
 
         {/* Category Header */}
         <div className="mb-8">
-          <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+          <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900 dark:to-pink-900 border-purple-200 dark:border-purple-700">
             <CardContent className="p-6">
               <div className="flex items-center gap-6">
                 {/* Category Image */}
                 <div className="flex-shrink-0">
-                  <div className="w-20 h-20 bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden">
+                  <div className="w-20 h-20 bg-white dark:bg-gray-900 rounded-lg shadow-md flex items-center justify-center overflow-hidden">
                     {category.image ? (
                       <img
                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${category.image}`}
@@ -112,7 +112,7 @@ export default function CategoryPage({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <ImageIcon className="h-8 w-8 text-gray-400" />
+                      <ImageIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
                     )}
                   </div>
                 </div>
@@ -120,19 +120,19 @@ export default function CategoryPage({
                 {/* Category Info */}
                 <div className="flex-grow">
                   <div className="flex items-center gap-3 mb-2">
-                    <Tag className="h-6 w-6 text-purple-600" />
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <Tag className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                       {category.name}
                     </h1>
                   </div>
-                  <p className="text-gray-600 mb-3">
+                  <p className="text-gray-600 dark:text-gray-300 mb-3">
                     Bu kategorideki özel ürünleri keşfedin ve favori
                     eşyalarınızı bulun
                   </p>
                   <div className="flex items-center gap-4">
                     <Badge
                       variant="secondary"
-                      className="bg-purple-100 text-purple-800"
+                      className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300"
                     >
                       <ShoppingBag className="h-3 w-3 mr-1" />
                       {totalProducts} Ürün
@@ -148,14 +148,14 @@ export default function CategoryPage({
         <Card className="shadow-lg">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                 <Package2 className="h-5 w-5" />
                 Ürünler
               </CardTitle>
               {totalProducts > 0 && (
                 <Badge
                   variant="outline"
-                  className="bg-green-50 text-green-700 border-green-200"
+                  className="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
                 >
                   <Sparkles className="h-3 w-3 mr-1" />
                   {totalProducts} mevcut
@@ -169,11 +169,11 @@ export default function CategoryPage({
             {totalProducts === 0 ? (
               // Empty State
               <div className="text-center py-12">
-                <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-600 mb-2">
+                <ShoppingBag className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-2">
                   Henüz ürün bulunmuyor
                 </h3>
-                <p className="text-gray-500 max-w-md mx-auto">
+                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
                   Bu kategori için henüz ürün eklenmemiş. Lütfen daha sonra
                   tekrar kontrol edin.
                 </p>
