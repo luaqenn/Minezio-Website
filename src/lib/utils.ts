@@ -151,7 +151,6 @@ export const clearDevelopmentCache = async (): Promise<void> => {
         sessionStorage.clear();
       }
 
-      console.log('Development cache cleared');
     } catch (error) {
       console.error('Error clearing development cache:', error);
     }

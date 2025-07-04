@@ -9,7 +9,7 @@ import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import type { AppConfig } from "@/lib/types/app";
 import { CartProvider } from "@/lib/context/cart.context";
-import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { ThemeProviderWrapper } from "@/components/ThemeProviderWrapper";
 
 async function getAppConfig(): Promise<AppConfig> {
   try {
@@ -186,10 +186,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <WebsiteProvider>
             <AuthProvider>
               <CartProvider>
-                <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+                <ThemeProviderWrapper>
                   <MainLayout>{children}</MainLayout>
                   <PWAInstaller />
-                </NextThemesProvider>
+                </ThemeProviderWrapper>
               </CartProvider>
             </AuthProvider>
           </WebsiteProvider>

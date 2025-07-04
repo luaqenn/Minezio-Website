@@ -32,7 +32,6 @@ export function useDevelopmentCache() {
     if (process.env.NODE_ENV === 'development') {
       await clearCache();
       await clearDevelopmentCache();
-      console.log('All cache cleared');
     }
   }, [clearCache]);
 

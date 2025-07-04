@@ -4,6 +4,7 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HeadingNode } from "@lexical/rich-text";
 
 interface LexicalViewerProps {
   content: any; // Lexical JSON
@@ -49,7 +50,7 @@ export default function LexicalViewer({ content, className }: LexicalViewerProps
     onError,
     editable: false,
     editorState: typeof content === "string" ? content : JSON.stringify(content),
-    nodes: [],
+    nodes: [HeadingNode],
   };
 
   return (

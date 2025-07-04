@@ -43,7 +43,6 @@ export default function PWAInstaller(): JSX.Element | null {
 
     // App yüklendikten sonra
     const handleAppInstalled = (): void => {
-      console.log('PWA yüklendi');
       setInstallState({
         deferredPrompt: null,
         showInstallPrompt: false,
@@ -74,7 +73,6 @@ export default function PWAInstaller(): JSX.Element | null {
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       
-      console.log(`Install prompt outcome: ${outcome}`);
       
       setInstallState({
         deferredPrompt: null,

@@ -249,7 +249,7 @@ export default function Home() {
       if (!website?.id) return; // id yoksa fetch etme
       try {
         const res = await getPosts({ websiteId: website.id, params: { limit: 5, sortBy: 'createdAt', sortOrder: 'desc', status: 'published' } });
-        console.log(res)
+
         setLatestPosts(res.data);
       } catch {
         setLatestPosts([]);

@@ -75,7 +75,7 @@ export function Navbar() {
   }, []);
 
   const getLinkClassName = (path: string) => {
-    const isActive = pathname === path;
+    const isActive = path === "/" ? pathname === "/" : pathname.startsWith(path) && path !== "/";
     return `relative inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 ease-in-out ${isActive
         ? "bg-blue-500 text-white shadow-md"
         : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
