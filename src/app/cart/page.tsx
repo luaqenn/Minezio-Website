@@ -47,8 +47,6 @@ export default function CartPage() {
     const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
     const [couponLoading, setCouponLoading] = useState(false);
 
-    console.log(isAuthenticated, authIsLoading, user)
-
     // Auth kontrolü - eğer auth edilmemişse sign-in sayfasına yönlendir
     useEffect(() => {
         if (!user && isAuthenticated) {

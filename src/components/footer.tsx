@@ -42,8 +42,7 @@ const Footer = ({ server }: Props) => {
     {}
   );
   const { theme, setTheme, resolvedTheme } = useTheme();
-  console.log(theme, resolvedTheme)
-
+  
   const copyToClipboard = async (text: string, buttonId: string) => {
     try {
       await navigator.clipboard.writeText(text);

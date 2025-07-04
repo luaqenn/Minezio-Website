@@ -9,7 +9,7 @@ import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import type { AppConfig } from "@/lib/types/app";
 import { CartProvider } from "@/lib/context/cart.context";
-import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { ThemeProviderWrapper } from "@/components/ThemeProviderWrapper";
 
 async function getAppConfig(): Promise<AppConfig> {
   try {
@@ -182,19 +182,20 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
       <body>
-        <PWAProvider initialConfig={appConfig}>
-          <WebsiteProvider>
-            <AuthProvider>
-              <CartProvider>
-                <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProviderWrapper>
+          <PWAProvider initialConfig={appConfig}>
+            <WebsiteProvider>
+              <AuthProvider>
+                <CartProvider>
+
                   <MainLayout>{children}</MainLayout>
                   <PWAInstaller />
-                </NextThemesProvider>
-              </CartProvider>
-            </AuthProvider>
-          </WebsiteProvider>
-        </PWAProvider>
 
+                </CartProvider>
+              </AuthProvider>
+            </WebsiteProvider>
+          </PWAProvider>
+        </ThemeProviderWrapper>
       </body>
       {appConfig.gaId && (
         <GoogleAnalytics gaId={appConfig.gaId} />

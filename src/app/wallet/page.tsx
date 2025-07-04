@@ -134,7 +134,6 @@ export default function BalancePage() {
     }
 
     if (!userIsLoading && user === undefined) {
-      console.log("User not authenticated, redirecting...");
       router.push("/");
       return;
     }
@@ -300,8 +299,6 @@ export default function BalancePage() {
           address: "Türkiye", // Default address
         },
       };
-
-      console.log("Initiating payment with data:", paymentData);
 
       // Initiate payment
       const paymentResponse = await initiatePayment(paymentData);
