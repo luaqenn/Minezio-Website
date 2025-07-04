@@ -182,19 +182,20 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
       <body>
-        <PWAProvider initialConfig={appConfig}>
-          <WebsiteProvider>
-            <AuthProvider>
-              <CartProvider>
-                <ThemeProviderWrapper>
+        <ThemeProviderWrapper>
+          <PWAProvider initialConfig={appConfig}>
+            <WebsiteProvider>
+              <AuthProvider>
+                <CartProvider>
+
                   <MainLayout>{children}</MainLayout>
                   <PWAInstaller />
-                </ThemeProviderWrapper>
-              </CartProvider>
-            </AuthProvider>
-          </WebsiteProvider>
-        </PWAProvider>
 
+                </CartProvider>
+              </AuthProvider>
+            </WebsiteProvider>
+          </PWAProvider>
+        </ThemeProviderWrapper>
       </body>
       {appConfig.gaId && (
         <GoogleAnalytics gaId={appConfig.gaId} />
