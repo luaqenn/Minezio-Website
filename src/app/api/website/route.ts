@@ -11,17 +11,54 @@ export async function GET() {
     if (license.success) {
       const website = await getWebsite({ id: license.website.id || "" });
 
+      let secureWebsite = {
+        id: website.id,
+        name: website.name,
+        url: website.url,
+        description: website.description,
+        favicon: website.favicon,
+        image: website.image,
+        keywords: website.keywords,
+        google_analytics: website.google_analytics,
+        sliders: website.sliders,
+        discord: website.discord,
+        servers: website.servers,
+        broadcast_items: website.broadcast_items,
+        social_media: website.social_media,
+        createdAt: website.createdAt,
+        updatedAt: website.updatedAt,
+      };
+
       return NextResponse.json({
         success: true,
-        website: website,
+        website: secureWebsite,
         isExpired: false,
       });
     } else {
       const website = await getWebsite({ id: WEBSITE_ID || "" });
 
+      // Create a secure version of the website data that excludes sensitive information
+      let secureWebsite = {
+        id: website.id,
+        name: website.name,
+        url: website.url,
+        description: website.description,
+        favicon: website.favicon,
+        image: website.image,
+        keywords: website.keywords,
+        google_analytics: website.google_analytics,
+        sliders: website.sliders,
+        discord: website.discord,
+        servers: website.servers,
+        broadcast_items: website.broadcast_items,
+        social_media: website.social_media,
+        createdAt: website.createdAt,
+        updatedAt: website.updatedAt,
+      };
+      
       return NextResponse.json({
         success: true,
-        website,
+        website: secureWebsite,
         isExpired: true,
       });
     }

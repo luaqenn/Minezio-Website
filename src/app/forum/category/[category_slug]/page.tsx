@@ -37,7 +37,8 @@ import {
   ForumTopicCard,
   SubCategories,
   CategoryStats,
-  renderIcon
+  renderIcon,
+  ForumCategoryCard
 } from "@/components/forum";
 
 // Lazy load components
@@ -169,11 +170,11 @@ export default function CategoryPage() {
                 <span className="text-gray-400">/</span>
                 <span className="text-gray-300 font-medium">{category.name}</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-100 dark:text-gray-100 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 {category.name}
               </h1>
               {category.description && (
-                <p className="text-gray-400 dark:text-gray-400 text-lg">
+                <p className="text-gray-600 dark:text-gray-400 text-lg">
                   {category.description}
                 </p>
               )}
@@ -198,61 +199,14 @@ export default function CategoryPage() {
             {/* Alt Kategoriler (Ana içerikte de göster) */}
             {category.subCategories && category.subCategories.length > 0 && (
               <div>
-                <h2 className="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4 flex items-center">
-                  <FaFolder className="mr-2 text-green-400" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                  <FaFolder className="mr-2 text-green-600 dark:text-green-400" />
                   Alt Kategoriler
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {category.subCategories.map((subCategory) => {
-                    const totalTopics = subCategory.topics.length;
-                    const totalMessages = subCategory.topics.reduce((acc, topic) => acc + topic.messages.length, 0);
-
-                    return (
-                      <Card key={subCategory.id} className="group bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-2xl shadow-lg border border-white/10 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-                              {renderIcon(subCategory.icon)}
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-bold text-lg text-gray-100 dark:text-gray-100 group-hover:text-green-400 transition-colors">
-                                {subCategory.name}
-                              </h3>
-                              {subCategory.description && (
-                                <p className="text-sm text-gray-400 dark:text-gray-400 mt-1">
-                                  {subCategory.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="flex items-center justify-between text-sm text-gray-400 dark:text-gray-400">
-                            <div className="flex items-center space-x-4">
-                              <span className="flex items-center">
-                                <FaComments className="mr-1" />
-                                {totalTopics} konu
-                              </span>
-                              <span className="flex items-center">
-                                <FaUsers className="mr-1" />
-                                {totalMessages} mesaj
-                              </span>
-                            </div>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
-                              asChild
-                            >
-                              <Link href={`/forum/category/${subCategory.slug}`}>
-                                Görüntüle
-                              </Link>
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                  {category.subCategories.map((subCategory) => (
+                    <ForumCategoryCard key={subCategory.id} category={subCategory} />
+                  ))}
                 </div>
               </div>
             )}
@@ -260,8 +214,8 @@ export default function CategoryPage() {
             {/* Konular */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-100 dark:text-gray-100 flex items-center">
-                  <FaComments className="mr-2 text-blue-400" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                  <FaComments className="mr-2 text-blue-600 dark:text-blue-400" />
                   Konular
                 </h2>
                 <div className="flex items-center space-x-2">

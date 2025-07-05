@@ -198,6 +198,19 @@ export interface Website {
   name: string;
   url: string;
   description: string;
+  social_media: {
+    instagram: string;
+    tiktok: string;
+    github: string;
+    twitter: string;
+    youtube: string;
+    discord: string;
+  };
+  legal_documents: {
+    rules: Record<string, any>;
+    privacy_policy: Record<string, any>;
+    terms_of_service: Record<string, any>;
+  };
   currency: string;
   favicon: string;
   image: string;
@@ -215,12 +228,16 @@ export interface Website {
   payments: Payment[];
   license_key: string;
   broadcast_items: string[];
+  reports: Report[];
+  warnings: Warning[];
   logs: Logs[];
+  coupons: Coupon[];
+  redeemCodes: RedeemCode[];
+  posts: Post[];
+  tickets: Ticket[];
+  ticketCategories: TicketCategory[];
+  helpCenter: HelpCenter;
+  forum: Forum;
   createdAt: Date;
   updatedAt: Date;
-  socials?: {
-    instagram?: string;
-    youtube?: string;
-    discord?: string;
-  };
 }

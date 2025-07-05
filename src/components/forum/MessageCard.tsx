@@ -69,8 +69,8 @@ export const MessageCard = ({ message, onReply, isAuthenticated, websiteId }: Me
   };
 
   return (
-    <Card className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-xl shadow-lg border border-white/10 dark:border-gray-700/50 overflow-hidden">
-      <CardContent className="p-6">
+    <Card className="bg-white dark:bg-gradient-to-br dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/80 rounded-xl shadow-lg border border-gray-200 dark:border-white/10 dark:border-gray-700/50 overflow-hidden">
+      <CardContent className="p-4 sm:p-6">
         <div className="flex items-start space-x-4">
           <div className="flex-shrink-0">
             <Avatar
@@ -80,12 +80,12 @@ export const MessageCard = ({ message, onReply, isAuthenticated, websiteId }: Me
             />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 space-y-2 sm:space-y-0">
               <div>
-                <h4 className="font-semibold text-gray-100 dark:text-gray-100">
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">
                   {message.authorName}
                 </h4>
-                <p className="text-sm text-gray-400 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {formatTimeAgo(message.createdAt)}
                 </p>
               </div>
@@ -95,7 +95,7 @@ export const MessageCard = ({ message, onReply, isAuthenticated, websiteId }: Me
                   size="sm"
                   onClick={handleLike}
                   disabled={!isAuthenticated}
-                  className={`${liked ? 'text-red-400' : 'text-gray-400'} hover:text-red-300 ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`${liked ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'} hover:text-red-700 dark:hover:text-red-300 ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`}
                   title={!isAuthenticated ? "Beğenmek için giriş yapın" : liked ? "Beğeniyi kaldır" : "Beğen"}
                 >
                   <FaHeart className={`mr-1 ${liked ? 'fill-current' : ''}`} />
@@ -105,19 +105,19 @@ export const MessageCard = ({ message, onReply, isAuthenticated, websiteId }: Me
                   variant="ghost"
                   size="sm"
                   onClick={() => onReply(message)}
-                  className="text-gray-400 hover:text-gray-300"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300"
                 >
                   <FaReply className="mr-1" />
-                  Yanıtla
+                  <span className="hidden sm:inline">Yanıtla</span>
                 </Button>
               </div>
             </div>
             
-            <div className="prose prose-invert max-w-none mb-4">
+            <div className="prose prose-gray dark:prose-invert max-w-none mb-4">
               {message.content && (
                 <LexicalViewer 
                   content={message.content} 
-                  className="text-gray-100 dark:text-gray-100"
+                  className="text-gray-900 dark:text-gray-100"
                 />
               )}
             </div>
@@ -129,33 +129,33 @@ export const MessageCard = ({ message, onReply, isAuthenticated, websiteId }: Me
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowReplies(!showReplies)}
-                  className="text-blue-400 hover:text-blue-300 mb-3"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-3"
                 >
                   {showReplies ? 'Yanıtları Gizle' : `${message.replies.length} Yanıtı Göster`}
                 </Button>
                 
                 {showReplies && (
-                  <div className="space-y-3 ml-6 border-l-2 border-gray-700 pl-4">
+                  <div className="space-y-3 ml-6 border-l-2 border-gray-300 dark:border-gray-700 pl-4">
                     {message.replies.map((reply) => (
-                      <div key={reply.id} className="bg-gray-800/50 rounded-lg p-3">
+                      <div key={reply.id} className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3">
                         <div className="flex items-center space-x-2 mb-2">
                           <Avatar
                             username={reply.authorName}
                             size={24}
                             className="ring-1 ring-blue-500/20"
                           />
-                          <span className="font-medium text-gray-100 text-sm">
+                          <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">
                             {reply.authorName}
                           </span>
-                          <span className="text-gray-400 text-xs">
+                          <span className="text-gray-600 dark:text-gray-400 text-xs">
                             {formatTimeAgo(reply.createdAt)}
                           </span>
                         </div>
-                        <div className="prose prose-invert max-w-none">
+                        <div className="prose prose-gray dark:prose-invert max-w-none">
                           {reply.content && (
                             <LexicalViewer 
                               content={reply.content} 
-                              className="text-gray-100 dark:text-gray-100 text-sm"
+                              className="text-gray-900 dark:text-gray-100 text-sm"
                             />
                           )}
                         </div>

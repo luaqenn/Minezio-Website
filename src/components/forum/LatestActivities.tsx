@@ -11,7 +11,7 @@ export const LatestActivities = ({ statistics }: LatestActivitiesProps) => (
     {statistics.lastTopics.slice(0, 5).map((topic) => (
       <li
         key={topic.id}
-        className="flex items-center p-2 rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-gray-700/40"
+        className="flex items-center p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/40"
       >
         <Avatar
           username={topic.authorName}
@@ -19,7 +19,7 @@ export const LatestActivities = ({ statistics }: LatestActivitiesProps) => (
           className="mr-3"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
             {topic.title}
           </p>
           <p className="text-xs text-gray-600 dark:text-gray-400">
