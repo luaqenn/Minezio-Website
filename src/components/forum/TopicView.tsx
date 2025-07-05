@@ -140,40 +140,41 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
   return (
     <div className="space-y-6">
       {/* Topic Header */}
-      <Card className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-2xl shadow-lg border border-white/10 dark:border-gray-700/50 overflow-hidden">
+      <Card className="bg-white dark:bg-gradient-to-br dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/80 rounded-2xl shadow-lg border border-gray-200 dark:border-white/10 dark:border-gray-700/50 overflow-hidden">
         <CardHeader>
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-3">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
                 {topicCategory && (
                   <div className="flex items-center space-x-2 mr-3">
                     {renderIcon(topicCategory.icon)}
-                    <span className="text-sm text-gray-400 dark:text-gray-400">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {topicCategory.name}
                     </span>
                   </div>
                 )}
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 dark:text-gray-100">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">
                   {topic.title}
                 </h1>
                 {topic.isPinned && (
-                  <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                  <Badge variant="secondary" className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">
                     <FaThumbtack className="mr-1 text-xs" />
-                    Sabit
+                    <span className="hidden sm:inline">Sabit</span>
                   </Badge>
                 )}
                 {topic.isLocked && (
-                  <Badge variant="secondary" className="bg-red-500/20 text-red-400 border-red-500/30">
+                  <Badge variant="secondary" className="bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">
                     <FaLock className="mr-1 text-xs" />
-                    Kilitli
+                    <span className="hidden sm:inline">Kilitli</span>
                   </Badge>
                 )}
               </div>
               
-              <div className="flex items-center space-x-4 text-sm text-gray-400 dark:text-gray-400 mb-4">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                 <span className="flex items-center">
                   <FaUser className="mr-1" />
-                  {topic.authorName}
+                  <span className="hidden sm:inline">{topic.authorName}</span>
+                  <span className="sm:hidden">{topic.authorName.split(' ')[0]}</span>
                 </span>
                 <span className="flex items-center">
                   <FaClock className="mr-1" />
@@ -181,11 +182,13 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
                 </span>
                 <span className="flex items-center">
                   <FaComments className="mr-1" />
-                  {topic.messages.length} yanıt
+                  <span className="hidden sm:inline">{topic.messages.length} yanıt</span>
+                  <span className="sm:hidden">{topic.messages.length}</span>
                 </span>
                 <span className="flex items-center">
                   <FaEye className="mr-1" />
-                  {topic.viewCount} görüntüleme
+                  <span className="hidden sm:inline">{topic.viewCount} görüntüleme</span>
+                  <span className="sm:hidden">{topic.viewCount}</span>
                 </span>
               </div>
             </div>
@@ -196,7 +199,7 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
                 size="sm"
                 onClick={handleLike}
                 disabled={!isAuthenticated}
-                className={`${liked ? 'text-red-400' : 'text-gray-400'} hover:text-red-300 ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`${liked ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'} hover:text-red-700 dark:hover:text-red-300 ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`}
                 title={!isAuthenticated ? "Beğenmek için giriş yapın" : liked ? "Beğeniyi kaldır" : "Beğen"}
               >
                 <FaHeart className={`mr-1 ${liked ? 'fill-current' : ''}`} />
@@ -205,21 +208,21 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-400 hover:text-gray-300"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300"
               >
                 <FaShare className="mr-1" />
-                Paylaş
+                <span className="hidden sm:inline">Paylaş</span>
               </Button>
             </div>
           </div>
         </CardHeader>
         
         <CardContent>
-          <div className="prose prose-invert max-w-none">
+          <div className="prose prose-gray dark:prose-invert max-w-none">
             {topic.content && (
               <LexicalViewer 
                 content={topic.content} 
-                className="text-gray-100 dark:text-gray-100"
+                className="text-gray-900 dark:text-gray-100"
               />
             )}
           </div>
@@ -229,7 +232,7 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
       {/* Messages */}
       {topic.messages.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-xl font-bold text-gray-100 dark:text-gray-100 flex items-center">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
             <FaComments className="mr-2 text-blue-400" />
             Yanıtlar ({topic.messages.length})
           </h3>
@@ -248,22 +251,22 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
 
       {/* Reply Form */}
       {!topic.isLocked && (
-        <Card id="reply-form" className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-2xl shadow-lg border border-white/10 dark:border-gray-700/50 overflow-hidden">
+        <Card id="reply-form" className="bg-white dark:bg-gradient-to-br dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/80 rounded-2xl shadow-lg border border-gray-200 dark:border-white/10 dark:border-gray-700/50 overflow-hidden">
           <CardHeader>
-            <h3 className="text-xl font-bold text-gray-100 dark:text-gray-100 flex items-center">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
               <FaReply className="mr-2 text-green-400" />
               {quotedMessage ? `${quotedMessage.authorName} kullanıcısına yanıt` : 'Yanıt Yaz'}
             </h3>
             {quotedMessage && (
-              <div className="bg-gray-800/50 rounded-lg p-3 border-l-4 border-blue-400">
-                <p className="text-sm text-gray-400 mb-2">
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 border-l-4 border-blue-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                   <strong>{quotedMessage.authorName}</strong> kullanıcısının mesajı:
                 </p>
-                <div className="prose prose-invert max-w-none">
+                <div className="prose prose-gray dark:prose-invert max-w-none">
                   {quotedMessage.content && (
                     <LexicalViewer 
                       content={quotedMessage.content} 
-                      className="text-gray-100 dark:text-gray-100 text-sm"
+                      className="text-gray-900 dark:text-gray-100 text-sm"
                     />
                   )}
                 </div>
@@ -271,7 +274,7 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setQuotedMessage(null)}
-                  className="text-gray-400 hover:text-gray-300 mt-2"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 mt-2"
                 >
                   Alıntıyı Kaldır
                 </Button>
@@ -281,18 +284,18 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
           <CardContent>
             {!isAuthenticated ? (
               <div className="text-center py-8">
-                <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700/50">
                   <FaUser className="mx-auto text-4xl text-gray-400 mb-4" />
-                  <h4 className="text-lg font-semibold text-gray-100 mb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     Bu konuya mesaj göndermek için giriş yapmalısınız
                   </h4>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
                     Tartışmalara katılmak ve yanıt yazmak için hesabınıza giriş yapın.
                   </p>
-                  <div className="flex justify-center space-x-3">
+                  <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-3">
                     <Button
                       variant="outline"
-                      className="border-blue-500 text-blue-400 hover:bg-blue-500/10"
+                      className="border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10"
                       asChild
                     >
                       <Link href="/auth/sign-in">
@@ -301,7 +304,7 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-green-500 text-green-400 hover:bg-green-500/10"
+                      className="border-green-500 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-500/10"
                       asChild
                     >
                       <Link href="/auth/sign-up">
@@ -319,12 +322,12 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
                     setReplyContent(serializedState);
                   }}
                 />
-                <div className="flex justify-end space-x-3">
+                <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
                   {quotedMessage && (
                     <Button
                       variant="ghost"
                       onClick={() => setQuotedMessage(null)}
-                      className="text-gray-400 hover:text-gray-300"
+                      className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 w-full sm:w-auto"
                     >
                       İptal
                     </Button>
@@ -332,7 +335,7 @@ export const TopicView = ({ topic, topicCategory }: TopicViewProps) => {
                   <Button 
                     onClick={handleSubmitReply}
                     disabled={isSubmitting || !replyContent}
-                    className="bg-gradient-to-r from-green-600 to-green-400 hover:from-green-700 hover:to-green-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition-all duration-200"
+                    className="bg-gradient-to-r from-green-600 to-green-400 hover:from-green-700 hover:to-green-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition-all duration-200 w-full sm:w-auto"
                   >
                     {isSubmitting ? "Gönderiliyor..." : "Yanıt Gönder"}
                   </Button>

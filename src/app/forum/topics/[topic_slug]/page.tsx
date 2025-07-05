@@ -112,19 +112,19 @@ export default function TopicPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen">
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="mb-8">
-            <Skeleton className="h-8 w-64 mb-4" />
-            <Skeleton className="h-4 w-96" />
+        <section className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-12">
+          <div className="mb-6 sm:mb-8">
+            <Skeleton className="h-6 sm:h-8 w-48 sm:w-64 mb-3 sm:mb-4" />
+            <Skeleton className="h-3 sm:h-4 w-72 sm:w-96" />
           </div>
-          <div className="grid gap-6 lg:grid-cols-12">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-12">
             <div className="lg:col-span-9">
-              <div className="space-y-4">
-                <div className="h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-2xl" />
-                <div className="h-32 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-xl" />
+              <div className="space-y-3 sm:space-y-4">
+                <div className="h-48 sm:h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-xl sm:rounded-2xl" />
+                <div className="h-24 sm:h-32 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg sm:rounded-xl" />
               </div>
             </div>
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               <WidgetSkeleton lines={3} />
               <WidgetSkeleton lines={4} />
             </div>
@@ -136,46 +136,65 @@ export default function TopicPage() {
 
   return (
     <main className="min-h-screen">
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <section className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-12">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-3 mb-4">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-4">
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-gray-400 hover:text-gray-300"
+              className="text-gray-400 hover:text-gray-300 w-fit"
               onClick={() => router.back()}
             >
               <FaArrowLeft className="mr-2" />
-              Geri
+              <span className="hidden sm:inline">Geri</span>
             </Button>
-            <Link href="/forum" className="text-gray-400 hover:text-gray-300 text-sm">
-              Forum
-            </Link>
-            <span className="text-gray-400">/</span>
-            {isCreateMode && category ? (
-              <>
-                <Link href={`/forum/category/${category.slug}`} className="text-gray-400 hover:text-gray-300 text-sm">
-                  {category.name}
-                </Link>
-                <span className="text-gray-400">/</span>
-                <span className="text-gray-300 font-medium">Yeni Konu</span>
-              </>
-            ) : topic ? (
-              <>
-                <Link href={`/forum/category/${topic.categoryId}`} className="text-gray-400 hover:text-gray-300 text-sm">
-                  Kategori
-                </Link>
-                <span className="text-gray-400">/</span>
-                <span className="text-gray-300 font-medium">{topic.title}</span>
-              </>
-            ) : null}
+            
+            {/* Breadcrumb Navigation */}
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Link href="/forum" className="text-gray-400 hover:text-gray-300 transition-colors">
+                Forum
+              </Link>
+              <span className="text-gray-400">/</span>
+              {isCreateMode && category ? (
+                <>
+                  <Link 
+                    href={`/forum/category/${category.slug}`} 
+                    className="text-gray-400 hover:text-gray-300 transition-colors truncate max-w-[120px] sm:max-w-[200px]"
+                    title={category.name}
+                  >
+                    {category.name}
+                  </Link>
+                  <span className="text-gray-400">/</span>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[150px] sm:max-w-none">
+                    Yeni Konu
+                  </span>
+                </>
+              ) : topic ? (
+                <>
+                  <Link 
+                    href={`/forum/category/${topic.categoryId}`} 
+                    className="text-gray-400 hover:text-gray-300 transition-colors"
+                  >
+                    Kategori
+                  </Link>
+                  <span className="text-gray-400">/</span>
+                  <span 
+                    className="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[200px] sm:max-w-[300px] md:max-w-none"
+                    title={topic.title}
+                  >
+                    {topic.title}
+                  </span>
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-12 items-start">
+        {/* Main Content Grid */}
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-12 items-start">
           {/* Ana İçerik */}
-          <div className={`${!isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"} space-y-6`}>
+          <div className={`${!isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"} space-y-4 sm:space-y-6`}>
             {isCreateMode && category ? (
               <CreateTopicForm category={category} />
             ) : topic ? (
@@ -186,10 +205,12 @@ export default function TopicPage() {
           </div>
 
           {/* Sidebar */}
-          <div className={`${!isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"} space-y-6`}>
+          <div className={`${!isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"} space-y-4 sm:space-y-6`}>
             {!isAuthenticated && (
               <div className="relative z-10">
-                <Suspense fallback={<div className="h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />}>
+                <Suspense fallback={
+                  <div className="h-48 sm:h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
+                }>
                   <AuthForm asWidget={true} />
                 </Suspense>
               </div>
@@ -208,11 +229,11 @@ export default function TopicPage() {
             {topic && topic.messages.length > 0 && (
               <Widget>
                 <Widget.Header>
-                  <FaUsers className="inline mr-2 text-blue-400" />
-                  Son Mesaj Yazanlar
+                  <FaUsers className="inline mr-2 text-blue-600 dark:text-blue-400" />
+                  <span className="text-sm sm:text-base">Son Mesaj Yazanlar</span>
                 </Widget.Header>
                 <Widget.Body>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {topic.messages.slice(-3).reverse().map((message) => (
                       <UserProfileCard 
                         key={message.id}
@@ -225,9 +246,12 @@ export default function TopicPage() {
               </Widget>
             )}
 
+            {/* Discord Widget */}
             {website?.discord && (
-              <div className="">
-                <Suspense fallback={<div className="h-48 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />}>
+              <div className="w-full">
+                <Suspense fallback={
+                  <div className="h-40 sm:h-48 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
+                }>
                   <DiscordWidget guild_id={website?.discord.guild_id ?? ""} />
                 </Suspense>
               </div>

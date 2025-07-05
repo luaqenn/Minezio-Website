@@ -92,10 +92,10 @@ export default function ForumPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-100 dark:text-gray-100 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Forum
               </h1>
-              <p className="text-gray-400 dark:text-gray-400">
+              <p className="text-gray-600 dark:text-gray-400">
                 Topluluğumuzla etkileşime geçin, sorular sorun ve tartışmalara katılın
               </p>
             </div>
@@ -118,8 +118,8 @@ export default function ForumPage() {
           <div className={`${!isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"} space-y-6`}>
             {/* Kategoriler */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4 flex items-center">
-                <FaFolder className="mr-2 text-blue-400" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                <FaFolder className="mr-2 text-blue-600 dark:text-blue-400" />
                 Kategoriler
               </h2>
               {isLoading ? (
@@ -141,8 +141,8 @@ export default function ForumPage() {
 
             {/* Son Konular */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4 flex items-center">
-                <FaFire className="mr-2 text-orange-400" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                <FaFire className="mr-2 text-orange-600 dark:text-orange-400" />
                 Son Konular
               </h2>
               {isStatsLoading ? (
@@ -183,7 +183,7 @@ export default function ForumPage() {
                 {/* Son Aktiviteler Widget */}
                 <Widget>
                   <Widget.Header>
-                    <FaFire className="inline mr-2 text-orange-400" />
+                    <FaFire className="inline mr-2 text-orange-600 dark:text-orange-400" />
                     Son Aktiviteler
                   </Widget.Header>
                   <Widget.Body>
@@ -198,7 +198,7 @@ export default function ForumPage() {
                 {/* En Aktif Kullanıcılar Widget */}
                 <Widget>
                   <Widget.Header>
-                    <FaUsers className="inline mr-2 text-blue-400" />
+                    <FaUsers className="inline mr-2 text-blue-600 dark:text-blue-400" />
                     En Aktif Kullanıcılar
                   </Widget.Header>
                   <Widget.Body>

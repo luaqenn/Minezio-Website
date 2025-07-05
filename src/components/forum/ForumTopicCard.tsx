@@ -78,7 +78,7 @@ export const ForumTopicCard = ({ topic }: ForumTopicCardProps) => {
 
   return (
     <Link href={`/forum/topics/${topic.slug}`}>
-      <Card className="group bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-xl shadow-lg border border-white/10 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-xl cursor-pointer">
+      <Card className="group bg-white dark:bg-gradient-to-br dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/80 rounded-xl shadow-lg border border-gray-200 dark:border-white/10 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-xl cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
@@ -90,26 +90,27 @@ export const ForumTopicCard = ({ topic }: ForumTopicCardProps) => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-2">
-                <h3 className="font-semibold text-gray-100 dark:text-gray-100 group-hover:text-blue-400 transition-colors truncate">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                   {topic.title}
                 </h3>
                 {topic.isPinned && (
-                  <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                  <Badge variant="secondary" className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">
                     <FaThumbtack className="mr-1 text-xs" />
-                    Sabit
+                    <span className="hidden sm:inline">Sabit</span>
                   </Badge>
                 )}
                 {topic.isLocked && (
-                  <Badge variant="secondary" className="bg-red-500/20 text-red-400 border-red-500/30">
+                  <Badge variant="secondary" className="bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">
                     <FaLock className="mr-1 text-xs" />
-                    Kilitli
+                    <span className="hidden sm:inline">Kilitli</span>
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center space-x-4 text-xs text-gray-400 dark:text-gray-400 mb-2">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-gray-600 dark:text-gray-400 mb-2">
                 <span className="flex items-center">
                   <FaUser className="mr-1" />
-                  {topic.authorName}
+                  <span className="hidden sm:inline">{topic.authorName}</span>
+                  <span className="sm:hidden">{topic.authorName.split(' ')[0]}</span>
                 </span>
                 <span className="flex items-center">
                   <FaClock className="mr-1" />
@@ -117,18 +118,20 @@ export const ForumTopicCard = ({ topic }: ForumTopicCardProps) => {
                 </span>
                 <span className="flex items-center">
                   <FaComments className="mr-1" />
-                  {totalReplies} yanıt
+                  <span className="hidden sm:inline">{totalReplies} yanıt</span>
+                  <span className="sm:hidden">{totalReplies}</span>
                 </span>
                 <span className="flex items-center">
                   <FaEye className="mr-1" />
-                  {topic.viewCount} görüntüleme
+                  <span className="hidden sm:inline">{topic.viewCount} görüntüleme</span>
+                  <span className="sm:hidden">{topic.viewCount}</span>
                 </span>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleLike}
                   disabled={!isAuthenticated}
-                  className={`${liked ? 'text-red-400' : 'text-gray-400'} hover:text-red-300 ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''} h-auto p-1 text-xs`}
+                  className={`${liked ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'} hover:text-red-700 dark:hover:text-red-300 ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''} h-auto p-1 text-xs`}
                   title={!isAuthenticated ? "Beğenmek için giriş yapın" : liked ? "Beğeniyi kaldır" : "Beğen"}
                 >
                   <FaHeart className={`mr-1 ${liked ? 'fill-current' : ''}`} />
@@ -137,7 +140,8 @@ export const ForumTopicCard = ({ topic }: ForumTopicCardProps) => {
               </div>
               {lastMessage && (
                 <div className="text-xs text-gray-500 dark:text-gray-500">
-                  Son mesaj: {lastMessage.authorName} tarafından {formatTimeAgo(lastMessage.createdAt)}
+                  <span className="hidden sm:inline">Son mesaj: {lastMessage.authorName} tarafından {formatTimeAgo(lastMessage.createdAt)}</span>
+                  <span className="sm:hidden">Son: {formatTimeAgo(lastMessage.createdAt)}</span>
                 </div>
               )}
             </div>

@@ -84,20 +84,21 @@ export const CreateTopicForm = ({ category }: CreateTopicFormProps) => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/80 rounded-2xl shadow-lg border border-white/10 dark:border-gray-700/50 overflow-hidden">
+    <Card className="bg-white dark:bg-gradient-to-br dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/80 rounded-2xl shadow-lg border border-gray-200 dark:border-white/10 dark:border-gray-700/50 overflow-hidden">
       <CardHeader>
-        <h2 className="text-2xl font-bold text-gray-100 dark:text-gray-100 flex items-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
           <FaPlus className="mr-2 text-blue-400" />
-          {category.name} Kategorisinde Yeni Konu
+          <span className="hidden sm:inline">{category.name} Kategorisinde Yeni Konu</span>
+          <span className="sm:hidden">Yeni Konu</span>
         </h2>
-        <p className="text-gray-400 dark:text-gray-400">
+        <p className="text-gray-600 dark:text-gray-400">
           Yeni bir konu oluşturarak topluluğumuzla paylaşın
         </p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="title" className="text-gray-100 dark:text-gray-100">
+            <Label htmlFor="title" className="text-gray-900 dark:text-gray-100">
               Konu Başlığı
             </Label>
             <Input
@@ -105,13 +106,13 @@ export const CreateTopicForm = ({ category }: CreateTopicFormProps) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Konu başlığını girin..."
-              className="mt-2 bg-gray-800/50 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-blue-500"
+              className="mt-2 bg-white dark:bg-gray-800/50 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-500"
               required
             />
           </div>
           
           <div>
-            <Label className="text-gray-100 dark:text-gray-100">
+            <Label className="text-gray-900 dark:text-gray-100">
               İçerik
             </Label>
             <div className="mt-2">
@@ -124,19 +125,19 @@ export const CreateTopicForm = ({ category }: CreateTopicFormProps) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end space-x-3">
+          <div className="flex flex-col sm:flex-row items-center justify-end space-y-3 sm:space-y-0 sm:space-x-3">
             <Button
               type="button"
               variant="ghost"
               onClick={() => router.back()}
-              className="text-gray-400 hover:text-gray-300"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 w-full sm:w-auto"
             >
               İptal
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition-all duration-200"
+              className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition-all duration-200 w-full sm:w-auto"
             >
               {isSubmitting ? "Oluşturuluyor..." : "Konu Oluştur"}
             </Button>
