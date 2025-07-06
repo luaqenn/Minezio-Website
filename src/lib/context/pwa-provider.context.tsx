@@ -209,7 +209,12 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
   const refreshConfig = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch("/api/app-config", {
+      // Service worker cache'ini bypass etmek için timestamp ekle
+      const url = process.env.NODE_ENV === 'production' 
+        ? `/api/app-config?t=${Date.now()}`
+        : "/api/app-config";
+        
+      const response = await fetch(url, {
         cache: "no-cache",
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -243,6 +248,7 @@ export function PWAProvider({ children, initialConfig }: PWAProviderProps) {
         }
       }
     } catch (error) {
+      console.error('PWA refreshConfig error:', error);
       // Sessizce hataları yoksay
     } finally {
       setLoading(false);

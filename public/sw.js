@@ -149,8 +149,9 @@ self.addEventListener("fetch", (event) => {
     }
   }
 
-  // App-config API'si için özel strateji
+  // App-config API'si için özel strateji (timestamp'li URL'leri de yakala)
   if (url.pathname === "/api/app-config") {
+    console.log('🔧 SW: App-config request intercepted:', url.href);
     event.respondWith(handleAppConfigRequest(request));
     return;
   }
@@ -168,9 +169,17 @@ self.addEventListener("fetch", (event) => {
 // App config için özel cache stratejisi
 async function handleAppConfigRequest(request) {
   const cacheName = API_CACHE;
+  const url = new URL(request.url);
+
+  console.log('🔧 SW: handleAppConfigRequest called for:', url.href);
 
   try {
+    // Timestamp'li istekler için cache bypass
+    const isTimestamped = url.searchParams.has('t');
+    console.log('🔧 SW: Is timestamped request:', isTimestamped);
+    
     // Önce network'ten dene
+    console.log('🔧 SW: Trying network request...');
     const networkResponse = await fetch(request, {
       cache: 'no-cache',
       headers: {
@@ -180,45 +189,62 @@ async function handleAppConfigRequest(request) {
       }
     });
 
+    console.log('🔧 SW: Network response status:', networkResponse.status);
+    console.log('🔧 SW: Network response ok:', networkResponse.ok);
+
     if (networkResponse.ok) {
-      // Başarılıysa cache'e kaydet
-      try {
-        const cache = await caches.open(cacheName);
-        
-        // Response'u clone et ve arrayBuffer'ı al
-        const responseClone = networkResponse.clone();
-        const responseBuffer = await responseClone.arrayBuffer();
-        
-        // Cache'e kaydetmeden önce headers'ı düzenle
-        const headers = new Headers(networkResponse.headers);
-        headers.set('sw-cached', 'true');
-        headers.set('sw-cache-time', Date.now().toString());
-        
-        const cachedResponse = new Response(responseBuffer, {
-          status: networkResponse.status,
-          statusText: networkResponse.statusText,
-          headers: headers
-        });
-        
-        await cache.put(request, cachedResponse);
-      } catch (cacheError) {
-        // Cache hatası sessizce yoksay
+      // Timestamp'li istekler cache'e kaydedilmez
+      if (!isTimestamped) {
+        console.log('🔧 SW: Caching response...');
+        try {
+          const cache = await caches.open(cacheName);
+          
+          // Response'u clone et ve arrayBuffer'ı al
+          const responseClone = networkResponse.clone();
+          const responseBuffer = await responseClone.arrayBuffer();
+          
+          // Cache'e kaydetmeden önce headers'ı düzenle
+          const headers = new Headers(networkResponse.headers);
+          headers.set('sw-cached', 'true');
+          headers.set('sw-cache-time', Date.now().toString());
+          
+          const cachedResponse = new Response(responseBuffer, {
+            status: networkResponse.status,
+            statusText: networkResponse.statusText,
+            headers: headers
+          });
+          
+          await cache.put(request, cachedResponse);
+          console.log('🔧 SW: Response cached successfully');
+        } catch (cacheError) {
+          console.error('🔧 SW: Cache error:', cacheError);
+          // Cache hatası sessizce yoksay
+        }
+      } else {
+        console.log('🔧 SW: Timestamped request - not caching');
       }
       return networkResponse;
     }
 
     throw new Error("Network response not ok");
   } catch (error) {
-    // Network başarısızsa cache'den dön
-    try {
-      const cachedResponse = await caches.match(request);
-      if (cachedResponse) {
-        return cachedResponse;
+    console.error('🔧 SW: Network request failed:', error);
+    // Timestamp'li istekler için cache kullanma
+    if (!isTimestamped) {
+      console.log('🔧 SW: Trying cache fallback...');
+      try {
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+          console.log('🔧 SW: Returning cached response');
+          return cachedResponse;
+        }
+      } catch (cacheError) {
+        console.error('🔧 SW: Cache fallback error:', cacheError);
+        // Cache hatası sessizce yoksay
       }
-    } catch (cacheError) {
-      // Cache hatası sessizce yoksay
     }
 
+    console.log('🔧 SW: Returning default config');
     // Cache'de de yoksa default config döndür
     return new Response(
       JSON.stringify({

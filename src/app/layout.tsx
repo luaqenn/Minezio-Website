@@ -10,23 +10,52 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import type { AppConfig } from "@/lib/types/app";
 import { CartProvider } from "@/lib/context/cart.context";
 import { ThemeProviderWrapper } from "@/components/ThemeProviderWrapper";
+import { getAppConfigDirect } from "@/lib/services/app-config.service";
 
 async function getAppConfig(): Promise<AppConfig> {
+  if (typeof window === "undefined") {
+    // SSR/SSG
+    return getAppConfigDirect();
+  }
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     const fetchOptions: any = {};
-    if (process.env.NODE_ENV !== 'development') {
+    
+    console.log('🔍 getAppConfig called, NODE_ENV:', process.env.NODE_ENV);
+    
+    // Development'da cache'i devre dışı bırak, production'da cache kullan
+    if (process.env.NODE_ENV === 'development') {
+      fetchOptions.cache = 'no-store';
+      console.log('🔍 Development mode - cache disabled');
+    } else {
       fetchOptions.next = {
         revalidate: 3600,
         tags: ["app-config"],
       };
+      console.log('🔍 Production mode - cache enabled with revalidate');
     }
-    const response = await fetch(`${baseUrl}/api/app-config`, fetchOptions);
+    
+    // Server-side fetch için absolute URL gerekli
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const url = process.env.NODE_ENV === 'production' 
+      ? `${baseUrl}/api/app-config?t=${Date.now()}`
+      : `${baseUrl}/api/app-config`;
+    
+    console.log('🔍 Fetching URL:', url);
+    console.log('🔍 Fetch options:', fetchOptions);
+    
+    const response = await fetch(url, fetchOptions);
+    console.log('🔍 Response status:', response.status);
+    console.log('🔍 Response ok:', response.ok);
+    
     if (!response.ok) {
       throw new Error(`Config API hatası: ${response.status}`);
     }
-    return await response.json();
+    
+    const data = await response.json();
+    console.log('🔍 Response data:', data);
+    return data;
   } catch (error) {
+    console.error('❌ App config fetch error:', error);
     // Varsayılan değerler
     return DEFAULT_APPCONFIG;
   }
