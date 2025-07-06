@@ -1,31 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { AppConfig } from "@/lib/types/app";
-import { DEFAULT_APPCONFIG } from "@/lib/constants/pwa";
-import { serverWebsiteService } from "@/lib/services/website.service";
+import { getAppConfigDirect } from "@/lib/services/app-config.service";
 
 export async function GET(
   request: NextRequest
 ): Promise<NextResponse<AppConfig>> {
+  console.log('🚀 API app-config called');
+  console.log('🚀 NODE_ENV:', process.env.NODE_ENV);
+  console.log('🚀 Request URL:', request.url);
+  console.log('🚀 Request headers:', Object.fromEntries(request.headers.entries()));
+  
   try {
-    const { getWebsite } = serverWebsiteService();
-
-    const website = await getWebsite({
-      id: process.env.NEXT_PUBLIC_WEBSITE_ID,
-    });
-
-    const appConfig: AppConfig = {
-      appName: website.name,
-      shortName: website.name,
-      description: website.description,
-      themeColor: "black",
-      backgroundColor: "white",
-      icon192: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.image}`,
-      icon512: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.image}`,
-      favicon: `${process.env.NEXT_PUBLIC_BACKEND_URL}${website?.favicon}`,
-      gaId: website.google_analytics?.gaId || null,
-      keywords: website.keywords || ["crafter", "minecraft", "cms"]
-    };
-
+    const appConfig = await getAppConfigDirect();
     return NextResponse.json(appConfig, {
       headers: {
         "Cache-Control": process.env.NODE_ENV === 'development'
@@ -34,10 +20,9 @@ export async function GET(
       },
     });
   } catch (error) {
+    console.error('❌ API app-config error:', error);
     // Hata durumunda varsayılan değerler döndür
-    const defaultConfig: AppConfig = DEFAULT_APPCONFIG;
-
-    return NextResponse.json(defaultConfig, {
+    return NextResponse.json(await getAppConfigDirect(), {
       headers: {
         "Cache-Control": process.env.NODE_ENV === 'development'
           ? "no-cache, no-store, must-revalidate"
