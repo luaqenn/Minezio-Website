@@ -238,6 +238,11 @@ export interface Website {
   ticketCategories: TicketCategory[];
   helpCenter: HelpCenter;
   forum: Forum;
+  server_info: {
+    version: string | null;
+    game: string | null;
+    needs_original_minecraft: boolean | null
+  }
   createdAt: Date;
   updatedAt: Date;
 }

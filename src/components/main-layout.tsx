@@ -8,13 +8,18 @@ import { TopBar } from "@/components/top-bar";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { usePathname } from "next/navigation";
+import InnovativeSignups from "@/components/widgets/InnovativeSignups";
+import { useStatisticsService } from "@/lib/services/statistics.service";
 
 // Bu bileşen, provider'lar ile sayfalarınız arasında bir köprü görevi görecek.
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { website } = useContext(WebsiteContext);
   const { getServers } = useServerService();
+  const { getStatistics } = useStatisticsService();
   const [server, setServer] = useState<Server | null>(null);
+  const [latestSignups, setLatestSignups] = useState<any[]>([]);
+  const [isSignupsLoading, setIsSignupsLoading] = useState(true);
 
   useEffect(() => {
     getServers().then((servers) => {
@@ -22,6 +27,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         setServer(servers[0]);
       }
     });
+    // Fetch latest signups
+    getStatistics().then((stats) => {
+      setLatestSignups(stats?.latest?.signups || []);
+      setIsSignupsLoading(false);
+    }).catch(() => setIsSignupsLoading(false));
   }, []);
 
   if (pathname.includes('auth')) {
@@ -34,6 +44,10 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <Header />
       {/* Sayfa içeriği (örneğin Home component'i) buraya gelecek */}
       <main>{children}</main>
+      {/* Son Kayıt Olanlar - Footer'ın hemen üstünde */}
+      {!isSignupsLoading && latestSignups && latestSignups.length > 0 && (
+        <InnovativeSignups signups={latestSignups} />
+      )}
       <Footer server={server} />
     </>
   );

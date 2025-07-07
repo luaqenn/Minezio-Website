@@ -40,11 +40,11 @@ export default function RedeemPage() {
       </div>
       <div className="relative bg-gradient-to-br from-blue-600/80 via-blue-400/80 to-purple-500/80 dark:from-blue-900/80 dark:via-blue-800/80 dark:to-purple-900/80 rounded-3xl shadow-2xl border border-white/10 dark:border-gray-700/50 overflow-hidden animate-fade-in z-10">
         <div className="pt-16 pb-8 px-8 flex flex-col items-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2 text-center drop-shadow">Redeem Kodu Kullan</h1>
-          <p className="text-gray-600 dark:text-gray-300 mb-6 text-center text-base">Kredi veya ürün kazanmak için elinizdeki redeem kodunu girin.</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2 text-center drop-shadow">Hediye Kodu Kullan</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-6 text-center text-base">Kredi veya ürün kazanmak için elinizdeki hediye kodunu girin.</p>
           <form onSubmit={handleRedeem} className="w-full flex flex-col gap-4 animate-fade-in">
             <Input
-              placeholder="Redeem kodunu giriniz"
+              placeholder="Hediye kodunu giriniz"
               value={code}
               onChange={e => setCode(e.target.value)}
               required

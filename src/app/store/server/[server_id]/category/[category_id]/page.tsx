@@ -192,7 +192,7 @@ export default function CategoryPage({
         {/* Footer Info */}
         {totalProducts > 0 && (
           <ContentFooter
-            header={`{category.name} Özel Koleksiyonu`}
+            header={`${category.name} Özel Koleksiyonu`}
             message="Bu kategoriye özel seçilmiş kaliteli ürünlerle oyun
                   deneyiminizi bir üst seviyeye taşıyın"
             color="purple"
