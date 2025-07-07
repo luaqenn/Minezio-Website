@@ -11,6 +11,7 @@ import { formatTimeAgo } from "@/lib/utils";
 import dynamic from 'next/dynamic';
 import { useWebsitePostsService } from "@/lib/services/posts.service";
 import LatestPostCard from "@/components/LatestPostCard";
+import InnovativeSignups from "@/components/widgets/InnovativeSignups";
 
 // Lazy load heavy components
 const InnovativeCarousel = dynamic(
@@ -358,21 +359,6 @@ export default function Home() {
                       <LatestPurchases purchases={statistics.latest.purchases} />
                     ) : (
                       <EmptyList message="Son zamanlarda alışveriş yapılmadı." />
-                    )}
-                  </Widget.Body>
-                </Widget>
-
-                <Widget>
-                  <Widget.Header>
-                    <FaUserPlus className="inline mr-2 text-purple-500" />
-                    Yeni Katılanlar
-                  </Widget.Header>
-                  <Widget.Body>
-                    {statistics.latest.signups &&
-                    statistics.latest.signups.length > 0 ? (
-                      <LatestSignups signups={statistics.latest.signups} />
-                    ) : (
-                      <EmptyList message="Son zamanlarda yeni katılan olmadı." />
                     )}
                   </Widget.Body>
                 </Widget>

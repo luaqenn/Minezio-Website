@@ -25,6 +25,7 @@ export async function GET() {
         servers: website.servers,
         broadcast_items: website.broadcast_items,
         social_media: website.social_media,
+        server_info: website.server_info,
         createdAt: website.createdAt,
         updatedAt: website.updatedAt,
       };
@@ -52,6 +53,7 @@ export async function GET() {
         servers: website.servers,
         broadcast_items: website.broadcast_items,
         social_media: website.social_media,
+        server_info: website.server_info,
         createdAt: website.createdAt,
         updatedAt: website.updatedAt,
       };

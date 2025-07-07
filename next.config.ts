@@ -37,6 +37,10 @@ const nextConfig: NextConfig = {
         hostname: "minotar.net",
         pathname: "/**",
       },
+      {
+        hostname: "mc-heads.net",
+        pathname: "/**"
+      }
     ],
     // Next.js 15'te formats artık desteklenmiyor, loader seviyesinde yapılıyor
     minimumCacheTTL: process.env.NODE_ENV === 'development' ? 0 : 31536000, // 1 yıl

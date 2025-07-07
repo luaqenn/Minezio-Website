@@ -32,6 +32,7 @@ import { WebsiteContext } from "@/lib/context/website.context";
 import { Avatar } from "./ui/avatar";
 import { useCart } from "@/lib/context/cart.context";
 import { Badge } from "./ui/badge";
+import { Head } from "./ui/head";
 
 // Helper function to format balance as XX.00
 const formatBalance = (balance: number | undefined): string => {
@@ -76,18 +77,20 @@ export function Navbar() {
 
   const getLinkClassName = (path: string) => {
     const isActive = path === "/" ? pathname === "/" : pathname.startsWith(path) && path !== "/";
-    return `relative inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 ease-in-out ${isActive
-        ? "bg-blue-500 text-white shadow-md"
-        : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-      }`;
+    return `relative z-10 overflow-hidden rounded-xl px-5 py-2.5 transition-all duration-200 ease-in-out flex items-center gap-2 font-medium ${
+      isActive
+        ? "bg-gradient-to-r from-blue-500/20 via-cyan-400/20 to-blue-400/20 text-blue-700 dark:text-cyan-200 font-semibold shadow-[0_4px_32px_0_rgba(34,211,238,0.12)] scale-105"
+        : "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200 hover:shadow-[0_2px_16px_0_rgba(34,211,238,0.08)] hover:scale-105"
+    }`;
   };
 
   const getMobileLinkClassName = (path: string) => {
     const isActive = pathname === path;
-    return `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out ${isActive
-        ? "bg-blue-500 text-white"
-        : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
-      }`;
+    return `rounded-xl px-4 py-2.5 transition-all duration-200 ease-in-out flex items-center gap-2 font-medium ${
+      isActive
+        ? "bg-gradient-to-r from-blue-500/20 via-cyan-400/20 to-blue-400/20 text-blue-700 dark:text-cyan-200 font-semibold shadow-[0_4px_32px_0_rgba(34,211,238,0.12)] scale-105"
+        : "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200 hover:shadow-[0_2px_16px_0_rgba(34,211,238,0.08)] hover:scale-105"
+    }`;
   };
 
   const navigationItems = [
@@ -244,7 +247,7 @@ export function Navbar() {
           </div>
 
           {/* Center Navigation - Desktop */}
-          <div className="hidden lg:flex items-center justify-center flex-1 space-x-1">
+          <div className="hidden lg:flex items-center justify-center flex-1 space-x-4">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -268,9 +271,9 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                  className="relative rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200"
                 >
-                  <ShoppingCart className="h-5 w-5" />
+                  <ShoppingCart className="h-6 w-6" />
                   {totalItems > 0 && (
                     <Badge 
                       variant="destructive" 
@@ -290,8 +293,8 @@ export function Navbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant="ghost"
-                      className="relative flex-shrink-0 ml-2 pr-2 z-10 transition-all duration-300 ease-in-out"
+                      variant={null}
+                      className="relative flex-shrink-0 ml-2 pr-2 transition-all duration-300 ease-in-out"
                     >
                       <div className="flex flex-col justify-center text-right py-2 pr-3">
                         <div className="text-right">
@@ -303,36 +306,38 @@ export function Navbar() {
                           </p>
                         </div>
                       </div>
-                      <Avatar username={user?.username || "steve"} size={40} />
+                    <Head username={user?.username || "MHF_Steve"} size={300} className="w-20 h-20 z-35" />
+
                     </Button>
+
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent side="bottom" align="start" className="w-56 mt-2 z-30 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/95 shadow-xl dark:shadow-lg p-2 dark:text-gray-100 text-gray-900 font-medium">
                     <DropdownMenuLabel>Hesabım</DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
                     <Link href={"/profile"}>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200">
                         <User className="mr-2 h-4 w-4" />
                         Profil
                       </DropdownMenuItem>
                     </Link>
 
                     <Link href={"/wallet"}>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200">
                         <Wallet className="mr-2 h-4 w-4" />
                         Cüzdan
                       </DropdownMenuItem>
                     </Link>
 
                     <Link href={"/chest"}>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200">
                         <BoxIcon className="mr-2 h-4 w-4" />
                         Sandığım
                       </DropdownMenuItem>
                     </Link>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      className="text-red-600"
+                      className="text-red-600 hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200"
                       onClick={signOut}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
@@ -354,7 +359,7 @@ export function Navbar() {
                         Tıkla Giriş Yap!
                       </span>
                     </div>
-                    <Avatar username="steve" className="w-10 h-10" />
+                    <Head username="MHF_Steve" size={300} className="w-20 h-20" />
                   </div>
                 </Link>
               )}
@@ -367,9 +372,9 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                  className="relative rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-cyan-400/10 hover:to-blue-400/10 hover:text-blue-700 dark:hover:text-cyan-200"
                 >
-                  <ShoppingCart className="h-5 w-5" />
+                  <ShoppingCart className="h-6 w-6" />
                   {totalItems > 0 && (
                     <Badge 
                       variant="destructive" 

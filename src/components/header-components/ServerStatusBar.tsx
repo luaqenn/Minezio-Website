@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useContext } from "react";
 import { WebsiteContext } from "@/lib/context/website.context";
+import Image from 'next/image';
+import MinecraftIcon from '../../../public/icons/MinecraftIcon.png';
 import CubeIcon from "@/assets/icons/minecraft/CubeIcon";
+import { ServerIcon } from "lucide-react";
 
 type Props = {
   status: {
@@ -16,7 +19,7 @@ type Props = {
 export default function ServerStatusBar({ status }: Props) {
   const [isCopied, setIsCopied] = useState(false);
   const { website } = useContext(WebsiteContext);
-  const serverAddress = website?.servers[0]?.ip || "mc.example.com";
+  const serverAddress = website?.servers[0]?.ip || "SUNUCU BULUNAMADI";
 
   const handleCopy = () => {
     setIsCopied(true);
@@ -43,8 +46,16 @@ export default function ServerStatusBar({ status }: Props) {
         }}
         className="cursor-pointer hidden md:flex items-center md:justify-end gap-4"
       >
-        <div className="header-icon w-14 h-14 bg-blue-100/10 rounded-lg flex items-center justify-center">
-          <CubeIcon className="w-10 h-10" />
+        <div className="header-icon w-14 h-14 bg-blue-100/10 rounded-lg flex items-center justify-center relative">
+          <div className="relative inline-flex">
+            <ServerIcon/>
+            <span
+              className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white 
+                ${status === null ? 'bg-yellow-400' : status.online ? 'bg-green-400' : 'bg-red-400'}
+                -translate-y-1/2 translate-x-1/2`}
+              title={status === null ? 'Yükleniyor' : status.online ? 'Online' : 'Offline'}
+            />
+          </div>
         </div>
         <div className="font-medium">
           <div className="text-gray-300">
@@ -59,7 +70,7 @@ export default function ServerStatusBar({ status }: Props) {
             ) : (
               <span className="text-yellow-400">-/-</span>
             )}{" "}
-            oyuncu aktif
+            Oyuncu Aktif
           </div>
 
           {isCopied ? (
@@ -68,7 +79,7 @@ export default function ServerStatusBar({ status }: Props) {
             </span>
           ) : (
             <span className="text-white text-sm uppercase opacity-50">
-              SUNUCU ADRESİNİ KOPYALA
+              {serverAddress || ""}
             </span>
           )}
         </div>
