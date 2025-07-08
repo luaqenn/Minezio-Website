@@ -14,6 +14,7 @@ import {
   CoinsIcon,
   BoxIcon,
   Ticket,
+  UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -359,7 +360,7 @@ export function Navbar() {
                         Tıkla Giriş Yap!
                       </span>
                     </div>
-                    <Head username="MHF_Steve" size={300} className="w-20 h-20" />
+                    <UserIcon className="w-6 h-6" />
                   </div>
                 </Link>
               )}

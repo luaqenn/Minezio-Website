@@ -57,7 +57,7 @@ export async function GET() {
         createdAt: website.createdAt,
         updatedAt: website.updatedAt,
       };
-      
+
       return NextResponse.json({
         success: true,
         website: secureWebsite,
@@ -65,15 +65,12 @@ export async function GET() {
       });
     }
   } catch (error: any) {
-    console.error(error);
-
     return NextResponse.json(
-      {
+      error && error.status ? error : {
         success: false,
-        error: "Website bilgileri alınamadı",
-        isExpired: true,
+        message: "Website bilgileri alınamadı, lütfen https://crafter.net.tr/ adresini ziyaret edin."
       },
-      { status: 500 }
+      { status: error?.status || 500 }
     );
   }
 }

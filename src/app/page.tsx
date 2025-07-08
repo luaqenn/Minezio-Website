@@ -16,7 +16,7 @@ import InnovativeSignups from "@/components/widgets/InnovativeSignups";
 // Lazy load heavy components
 const InnovativeCarousel = dynamic(
   () => import("@/components/ui/innovative-carousel").then(mod => ({ default: mod.InnovativeCarousel })),
-  { 
+  {
     ssr: false,
     loading: () => <div className="h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
   }
@@ -29,7 +29,7 @@ const SlideContent = dynamic(
 
 const AuthForm = dynamic(
   () => import("@/components/widgets/auth-form").then(mod => ({ default: mod.AuthForm })),
-  { 
+  {
     ssr: false,
     loading: () => <div className="h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
   }
@@ -37,7 +37,7 @@ const AuthForm = dynamic(
 
 const DiscordWidget = dynamic(
   () => import("@/components/widgets/discord-widget"),
-  { 
+  {
     ssr: false,
     loading: () => <div className="h-48 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
   }
@@ -50,6 +50,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FaShoppingCart, FaCrown, FaGift, FaUserPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { Badge } from "@/components/ui/badge";
 
 // Boş liste durumunda gösterilecek component
 const EmptyList = ({ message }: { message: string }) => (
@@ -152,7 +153,7 @@ const LatestPurchases = ({ purchases }: { purchases: any[] }) => (
             {purchase.username}
           </p>
           <p className="text-xs text-gray-600 dark:text-gray-400">
-            "{purchase.productName}" aldı.
+            <Badge className="bg-gradient-to-r from-blue-500/20 via-cyan-400/20 to-blue-400/20 text-blue-700 dark:text-cyan-200 font-semibold shadow-[0_4px_32px_0_rgba(34,211,238,0.12)] scale-105 border-0">{purchase.productName}</Badge> ürününü satın aldı!
           </p>
         </div>
         <span className="text-xs text-gray-500 dark:text-gray-500">
@@ -206,7 +207,7 @@ export default function Home() {
   const [isPostsLoading, setIsPostsLoading] = useState(true);
 
   // Memoized carousel items
-  const carouselItems = useMemo(() => 
+  const carouselItems = useMemo(() =>
     website?.sliders?.map((slider) => ({
       id: slider.id,
       content: (
@@ -266,9 +267,8 @@ export default function Home() {
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20 pb-8">
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-12 items-start">
           <div
-            className={`${
-              !isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"
-            } space-y-4 sm:space-y-6 order-2 lg:order-1`}
+            className={`${!isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"
+              } space-y-4 sm:space-y-6 order-2 lg:order-1`}
           >
             {carouselItems.length > 0 && (
               <Suspense fallback={<div className="h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />}>
@@ -297,9 +297,8 @@ export default function Home() {
           </div>
 
           <div
-            className={`${
-              !isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"
-            } space-y-4 sm:space-y-6 order-1 lg:order-2`}
+            className={`${!isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"
+              } space-y-4 sm:space-y-6 order-1 lg:order-2`}
           >
             {!isAuthenticated && (
               <div className="relative z-10">
@@ -324,7 +323,7 @@ export default function Home() {
                   </Widget.Header>
                   <Widget.Body>
                     {statistics.topCreditLoaders &&
-                    statistics.topCreditLoaders.length > 0 ? (
+                      statistics.topCreditLoaders.length > 0 ? (
                       <TopCreditLoaders loaders={statistics.topCreditLoaders} />
                     ) : (
                       <EmptyList message="Henüz kimse kredi yüklemedi." />
@@ -340,7 +339,7 @@ export default function Home() {
                   </Widget.Header>
                   <Widget.Body>
                     {statistics.latest.payments &&
-                    statistics.latest.payments.length > 0 ? (
+                      statistics.latest.payments.length > 0 ? (
                       <LatestPayments payments={statistics.latest.payments} />
                     ) : (
                       <EmptyList message="Son zamanlarda kredi yüklenmedi." />
@@ -355,7 +354,7 @@ export default function Home() {
                   </Widget.Header>
                   <Widget.Body>
                     {statistics.latest.purchases &&
-                    statistics.latest.purchases.length > 0 ? (
+                      statistics.latest.purchases.length > 0 ? (
                       <LatestPurchases purchases={statistics.latest.purchases} />
                     ) : (
                       <EmptyList message="Son zamanlarda alışveriş yapılmadı." />
