@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaUserPlus } from "react-icons/fa";
 import { formatTimeAgo } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { Head } from "../ui/body";
 
 // Basit bir mobil kontrol hook'u
 function useIsMobile() {
@@ -25,12 +26,12 @@ export default function InnovativeSignups({ signups }: { signups: any[] }) {
   return (
     <div className="w-full flex flex-col md:flex-row overflow-hidden shadow-xl ">
       {/* Sol Panel - degrade her zaman görünür, tema uyumlu */}
-      <div className="flex flex-col justify-start items-start w-full md:w-56 min-w-0 md:min-w-[160px] bg-gradient-to-br from-blue-500 via-blue-400 to-blue-300 dark:from-blue-600 dark:via-blue-500 dark:to-blue-400 pt-6 pb-2 px-4 md:pt-8 md:pb-0 md:px-6 rounded-t-2xl rounded-b-none md:rounded-tl-2xl md:rounded-tr-none md:rounded-bl-none md:rounded-br-none">
+      <div className="flex flex-col justify-start items-start w-full md:w-1/4 min-w-0 bg-gradient-to-br from-blue-500 via-blue-400 to-blue-300 dark:from-blue-600 dark:via-blue-500 dark:to-blue-400 pt-6 pb-2 px-4 md:pt-8 md:pb-0 md:px-6 rounded-t-2xl rounded-b-none md:rounded-tl-2xl md:rounded-tr-none md:rounded-bl-none md:rounded-br-none">
         <h3 className="text-gray-900 text-white text-lg sm:text-xl md:text-2xl font-bold mb-1 md:mb-2 drop-shadow dark:drop-shadow-none">Son Kayıtlar</h3>
         <p className="text-gray-800/90 dark:text-white/90 text-white text-xs sm:text-sm md:text-base font-medium mb-1">Sunucumuza kayıt olan son <span className="font-bold">{total}</span> oyuncu!</p>
       </div>
       {/* Sağ Panel */}
-      <div className="flex-1 flex items-center justify-center px-2 md:px-6 py-4 md:py-6 gap-2 md:gap-8 rounded-t-none rounded-b-none md:rounded-tr-2xl md:rounded-bl-none md:rounded-br-none bg-white dark:bg-[#0a1121] transition-colors">
+      <div className="w-full md:w-3/4 flex items-center justify-center px-2 md:px-6 py-4 md:py-6 gap-2 md:gap-8 rounded-t-none rounded-b-none md:rounded-tr-2xl md:rounded-bl-none md:rounded-br-none bg-white dark:bg-[#0a1121] transition-colors">
         {(!displaySignups || displaySignups.length === 0) ? (
           <p className="text-center text-xs sm:text-sm text-gray-500 dark:text-gray-300">Son zamanlarda yeni katılan olmadı.</p>
         ) : (
@@ -46,10 +47,10 @@ export default function InnovativeSignups({ signups }: { signups: any[] }) {
                 {idx !== 0 && (
                   <span className="hidden md:block absolute -left-3 top-1/2 -translate-y-1/2 h-12 border-l border-blue-300 dark:border-blue-700/40 dark:border-gray-700/60" />
                 )}
-                <Avatar
+                <Head
                     username={signup.username}
                     size={40}
-                    className="border-2 border-gray-200 dark:border-white dark:border-gray-800 shadow"
+                    className="shadow"
                   />
                 <span className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm md:text-base text-center break-all truncate w-full group-hover:text-blue-700 dark:group-hover:text-blue-200 transition-colors">
                   {signup.username}

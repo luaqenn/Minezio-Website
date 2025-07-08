@@ -20,7 +20,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatTimeAgo(timestamp: string | Date): string {
   try {
     const date = typeof timestamp === "string" ? new Date(timestamp) : timestamp;
-    return formatDistanceToNow(date, { addSuffix: true, locale: tr });
+    return formatDistanceToNow(date, { addSuffix: true, locale: tr }).replace('yaklaşık ', '');
   } catch (error) {
     return "bir süre önce";
   }

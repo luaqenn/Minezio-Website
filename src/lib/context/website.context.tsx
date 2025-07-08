@@ -25,7 +25,8 @@ export const WebsiteProvider = ({
 }) => {
   const [website, setWebsite] = useState<Website | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isExpired, setIsExpired] = useState(false);
+  const [isExpired, setIsExpired] = useState<any>(false);
+  const [error, setError] = useState<any>(false);
 
   useEffect(() => {
     const fetchWebsite = async () => {
@@ -35,12 +36,14 @@ export const WebsiteProvider = ({
 
         if (data.success) {
           setWebsite(data.website);
-          setIsExpired(data.isExpired);
+          setIsExpired(false);
         } else {
           setIsExpired(true);
+          setError(data)
         }
       } catch (error) {
         setIsExpired(true);
+        setError(error);
       } finally {
         setIsLoading(false);
       }
@@ -54,7 +57,7 @@ export const WebsiteProvider = ({
   }
 
   if (isExpired) {
-    return <Expired />;
+    return <Expired error={error} />;
   }
 
   return (
