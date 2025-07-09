@@ -26,6 +26,7 @@ export async function GET() {
         broadcast_items: website.broadcast_items,
         social_media: website.social_media,
         server_info: website.server_info,
+        security: website.security.cf_turnstile ? { cf_turnstile: { site_key: website.security.cf_turnstile.site_key } } : null,
         createdAt: website.createdAt,
         updatedAt: website.updatedAt,
       };
@@ -54,6 +55,7 @@ export async function GET() {
         broadcast_items: website.broadcast_items,
         social_media: website.social_media,
         server_info: website.server_info,
+        security: website.security.cf_turnstile ? { cf_turnstile: { site_key: website.security.cf_turnstile.site_key } } : null,
         createdAt: website.createdAt,
         updatedAt: website.updatedAt,
       };

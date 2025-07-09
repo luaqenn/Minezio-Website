@@ -1,9 +1,9 @@
 import { LOG_TYPES } from '../utils/types/logs';
 import { PERMISSIONS } from '../utils/constants/permissions';
 import { ServerConnectionType } from '../utils/constants/server';
-import { LicenseType } from '../utils/constants/licenses';
 
-// Nested interfaces for complex objects
+// --- Subschema Types ---
+
 export interface GoogleAnalytics {
   gaId: string;
 }
@@ -23,6 +23,14 @@ export interface Discord {
   webhook_url: string | false;
   guild_id: string;
   webhook_events: LOG_TYPES[];
+}
+
+export interface Chest {
+  id: string;
+  product: Product;
+  used: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface User {
@@ -67,8 +75,9 @@ export interface ServerConnection {
 }
 
 export interface Server {
+  id: string;
   name: string;
-  ip: string;  
+  ip: string;
   port: number;
   image: string;
   connection: ServerConnection;
@@ -101,52 +110,18 @@ export interface Category {
   updatedAt: Date;
 }
 
-export interface Chest {
-  id: string;
-  product: Product;
-  used: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface PaymentProviderConfig {
   id: string;
-  provider: 'PayTR' | 'Shipy' | 'Papara' | 'İyzico';
+  provider: 'PayTR' | 'Shopier' | 'Papara' | 'İyzico';
   name: string;
   isActive: boolean;
-  config: ProviderConfig;
+  config: Record<string, any>;
   priority: number;
   supportedCurrencies: string[];
   minAmount: number;
   maxAmount: number;
   description?: string;
   additionalSettings?: Record<string, any>;
-}
-
-export interface ProviderConfig {
-  [key: string]: any; // Since it can be PayTRConfig, IyzicoConfig, etc.
-}
-
-export interface BasketItem {
-  name: string;
-  price: string;
-  quantity: number;
-}
-
-export interface CustomerInfo {
-  user_id?: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-}
-
-export enum PaymentStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  CANCELED = 'CANCELED',
-  REFUNDED = 'REFUNDED',
 }
 
 export interface Payment {
@@ -157,9 +132,19 @@ export interface Payment {
   merchant_oid: string;
   amount: number;
   currency: string;
-  status: PaymentStatus;
-  basket: BasketItem[];
-  user: CustomerInfo;
+  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELED' | 'REFUNDED';
+  basket: {
+    name: string;
+    price: string;
+    quantity: number;
+  }[];
+  user: {
+    user_id?: string;
+    name: string;
+    email: string;
+    phone?: string;
+    address?: string;
+  };
   userIp: string;
   paymentProviderResponse?: any;
   callbackData?: any;
@@ -168,18 +153,32 @@ export interface Payment {
   updatedAt: Date;
 }
 
-export interface LogEventData {
-  [key: string]: any; // Flexible object for event-specific data
+export interface Report {
+  id: string;
+  type: string;
+  description: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Warning {
+  id: string;
+  userId: string;
+  reason: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Logs {
   id: string;
   type: LOG_TYPES;
-  category: string; // LOG_CATEGORIES enum
+  category: string;
   performedBy: string;
   performedByUsername?: string;
   timestamp: Date;
-  eventData: LogEventData;
+  eventData: Record<string, any>;
   ipAddress?: string;
   userAgent?: string;
   severity: 'info' | 'warning' | 'error' | 'success';
@@ -192,7 +191,83 @@ export interface Logs {
   tags?: string[];
 }
 
-// Main Website interface
+export interface Coupon {
+  id: string;
+  code: string;
+  discount: number;
+  usageLimit: number;
+  usedCount: number;
+  expiresAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RedeemCode {
+  id: string;
+  code: string;
+  reward: string;
+  usageLimit: number;
+  usedCount: number;
+  expiresAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  author: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Ticket {
+  id: string;
+  userId: string;
+  categoryId: string;
+  status: string;
+  messages: any[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TicketCategory {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface HelpCenter {
+  categories: any[];
+  items: any[];
+  faqs: any[];
+}
+
+export interface Forum {
+  categories: any[];
+}
+
+export interface ServerInfo {
+  version: string | null;
+  game: string | null;
+  needs_original_minecraft: boolean | null;
+}
+
+export interface Security {
+  maxRegistrationPerIp?: number;
+  allowRegistration?: boolean;
+  cf_turnstile?: {
+    site_key: string;
+    secret_key: string;
+  };
+  [key: string]: any;
+}
+
+// --- Main Website Interface ---
+
 export interface Website {
   id: string;
   name: string;
@@ -238,11 +313,8 @@ export interface Website {
   ticketCategories: TicketCategory[];
   helpCenter: HelpCenter;
   forum: Forum;
-  server_info: {
-    version: string | null;
-    game: string | null;
-    needs_original_minecraft: boolean | null
-  }
+  security: Security;
+  server_info: ServerInfo | null;
   createdAt: Date;
   updatedAt: Date;
 }

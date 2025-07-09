@@ -5,6 +5,7 @@ import { User } from '../types/user';
 export interface SignInRequest {
     username: string;
     password: string;
+    turnstileToken?: string;
 }
 
 export interface SignInResponse {
@@ -17,6 +18,7 @@ export interface SignUpRequest {
     email: string;
     password: string;
     confirm_password: string;
+    turnstileToken?: string;
 }
 
 export interface SignUpResponse {
