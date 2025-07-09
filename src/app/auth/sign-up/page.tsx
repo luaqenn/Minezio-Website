@@ -9,11 +9,15 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { WebsiteContext } from "@/lib/context/website.context";
 import { LockIcon, UserIcon, MailIcon } from "lucide-react";
+import { TurnstileImplicit } from "nextjs-turnstile";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function SignUp() {
   const { signUp } = useContext(AuthContext);
   const { website } = useContext(WebsiteContext);
   const router = useRouter();
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,8 +26,22 @@ export default function SignUp() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const confirm_password = formData.get("confirm_password") as string;
-
-    await signUp({ username, email, password, confirm_password })
+    // Eğer Turnstile aktifse ve token yoksa, submit etme
+    if (website?.security?.cf_turnstile?.site_key && !turnstileToken) {
+      withReactContent(Swal).fire({
+        title: "Doğrulama Gerekli",
+        text: "Lütfen güvenlik doğrulamasını tamamlayın.",
+        icon: "warning",
+        confirmButtonText: "Tamam",
+      });
+      return;
+    }
+    // turnstileToken varsa ekle
+    const payload: any = { username, email, password, confirm_password };
+    if (website?.security?.cf_turnstile?.site_key && turnstileToken) {
+      payload.turnstileToken = turnstileToken;
+    }
+    await signUp(payload)
       .then(() => {
         withReactContent(Swal)
           .fire({
@@ -182,12 +200,30 @@ export default function SignUp() {
                 id="rules"
                 name="rules"
                 type="checkbox"
+                required
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800"
               />
               <label htmlFor="rules" className="ml-2 block text-gray-900 dark:text-gray-200">
-                Kuralları okudum ve kabul ediyorum
+                <Link href="/legal/rules" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 underline">
+                  Kuralları
+                </Link> okudum ve kabul ediyorum.
               </label>
             </div>
+
+            {/* Turnstile CAPTCHA sadece cf_turnstile varsa göster */}
+            {website?.security?.cf_turnstile?.site_key && (
+              <div className="flex justify-center">
+                <TurnstileImplicit
+                  siteKey={website.security.cf_turnstile.site_key}
+                  theme={"auto"}
+                  size={"normal"}
+                  responseFieldName="cf-turnstile-response-2"
+                  onSuccess={setTurnstileToken}
+                  onError={() => setTurnstileToken("")}
+                  onExpire={() => setTurnstileToken("")}
+                />
+              </div>
+            )}
 
             <button
               type="submit"
@@ -204,8 +240,8 @@ export default function SignUp() {
             </a>
           </p>
 
-          <p className="text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
-            Powered by Crafter
+          <p className="flex flex-row items-center justify-center text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
+            Powered by <Link href={"https://crafter.net.tr/"} target="_blank" rel="noopener noreferrer" ><Image src={"/images/crafter.png"} alt={""} width={90} height={30} /></Link>
           </p>
         </div>
       </div>

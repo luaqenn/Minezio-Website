@@ -10,7 +10,7 @@ export const AuthContext = createContext<{
   isLoading: boolean;
   isAuthenticated: boolean;
   setUser: (user: User | null) => void;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (username: string, password: string, turnstileToken?: string) => Promise<void>;
   signUp: (data: SignUpRequest) => Promise<void>;
   signOut: () => Promise<void>;
 }>({
@@ -44,10 +44,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
-  const signIn = async (username: string, password: string) => {
+  const signIn = async (username: string, password: string, turnstileToken?: string) => {
     setIsLoading(true);
     try {
-      const response = await signInService({ username, password });
+      const response = await signInService({ username, password, turnstileToken });
 
       localStorage.setItem("accessToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);

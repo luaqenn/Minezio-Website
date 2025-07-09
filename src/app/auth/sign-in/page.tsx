@@ -9,20 +9,39 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { WebsiteContext } from "@/lib/context/website.context";
 import { LockIcon, UserIcon } from "lucide-react";
+import { TurnstileImplicit } from "nextjs-turnstile";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function SignIn() {
   const { signIn } = useContext(AuthContext);
   const { website } = useContext(WebsiteContext);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
+    // Eğer Turnstile aktifse ve token yoksa, submit etme
+    if (website?.security?.cf_turnstile?.site_key && !turnstileToken) {
+      withReactContent(Swal).fire({
+        title: "Doğrulama Gerekli",
+        text: "Lütfen güvenlik doğrulamasını tamamlayın.",
+        icon: "warning",
+        confirmButtonText: "Tamam",
+      });
+      return;
+    }
+    // turnstileToken varsa ekle
+    const payload: any = { username, password };
+    if (website?.security?.cf_turnstile?.site_key && turnstileToken) {
+      payload.turnstileToken = turnstileToken;
+    }
 
-    await signIn(username, password)
+    await signIn(payload.username, payload.password, payload.turnstileToken)
       .then(() => {
         withReactContent(Swal).fire({
           title: "Giriş Başarılı",
@@ -137,6 +156,21 @@ export default function SignIn() {
               </div>
             </div>
 
+            {/* Turnstile CAPTCHA sadece cf_turnstile varsa göster */}
+            {website?.security?.cf_turnstile?.site_key && (
+              <div className="flex justify-center">
+                <TurnstileImplicit
+                  siteKey={website.security.cf_turnstile.site_key}
+                  theme={"auto"}
+                  size={"normal"}
+                  responseFieldName="cf-turnstile-response-1"
+                  onSuccess={setTurnstileToken}
+                  onError={() => setTurnstileToken("")}
+                  onExpire={() => setTurnstileToken("")}
+                />
+              </div>
+            )}
+
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center">
                 <input
@@ -169,8 +203,8 @@ export default function SignIn() {
             </a>
           </p>
 
-          <p className="text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
-            Powered by Crafter
+          <p className="flex flex-row items-center justify-center text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
+            Powered by <Link href={"https://crafter.net.tr/"} target="_blank" rel="noopener noreferrer" ><Image src={"/images/crafter.png"} alt={""} width={90} height={30} /></Link>
           </p>
         </div>
       </div>
