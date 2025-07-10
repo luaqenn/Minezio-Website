@@ -13,6 +13,7 @@ export const AuthContext = createContext<{
   signIn: (username: string, password: string, turnstileToken?: string) => Promise<void>;
   signUp: (data: SignUpRequest) => Promise<void>;
   signOut: () => Promise<void>;
+  reloadUser: () => Promise<void>;
 }>({
   user: null,
   isLoading: false,
@@ -21,6 +22,7 @@ export const AuthContext = createContext<{
   signUp: () => Promise.resolve(),
   signOut: () => Promise.resolve(),
   setUser: () => { },
+  reloadUser: () => Promise.resolve(),
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -94,9 +96,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const reloadUser = async () => {
+    setIsLoading(true);
+    try {
+      const user = await getMe();
+      setUser(user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return <Loading show={true} message="Yükleniyor..." fullScreen={true} />;
   }
 
-  return <AuthContext.Provider value={{ user, setUser, isLoading, isAuthenticated, signIn, signUp, signOut }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, setUser, isLoading, isAuthenticated, signIn, signUp, signOut, reloadUser }}>{children}</AuthContext.Provider>;
 };
