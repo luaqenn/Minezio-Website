@@ -24,7 +24,7 @@ export default function InnovativeSignups({ signups }: { signups: any[] }) {
   const total = signups?.length || 0;
 
   return (
-    <div className="w-full flex flex-col md:flex-row overflow-hidden shadow-xl ">
+    <div className="w-full flex flex-col md:flex-row overflow-hidden shadow-xl pt-10">
       {/* Sol Panel - degrade her zaman görünür, tema uyumlu */}
       <div className="flex flex-col justify-start items-start w-full md:w-1/4 min-w-0 bg-gradient-to-br from-blue-500 via-blue-400 to-blue-300 dark:from-blue-600 dark:via-blue-500 dark:to-blue-400 pt-6 pb-2 px-4 md:pt-8 md:pb-0 md:px-6 rounded-t-2xl rounded-b-none md:rounded-tl-2xl md:rounded-tr-none md:rounded-bl-none md:rounded-br-none">
         <h3 className="text-gray-900 text-white text-lg sm:text-xl md:text-2xl font-bold mb-1 md:mb-2 drop-shadow dark:drop-shadow-none">Son Kayıtlar</h3>

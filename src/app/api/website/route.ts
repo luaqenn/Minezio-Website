@@ -26,7 +26,7 @@ export async function GET() {
         broadcast_items: website.broadcast_items,
         social_media: website.social_media,
         server_info: website.server_info,
-        security: website.security.cf_turnstile ? { cf_turnstile: { site_key: website.security.cf_turnstile.site_key } } : null,
+        security: website.security,
         createdAt: website.createdAt,
         updatedAt: website.updatedAt,
       };
@@ -67,6 +67,8 @@ export async function GET() {
       });
     }
   } catch (error: any) {
+    console.error(error)
+    
     return NextResponse.json(
       error && error.status ? error : {
         success: false,
