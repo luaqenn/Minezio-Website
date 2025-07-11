@@ -63,9 +63,11 @@ export default function Store() {
   const fetchServersWithStatus = async () => {
     try {
       const serverData = await getServers();
-      if (serverData && serverData.length > 0) {
-        // Fetch status for all servers concurrently
-        const serversWithStatusPromises = serverData.map(
+      // Sadece isListed true olan sunucuları filtrele
+      const listedServers = (serverData || []).filter((server: Server) => server.isListed);
+      if (listedServers.length > 0) {
+        // Fetch status for all listed servers concurrently
+        const serversWithStatusPromises = listedServers.map(
           async (server: Server) => {
             const status = await fetchServerStatus(server);
             return {

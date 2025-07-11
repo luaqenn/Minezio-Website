@@ -4,6 +4,7 @@ export type Server = {
   ip: string;
   port: string;
   image: string;
+  isListed: boolean;
   createdAt: string;
   updatedAt: string;
 };
