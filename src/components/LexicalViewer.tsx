@@ -4,7 +4,9 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { HeadingNode } from "@lexical/rich-text";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { nodes as editorNodes } from "@/components/blocks/editor-00/nodes";
 
 interface LexicalViewerProps {
   content: any; // Lexical JSON
@@ -44,25 +46,36 @@ function onError(error: Error) {
 }
 
 export default function LexicalViewer({ content, className }: LexicalViewerProps) {
-  const initialConfig = {
-    namespace: "Viewer",
-    theme,
-    onError,
-    editable: false,
-    editorState: typeof content === "string" ? content : JSON.stringify(content),
-    nodes: [HeadingNode],
-  };
+  try {
+    const initialConfig = {
+      namespace: "Viewer",
+      theme,
+      onError,
+      editable: false,
+      editorState: typeof content === "string" ? content : JSON.stringify(content),
+      nodes: editorNodes,
+    };
 
-  return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className={"prose dark:prose-invert max-w-none " + (className || "") }>
-        <RichTextPlugin
-          contentEditable={<ContentEditable className="outline-none" readOnly />}
-          placeholder={null}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <HistoryPlugin />
-      </div>
-    </LexicalComposer>
-  );
+    return (
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className={"prose dark:prose-invert max-w-none " + (className || "") }>
+          <RichTextPlugin
+            contentEditable={<ContentEditable className="outline-none" readOnly />}
+            placeholder={null}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <HistoryPlugin />
+        </div>
+      </LexicalComposer>
+    );
+  } catch (e) {
+    return (
+      <Alert className="max-w-2xl mx-auto mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          İçerik görüntülenemiyor. Bu alanı <b>Crafter Yönetim Paneli → Ayarlar → Legal Sayfa Ayarları</b> bölümünden güncelleyebilirsiniz.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 } 
