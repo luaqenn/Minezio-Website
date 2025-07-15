@@ -12,7 +12,6 @@ import ServerStatusBar from "./header-components/ServerStatusBar";
 export default function Header() {
   const { website } = useContext(WebsiteContext);
   const { getServers } = useServerService();
-  const [server, setServer] = useState<Server | null>(null);
   const [serverStatus, setServerStatus] = useState<{
     online: boolean;
     players?: { online: number; max: number };
@@ -30,9 +29,8 @@ export default function Header() {
       try {
         const servers = await getServers();
         if (servers && servers.length > 0) {
-          const selectedServer = servers[0];
-          setServer(selectedServer);
-
+          const selectedServer =
+            servers.find((s) => s.port === 25565) || servers[0];
           const { ip, port } = selectedServer;
           const res = await fetch(
             `/api/status/minecraft?ip=${ip}&port=${port}`,
@@ -122,7 +120,7 @@ export default function Header() {
             src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${
               website?.image || "/images/default-logo.png"
             }`}
-            alt={website?.name || `Logo`}
+            alt={website?.name || "Logo"}
             width={200}
             height={35}
             className="max-h-logo mb-20 z-30 hover:scale-105 transition-all duration-300"
