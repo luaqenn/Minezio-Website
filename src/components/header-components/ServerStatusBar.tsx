@@ -2,9 +2,6 @@
 
 import { useState, useEffect, useContext } from "react";
 import { WebsiteContext } from "@/lib/context/website.context";
-import Image from 'next/image';
-import MinecraftIcon from '../../../public/icons/MinecraftIcon.png';
-import CubeIcon from "@/assets/icons/minecraft/CubeIcon";
 import { ServerIcon } from "lucide-react";
 
 type Props = {
@@ -19,7 +16,11 @@ type Props = {
 export default function ServerStatusBar({ status }: Props) {
   const [isCopied, setIsCopied] = useState(false);
   const { website } = useContext(WebsiteContext);
-  const serverAddress = website?.servers[0]?.ip || "SUNUCU BULUNAMADI";
+  // Sunucu adresini port 25565'e göre veya ilk sunucuya göre seç
+  const serverAddress =
+    website?.servers?.find((s) => s.port === 25565)?.ip ||
+    website?.servers?.[0]?.ip ||
+    "SUNUCU BULUNAMADI";
 
   const handleCopy = () => {
     setIsCopied(true);

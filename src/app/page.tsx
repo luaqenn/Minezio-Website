@@ -230,7 +230,7 @@ export default function Home() {
         getStatistics()
       ]);
 
-      setServer(servers.find((server) => server.port === "25565") || servers[0]);
+      setServer(servers.find((server) => server.port === 25565) || servers[0]);
       setStatistics(stats);
     } catch (err) {
       withReactContent(Swal).fire({

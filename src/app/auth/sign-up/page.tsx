@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { WebsiteContext } from "@/lib/context/website.context";
 import { LockIcon, UserIcon, MailIcon } from "lucide-react";
-import { TurnstileImplicit } from "nextjs-turnstile";
+import Turnstile from "react-turnstile";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -18,6 +18,13 @@ export default function SignUp() {
   const { website } = useContext(WebsiteContext);
   const router = useRouter();
   const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const [turnstileKey, setTurnstileKey] = useState(1);
+
+  // Sadece react-turnstile için gerekli reset fonksiyonu
+  const forceResetTurnstile = () => {
+    setTurnstileToken("");
+    setTurnstileKey((prev) => prev + 1);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,6 +41,7 @@ export default function SignUp() {
         icon: "warning",
         confirmButtonText: "Tamam",
       });
+      forceResetTurnstile();
       return;
     }
     // turnstileToken varsa ekle
@@ -62,6 +70,7 @@ export default function SignUp() {
           icon: "error",
           confirmButtonText: "Tamam",
         });
+        forceResetTurnstile();
       });
   };
 
@@ -213,14 +222,15 @@ export default function SignUp() {
             {/* Turnstile CAPTCHA sadece cf_turnstile varsa göster */}
             {website?.security?.cf_turnstile?.site_key && (
               <div className="flex justify-center">
-                <TurnstileImplicit
-                  siteKey={website.security.cf_turnstile.site_key}
+                <Turnstile
+                  key={turnstileKey}
+                  sitekey={website.security.cf_turnstile.site_key}
                   theme={"auto"}
-                  size={"normal"}
-                  responseFieldName="cf-turnstile-response-2"
-                  onSuccess={setTurnstileToken}
-                  onError={() => setTurnstileToken("")}
-                  onExpire={() => setTurnstileToken("")}
+                  size="normal"
+                  onVerify={setTurnstileToken}
+                  onExpire={forceResetTurnstile}
+                  onError={forceResetTurnstile}
+                  className="my-2"
                 />
               </div>
             )}

@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 
 // Context
 import { AuthContext } from "@/lib/context/auth.context";
+import { WebsiteContext } from "@/lib/context/website.context";
+import Turnstile from "react-turnstile";
 
 // Shadcn UI ve Lucide React
 import { Button } from "@/components/ui/button";
@@ -41,6 +43,7 @@ interface AuthFormProps {
 
 export function AuthForm({ asWidget = false }: AuthFormProps) {
   const { signIn } = useContext(AuthContext);
+  const { website } = useContext(WebsiteContext);
   const router = useRouter();
 
   // State'ler
@@ -50,6 +53,13 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const [turnstileKey, setTurnstileKey] = useState(1);
+
+  const forceResetTurnstile = () => {
+    setTurnstileToken("");
+    setTurnstileKey((prev) => prev + 1);
+  };
 
   // Form gönderim fonksiyonu
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,10 +74,24 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
       });
       return;
     }
+    if (website?.security?.cf_turnstile?.site_key && !turnstileToken) {
+      setError("Lütfen güvenlik doğrulamasını tamamlayın.");
+      withReactContent(Swal).fire({
+        title: "Doğrulama Gerekli",
+        text: "Lütfen güvenlik doğrulamasını tamamlayın.",
+        icon: "warning",
+        confirmButtonText: "Tamam",
+      });
+      return;
+    }
     setIsLoading(true);
     setError("");
     try {
-      await signIn(username, password);
+      await signIn(
+        username,
+        password,
+        website?.security?.cf_turnstile?.site_key ? turnstileToken : undefined
+      );
       // Giriş başarılıysa swal göster
       await withReactContent(Swal).fire({
         title: "Giriş Başarılı",
@@ -77,12 +101,9 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
         showConfirmButton: false,
         timerProgressBar: true,
       });
-      // Sadece tam sayfa modundaysa yönlendirme yap
       if (!asWidget) {
         router.push("/");
       }
-      // Widget modunda, başarılı giriş sonrası sayfa yenilenebilir veya
-      // üst bileşen bir eylem tetikleyebilir. Şimdilik yönlendirme yok.
     } catch (err) {
       setError("Giriş bilgileri hatalı. Lütfen kontrol edip tekrar deneyin.");
       withReactContent(Swal).fire({
@@ -91,6 +112,7 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
         icon: "error",
         confirmButtonText: "Tamam",
       });
+      forceResetTurnstile();
     } finally {
       setIsLoading(false);
     }
@@ -162,6 +184,21 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
           </button>
         </div>
       </div>
+      {/* Turnstile CAPTCHA sadece cf_turnstile varsa göster */}
+      {website?.security?.cf_turnstile?.site_key && (
+        <div className="flex justify-center">
+          <Turnstile
+            key={turnstileKey}
+            sitekey={website.security.cf_turnstile.site_key}
+            theme={"auto"}
+            size="normal"
+            onVerify={setTurnstileToken}
+            onExpire={forceResetTurnstile}
+            onError={forceResetTurnstile}
+            className="my-2"
+          />
+        </div>
+      )}
       {/* Giriş Butonu */}
       <button
         type="submit"
@@ -241,6 +278,21 @@ export function AuthForm({ asWidget = false }: AuthFormProps) {
                     autoComplete="current-password"
                   />
                 </div>
+                {/* Turnstile CAPTCHA sadece cf_turnstile varsa göster */}
+                {website?.security?.cf_turnstile?.site_key && (
+                  <div className="flex justify-center">
+                    <Turnstile
+                      key={turnstileKey}
+                      sitekey={website.security.cf_turnstile.site_key}
+                      theme={"auto"}
+                      size="normal"
+                      onVerify={setTurnstileToken}
+                      onExpire={forceResetTurnstile}
+                      onError={forceResetTurnstile}
+                      className="my-2"
+                    />
+                  </div>
+                )}
                 <button
                   type="submit"
                   disabled={isLoading || !username || !password}
