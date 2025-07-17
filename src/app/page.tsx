@@ -263,119 +263,123 @@ export default function Home() {
   }, [website?.id]);
 
   return (
-    <main className="min-h-screen">
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20 pb-8">
-        <div className="grid gap-4 sm:gap-6 lg:grid-cols-12 items-start">
-          <div
-            className={`${!isAuthenticated ? "lg:col-span-8" : "lg:col-span-9"
-              } space-y-4 sm:space-y-6 order-2 lg:order-1`}
-          >
-            {carouselItems.length > 0 && (
-              <Suspense fallback={<div className="h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />}>
-                <InnovativeCarousel
-                  items={carouselItems}
-                  autoplay={true}
-                  autoplayDelay={5000}
-                  showProgress={true}
-                  height="h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]"
-                />
-              </Suspense>
-            )}
-            {/* Son Gönderiler - Carousel altı yatay kartlar */}
-            <div className="mt-6 space-y-4">
-              {isPostsLoading ? (
-                <WidgetSkeleton lines={2} />
-              ) : latestPosts && latestPosts.length > 0 ? (
-                [...latestPosts].sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0) || new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())
-                  .map((post) => (
-                    <LatestPostCard key={post.id} post={post} />
-                  ))
-              ) : (
-                <EmptyList message="Henüz gönderi yok." />
-              )}
-            </div>
+    <main className="min-h-screen bg-[#191A1E] text-white">
+      <section className="container mx-auto px-4 py-16 flex flex-col lg:flex-row items-center justify-between gap-8">
+        {/* Sol: Başlık, açıklama, buton */}
+        <div className="flex-1 max-w-xl space-y-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#FF6B57]">Minezio</h1>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white">Her daim güncel ürünler!</h2>
+          <p className="text-gray-300">Minezio  olarak, 4 yılı aşkın süredir Minecraft alanında hizmet vermekteyiz. Sağladığımız hizmetlerde optimizasyon ve güvenliği en üst seviyede tutarak, olası sorunları en aza indiriyor ve kullanıcılarımıza sorunsuz bir deneyim sunuyoruz.</p>
+          <a href="/store" className="inline-block bg-[#FF6B57] hover:bg-[#ff8a75] text-white font-semibold px-6 py-3 rounded-lg transition">Ürünlerimize göz atın</a>
+        </div>
+        {/* Sağ: Büyük görsel */}
+        <div className="flex-1 flex justify-center">
+          <img src="/images/logo.png" alt="Logo" className="w-72 h-72 object-contain animate-float" />
+        </div>
+      </section>
+      {/* Alt: 4 özellik kutusu */}
+      <section className="container mx-auto px-4 mt-12">
+        <h3 className="text-[#FF6B57] font-semibold mb-2">Neden Bizi Seçmelisiniz?</h3>
+        {/* 'Çünkü' yazısı kaldırıldı */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-[#23242A] rounded-2xl p-6 shadow-md">
+            <h5 className="text-lg font-bold mb-2">7/24 Destek</h5>
+            <p className="text-gray-300">Destek ekiplerimiz sizin için sürekli çalışıyor.</p>
           </div>
-
-          <div
-            className={`${!isAuthenticated ? "lg:col-span-4" : "lg:col-span-3"
-              } space-y-4 sm:space-y-6 order-1 lg:order-2`}
-          >
-            {!isAuthenticated && (
-              <div className="relative z-10">
-                <Suspense fallback={<div className="h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />}>
-                  <AuthForm asWidget={true} />
-                </Suspense>
-              </div>
-            )}
-
-            {isLoading ? (
-              <>
-                <WidgetSkeleton lines={5} />
-                <WidgetSkeleton lines={3} />
-              </>
-            ) : statistics ? (
-              <>
-                {/* En Cömertler Widget */}
-                <Widget>
-                  <Widget.Header>
-                    <FaCrown className="inline mr-2 text-yellow-400" />
-                    En Cömertler
-                  </Widget.Header>
-                  <Widget.Body>
-                    {statistics.topCreditLoaders &&
-                      statistics.topCreditLoaders.length > 0 ? (
-                      <TopCreditLoaders loaders={statistics.topCreditLoaders} />
-                    ) : (
-                      <EmptyList message="Henüz kimse kredi yüklemedi." />
-                    )}
-                  </Widget.Body>
-                </Widget>
-
-                {/* Son Kredi Yüklemeleri Widget */}
-                <Widget>
-                  <Widget.Header>
-                    <FaGift className="inline mr-2 text-green-500" />
-                    Son Kredi Yüklemeleri
-                  </Widget.Header>
-                  <Widget.Body>
-                    {statistics.latest.payments &&
-                      statistics.latest.payments.length > 0 ? (
-                      <LatestPayments payments={statistics.latest.payments} />
-                    ) : (
-                      <EmptyList message="Son zamanlarda kredi yüklenmedi." />
-                    )}
-                  </Widget.Body>
-                </Widget>
-
-                <Widget>
-                  <Widget.Header>
-                    <FaShoppingCart className="inline mr-2 text-blue-500" />
-                    Son Alışverişler
-                  </Widget.Header>
-                  <Widget.Body>
-                    {statistics.latest.purchases &&
-                      statistics.latest.purchases.length > 0 ? (
-                      <LatestPurchases purchases={statistics.latest.purchases} />
-                    ) : (
-                      <EmptyList message="Son zamanlarda alışveriş yapılmadı." />
-                    )}
-                  </Widget.Body>
-                </Widget>
-              </>
-            ) : (
-              <EmptyList message="İstatistikler yüklenemedi." />
-            )}
-
-            {website?.discord && (
-              <div className="">
-                <Suspense fallback={<div className="h-48 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />}>
-                  <DiscordWidget guild_id={website?.discord.guild_id ?? ""} />
-                </Suspense>
-              </div>
-            )}
+          <div className="bg-[#23242A] rounded-2xl p-6 shadow-md">
+            <h5 className="text-lg font-bold mb-2">Periyodik Güncellemeler</h5>
+            <p className="text-gray-300">Sistemimiz, her zaman en son özelliklere ve iyileştirmelere sahip olmanızı sağlamak için periyodik güncellemeler sağlar.</p>
+          </div>
+          <div className="bg-[#23242A] rounded-2xl p-6 shadow-md">
+            <h5 className="text-lg font-bold mb-2">Olumlu Geri Bildirimler</h5>
+            <p className="text-gray-300">Minezio olarak, mükemmelliğe ve üstün hizmete olan bağlılığımızı besleyen olumlu geri bildirimleri önemsiyoruz.</p>
+          </div>
+          <div className="bg-[#23242A] rounded-2xl p-6 shadow-md">
+            <h5 className="text-lg font-bold mb-2">Mutlu Müşteriler</h5>
+            <p className="text-gray-300">Minezio olarak, mutluluğumuz memnun müşterilerden gelir. Onları tatmin eden ve gülümseten deneyimler yaratmaya çalışıyoruz.</p>
           </div>
         </div>
       </section>
+      {/* SSS Bölümü */}
+      <section className="container mx-auto px-4 mt-20 flex flex-col md:flex-row items-center gap-12">
+        {/* Sol: Görsel */}
+        <div className="flex-1 flex justify-center">
+          <div className="rounded-[35%] w-64 h-64 flex items-center justify-center">
+            <img src="/images/logo.png" alt="SSS Karakter" className="w-100 h-100 object-contain" />
+          </div>
+        </div>
+        {/* Sağ: Başlık ve Akordeon */}
+        <div className="flex-1 w-full max-w-2xl">
+          <h4 className="text-[#FF6B57] font-semibold mb-1">Herhangi bir sorunuz var mı?</h4>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">Sıkça Sorulan Sorular</h2>
+          <div className="space-y-4">
+            {/* Akordeon örnekleri */}
+            <details className="bg-[#191A1E] rounded-xl p-4 text-lg font-medium text-white cursor-pointer">
+              <summary className="flex justify-between items-center select-none">Ürünlerde bulunan lisans sistemi nedir?<span className="ml-2">↓</span></summary>
+              <p className="mt-2 text-gray-300 text-base">Yazılımın yetkisiz kullanımını önlemek ve her müşterimize güvenli, sorunsuz bir deneyim sunmak amacıyla uygulanmaktadır. Satın alınan her ürün, sadece kullanıcı tarafından belirlenen bir IP adresine tanımlanır ve yalnızca bu IP üzerinde çalışır. Bu sayede, hem sizin yatırımlarınız korunur hem de yazılımın adil kullanımı sağlanır.</p>
+            </details>
+            <details className="bg-[#191A1E] rounded-xl p-4 text-lg font-medium text-white cursor-pointer">
+              <summary className="flex justify-between items-center select-none">Ürün ile alakalı destek alabilir miyim?<span className="ml-2">↓</span></summary>
+              <p className="mt-2 text-gray-300 text-base">Ürünümüz orijinal ve lisanslı olduğu sürece, her türlü konuda kesintisiz destek sağlamaktayız. Teknik sorunlardan kurulum aşamasına kadar tüm ihtiyaçlarınızda yanınızdayız.
+
+Ancak ürün içerisinde izinsiz paylaşım (leak) tespit edilmesi halinde, sistemimiz bu durumu otomatik olarak algılar ve lisans devre dışı bırakılır. Bu gibi durumlarda destek hizmeti tamamen sonlandırılır.</p>
+            </details>
+            <details className="bg-[#191A1E] rounded-xl p-4 text-lg font-medium text-white cursor-pointer">
+              <summary className="flex justify-between items-center select-none">İade hakkım var mı?<span className="ml-2">↓</span></summary>
+              <p className="mt-2 text-gray-300 text-base">Dijital ürünler kapsamında hiçbir ürünün iade hakkı yoktur.
+
+</p>
+            </details>
+            <details className="bg-[#191A1E] rounded-xl p-4 text-lg font-medium text-white cursor-pointer">
+              <summary className="flex justify-between items-center select-none">Kendi eklentilerimi paketlemenizi isteyebilir miyim?<span className="ml-2">↓</span></summary>
+              <p className="mt-2 text-gray-300 text-base">Evet, özel plugin paketi hazırlama hizmetimiz vardır. Fiyatlandırma, taleplerin kapsamına göre belirlenir..</p>
+            </details>
+          </div>
+        </div>
+      </section>
+      {/* Referanslar Bölümü */}
+      <section className="container mx-auto px-4 mt-20 mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-[#FF6B57]">Referanslar</h2>
+        <div className="flex justify-center mb-8">
+          <span className="inline-block w-16 h-1 rounded-full bg-[#FF6B57] opacity-60"></span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Kart 1 */}
+          <div className="bg-[#191A1E] border border-[#23242A] rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+            <img src="/images/logo.png" alt="Avatar" className="w-16 h-16 rounded-full mb-4 object-cover" />
+            <h5 className="font-bold text-lg mb-1">Nocteria</h5>
+            <p className="text-gray-300 text-sm">"Gerçekten hızlı destek ve kaliteli ürünler. Herkese tavsiye ederim!"</p>
+          </div>
+          {/* Kart 2 */}
+          <div className="bg-[#191A1E] border border-[#23242A] rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+            <img src="/images/logo.png" alt="Avatar" className="w-16 h-16 rounded-full mb-4 object-cover" />
+            <h5 className="font-bold text-lg mb-1">KuntigoTV</h5>
+            <p className="text-gray-300 text-sm">"Yayınlarımızda oyun oynamak için sunucu açmaya karar verdik fakat yeterli bilgimiz olmadığı için bir yardıma ihtiyacımız vardı. Minezio, Ekip yöneticisi Bora bizimle sonuna kadar ilgilendi ve sorunsuz deneyim yaşattı."</p>
+          </div>
+          {/* Kart 3 */}
+          <div className="bg-[#191A1E] border border-[#23242A] rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+            <img src="/images/logo.png" alt="Avatar" className="w-16 h-16 rounded-full mb-4 object-cover" />
+            <h5 className="font-bold text-lg mb-1">DeepCraft</h5>
+            <p className="text-gray-300 text-sm">"Sunucu açmak yardım istediğinizde sizin için sonuna kadar yardımcı oluyorlar. 10/10"</p>
+          </div>
+          {/* Kart 4 */}
+          <div className="bg-[#191A1E] border border-[#23242A] rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+            <img src="/images/blockrplogo.webp" alt="Avatar" className="w-16 h-16 rounded-full mb-4 object-cover" />
+            <h5 className="font-bold text-lg mb-1">BlockRP</h5>
+            <p className="text-gray-300 text-sm">"Her zaman ulaşılabilir destek ekibi ve kaliteli hizmet. Çok memnunum"</p>
+          </div>
+        </div>
+      </section>
+      <style jsx global>{`
+        @keyframes float {
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-18px); }
+          100% { transform: translateY(0); }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
     </main>
   );
 }

@@ -116,42 +116,6 @@ export default function Store() {
           <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
             Oyun sunucularımızı keşfedin ve favori eşyalarınızı satın alın
           </p>
-
-          {/* Stats Card */}
-          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 border-blue-200 dark:border-blue-700 mb-6">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
-                    <ServerIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                      Sunucu Durumu
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {onlineServers}/{totalServers} sunucu aktif - Binlerce
-                      eşya sizi bekliyor
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-sm px-3 py-1"
-                  >
-                    {onlineServers} Online
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 text-sm px-3 py-1"
-                  >
-                    {totalServers} Toplam
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Servers Section */}
@@ -181,10 +145,10 @@ export default function Store() {
               <div className="text-center py-12">
                 <ServerIcon className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-600 dark:text-gray-300 mb-2">
-                  Henüz sunucu bulunmuyor
+                  Henüz ürün yok!
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-                  Şu anda aktif sunucu bulunmamaktadır. Lütfen daha sonra tekrar
+                  Şu anda aktif kategori bulunmamaktadır. Lütfen daha sonra tekrar
                   kontrol edin.
                 </p>
               </div>
